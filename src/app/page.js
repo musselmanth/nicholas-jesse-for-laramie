@@ -1,66 +1,109 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+// src/app/page.jsx
+import Link from 'next/link';
+import styles from './page.module.css';
 
 export default function Home() {
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.js file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <main className={styles.main}>
+      
+      {/* Hero Section */}
+      <section className={styles.hero}>
+        {/* The background image is applied via CSS, with this overlay darkening it for text readability */}
+        <div className={styles.heroOverlay}></div>
+        
+        <div className={styles.heroContent}>
+          <div className={styles.heroLeft}>
+            <h1 className={styles.heroTitle}>A Practical Voice for Laramie.</h1>
+            <p className={styles.heroSubtitle}>
+              Nicholas Jesse is running for Ward 1 City Council to bring data-driven solutions, 
+              smart growth, and resilient infrastructure to our community.
+            </p>
+            <div className={styles.heroActions}>
+              <Link href="/volunteer" className={styles.primaryBtn}>
+                Volunteer
+              </Link>
+              <a href="https://secure.actblue.com/donate/..." target="_blank" rel="noopener noreferrer" className={styles.secondaryBtn}>
+                Donate
+              </a>
+            </div>
+          </div>
+
+          <div className={styles.heroRight}>
+            <div className={styles.headshotWrapper}>
+              {/* Replace the src with an actual image in your public/ folder later */}
+              <img 
+                src="/headshot-placeholder.jpg" 
+                alt="Nicholas Jesse" 
+                className={styles.headshot}
+              />
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Platform Section */}
+      <section className={styles.section}>
+        <div className={styles.container}>
+          <h2 className={styles.sectionTitle}>Key Priorities</h2>
+          <ul className={styles.platformList}>
+            <li>
+              <strong>Smart Infrastructure:</strong> Prioritizing sensible road repair schedules, 
+              improving snow removal logistics, and maintaining city services.
+            </li>
+            <li>
+              <strong>Housing & Zoning:</strong> Updating development codes to encourage 
+              sustainable growth without sacrificing the character of our neighborhoods.
+            </li>
+            <li>
+              <strong>Fiscal Responsibility:</strong> Ensuring the city budget is transparent, 
+              efficient, and focused on long-term value for Laramie taxpayers.
+            </li>
+          </ul>
+          <Link href="/platform" className={styles.textLink}>
+            Read the full platform &rarr;
+          </Link>
+        </div>
+      </section>
+
+      {/* About Section */}
+      <section className={`${styles.section} ${styles.altBackground}`}>
+        <div className={styles.container}>
+          <h2 className={styles.sectionTitle}>About Nicholas</h2>
+          <p className={styles.sectionText}>
+            Nicholas is a professional developer, problem-solver, and proud Laramie resident. 
+            He believes that city government works best when it focuses on the mechanics of making 
+            a city run smoothly. He is committed to bringing a logical, transparent approach to the City Council.
           </p>
+          <Link href="/about" className={styles.textLink}>
+            Get to know Nicholas &rarr;
+          </Link>
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+      </section>
+
+      {/* Map & Election Info Section */}
+      <section className={styles.section}>
+        <div className={styles.container}>
+          <h2 className={styles.sectionTitle}>Ward 1 Map & Election Info</h2>
+          <p className={styles.sectionText}>
+            Are you a resident of Ward 1? Check the boundary map below and make sure you have 
+            a plan to vote in the upcoming municipal election.
+          </p>
+          
+          <div className={styles.mapContainer}>
+            {/* You can drop your interactive OpenLayers map component here later */}
+            <div className={styles.mapPlaceholder}>
+              <p>Interactive Ward 1 Map Component Goes Here</p>
+            </div>
+          </div>
+
+          <div className={styles.centerAction}>
+            <Link href="/election-info" className={styles.primaryBtn}>
+              Voter Information & Deadlines
+            </Link>
+          </div>
         </div>
-      </main>
-    </div>
+      </section>
+
+    </main>
   );
 }
