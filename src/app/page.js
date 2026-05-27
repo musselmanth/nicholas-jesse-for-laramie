@@ -8,7 +8,6 @@ export default function Home() {
       
       {/* Hero Section */}
       <section className={styles.hero}>
-        {/* The background image is applied via CSS, with this overlay darkening it for text readability */}
         <div className={styles.heroOverlay}></div>
         
         <div className={styles.heroContent}>
@@ -30,9 +29,8 @@ export default function Home() {
 
           <div className={styles.heroRight}>
             <div className={styles.headshotWrapper}>
-              {/* Replace the src with an actual image in your public/ folder later */}
               <img 
-                src="/headshot-placeholder.jpg" 
+                src="/head.webp" 
                 alt="Nicholas Jesse" 
                 className={styles.headshot}
               />
@@ -90,7 +88,6 @@ export default function Home() {
           </p>
           
           <div className={styles.mapContainer}>
-            {/* You can drop your interactive OpenLayers map component here later */}
             <div className={styles.mapPlaceholder}>
               <p>Interactive Ward 1 Map Component Goes Here</p>
             </div>

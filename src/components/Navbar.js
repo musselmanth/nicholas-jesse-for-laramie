@@ -16,7 +16,7 @@ export default function Navbar() {
       <div className={styles.navContainer}>
         {/* Replace with an <img /> or <Image /> tag later if you have a graphic logo */}
         <Link href="/" className={styles.logo}>
-          Nicholas Jesse for Laramie City Council
+          Nicholas Jesse Ward 1
         </Link>
 
         {/* Mobile Hamburger Button */}
