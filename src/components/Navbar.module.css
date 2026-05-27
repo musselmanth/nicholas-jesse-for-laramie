@@ -1,8 +1,8 @@
 /* src/components/Navbar.module.css */
 
 .navbar {
-  background-color: #ffffff;
-  border-bottom: 1px solid #eaeaea;
+  background-color: #ffffff; /* Keep navbar crisp white to contrast the cream body */
+  border-bottom: 1px solid var(--brand-cream);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -18,11 +18,12 @@
 }
 
 .logo {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #1a1a1a;
+  font-size: 1.75rem;
+  font-weight: 900; /* Extra heavy for the logo */
+  color: var(--brand-olive);
   text-decoration: none;
   letter-spacing: -0.5px;
+  text-transform: uppercase; /* Matches the sign */
 }
 
 .navMenu {
@@ -35,34 +36,32 @@
 }
 
 .navLink {
-  color: #4a4a4a;
+  color: var(--brand-olive);
   text-decoration: none;
-  font-weight: 500;
-  font-size: 1rem;
+  font-weight: 700;
+  font-size: 1.1rem;
   transition: color 0.2s ease;
 }
 
 .navLink:hover {
-  color: #0056b3; /* A standard political blue, adjust as needed */
+  color: var(--brand-orange);
 }
 
-/* Donate Button Specifics */
 .donateBtn {
-  background-color: #0056b3;
+  background-color: var(--brand-orange);
   color: #ffffff;
-  padding: 0.6rem 1.2rem;
-  border-radius: 4px;
-  font-weight: 600;
+  padding: 0.6rem 1.4rem;
+  border-radius: 8px; /* Slightly rounder buttons to match the font */
+  font-weight: 700;
   text-decoration: none;
   transition: background-color 0.2s ease;
 }
 
 .donateBtn:hover {
-  background-color: #004494;
+  background-color: var(--brand-orange-hover);
   color: #ffffff;
 }
 
-/* Mobile Menu Button - Hidden on Desktop */
 .mobileMenuBtn {
   display: none;
   background: none;
@@ -77,16 +76,13 @@
   width: 25px;
   height: 3px;
   margin: 5px auto;
-  background-color: #1a1a1a;
+  background-color: var(--brand-olive);
   transition: all 0.3s ease-in-out;
+  border-radius: 3px;
 }
 
-/* --- Mobile Responsiveness --- */
 @media screen and (max-width: 768px) {
-  .mobileMenuBtn {
-    display: block;
-  }
-
+  .mobileMenuBtn { display: block; }
   .navMenu {
     position: fixed;
     flex-direction: column;
@@ -95,27 +91,13 @@
     right: -100%;
     width: 100%;
     height: 100vh;
-    background-color: #ffffff;
+    background-color: var(--brand-cream-light);
     transition: right 0.3s ease;
     gap: 2.5rem;
   }
-
-  .navMenu.active {
-    right: 0;
-  }
-
-  .navLink {
-    font-size: 1.5rem;
-  }
-
-  /* Hamburger to X Animation */
-  .barOpen1 {
-    transform: translateY(8px) rotate(45deg);
-  }
-  .barOpen2 {
-    opacity: 0;
-  }
-  .barOpen3 {
-    transform: translateY(-8px) rotate(-45deg);
-  }
+  .navMenu.active { right: 0; }
+  .navLink { font-size: 1.5rem; }
+  .barOpen1 { transform: translateY(8px) rotate(45deg); }
+  .barOpen2 { opacity: 0; }
+  .barOpen3 { transform: translateY(-8px) rotate(-45deg); }
 }
