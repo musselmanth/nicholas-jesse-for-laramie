@@ -1,43 +1,11 @@
 // src/app/page.jsx
 import Link from 'next/link';
 import styles from './page.module.css';
+import WardMap from '@/components/WardMap';
 
 export default function Home() {
   return (
     <main className={styles.main}>
-      
-      {/* Hero Section */}
-      <section className={styles.hero}>
-        <div className={styles.heroOverlay}></div>
-        
-        <div className={styles.heroContent}>
-          <div className={styles.heroLeft}>
-            <h1 className={styles.heroTitle}>A Practical Voice for Laramie.</h1>
-            <p className={styles.heroSubtitle}>
-              Nicholas Jesse is running for Ward 1 City Council to bring data-driven solutions, 
-              smart growth, and resilient infrastructure to our community.
-            </p>
-            <div className={styles.heroActions}>
-              <Link href="/volunteer" className={styles.primaryBtn}>
-                Volunteer
-              </Link>
-              <a href="https://secure.actblue.com/donate/..." target="_blank" rel="noopener noreferrer" className={styles.secondaryBtn}>
-                Donate
-              </a>
-            </div>
-          </div>
-
-          <div className={styles.heroRight}>
-            <div className={styles.headshotWrapper}>
-              <img 
-                src="/head.webp" 
-                alt="Nicholas Jesse" 
-                className={styles.headshot}
-              />
-            </div>
-          </div>
-        </div>
-      </section>
 
       {/* Platform Section */}
       <section className={styles.section}>
@@ -88,16 +56,11 @@ export default function Home() {
           </p>
           
           <div className={styles.mapContainer}>
-            <div className={styles.mapPlaceholder}>
-              <p>Interactive Ward 1 Map Component Goes Here</p>
-            </div>
+            <WardMap />
           </div>
-
-          <div className={styles.centerAction}>
-            <Link href="/election-info" className={styles.primaryBtn}>
-              Voter Information & Deadlines
-            </Link>
-          </div>
+          <Link href="/election-info" className={styles.textLink}>
+            Voter Information & Deadlines &rarr;
+          </Link>
         </div>
       </section>
 

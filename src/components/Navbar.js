@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import styles from './Navbar.module.css';
 
@@ -11,12 +11,42 @@ export default function Navbar() {
     setIsOpen(!isOpen);
   };
 
+    // We set a fallback estimate for the server-side render
+  const [dynamicHeight, setDynamicHeight] = useState('calc(100svh - 75px)');
+
+  useEffect(() => {
+    const calculateHeight = () => {
+      // Find the navbar in the DOM (looks for a <nav> tag or any class containing "navbar")
+      const navbar = document.querySelector('nav') || document.querySelector('[class*="navbar"]');
+      
+      if (navbar) {
+        // Grab the exact current pixel height of the navbar and update our CSS variable
+        const navHeight = navbar.offsetHeight;
+        setDynamicHeight(`calc(100svh - ${navHeight}px)`);
+      }
+    };
+
+    // Calculate immediately on mount
+    calculateHeight();
+
+    // Recalculate if the user rotates their phone or resizes the browser window
+    window.addEventListener('resize', calculateHeight);
+    return () => window.removeEventListener('resize', calculateHeight);
+  }, []);
+
   return (
-    <nav className={styles.navbar}>
+    <nav className={styles.navbar} style={{ '--exact-hero-height': dynamicHeight }}>
       <div className={styles.navContainer}>
         {/* Replace with an <img /> or <Image /> tag later if you have a graphic logo */}
-        <Link href="/" className={styles.logo}>
-          Nicholas Jesse Ward 1
+        <Link href="/" className={styles.logoContainer}>
+          {/* Replace this src with your actual icon file */}
+          
+          
+          <div className={styles.logoTextStack}>
+            <span className={styles.logoName}><span className={styles.logoFirstName}>Nicholas</span><span className={styles.logoLastName}>Jesse</span></span>
+            <span className={styles.logoOffice}>Laramie City Council Ward 1</span>
+          </div>
+          <img src="/nj-paintbrush.svg" alt="Campaign Logo" className={styles.logoImage} />
         </Link>
 
         {/* Mobile Hamburger Button */}
@@ -45,6 +75,11 @@ export default function Navbar() {
           <li className={styles.navItem}>
             <Link href="/election-info" className={styles.navLink} onClick={toggleMenu}>
               Election Info
+            </Link>
+          </li>
+                    <li className={styles.navItem}>
+            <Link href="/contact" className={styles.navLink} onClick={toggleMenu}>
+              Contact
             </Link>
           </li>
           <li className={styles.navItem}>

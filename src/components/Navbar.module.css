@@ -1,8 +1,8 @@
 /* src/components/Navbar.module.css */
 
 .navbar {
-  background-color: #ffffff; /* Keep navbar crisp white to contrast the cream body */
-  border-bottom: 1px solid var(--brand-cream);
+  background-color: var(--brand-cream-light); /* Keep navbar crisp white to contrast the cream body */
+  border-bottom: 2px solid var(--brand-cream);
   position: sticky;
   top: 0;
   z-index: 100;
@@ -17,13 +17,76 @@
   padding: 1rem 2rem;
 }
 
-.logo {
-  font-size: 1.75rem;
-  font-weight: 900; /* Extra heavy for the logo */
-  color: var(--brand-olive);
+.logoContainer {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem; /* The space between the image and the text */
   text-decoration: none;
-  letter-spacing: -0.5px;
-  text-transform: uppercase; /* Matches the sign */
+}
+
+.logoImage {
+  /* Set to roughly the height of the two text lines combined */
+  height: 44px; 
+  width: auto;
+  object-fit: contain;
+  margin-left: -0.5rem;
+}
+
+.logoTextStack {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.logoFirstName {
+  font-size: 1.5rem; /* Large font for the name */
+  line-height: 1;
+  font-weight: 500;
+  color: var(--brand-orange);
+  text-transform: uppercase;
+  font-family: var(--cowboy), sans-serif;
+  margin-right: 0.5rem;
+}
+
+.logoLastName {
+  font-size: 1.5rem; /* Large font for the name */
+  font-weight: 900;
+  line-height: 1;
+  color: var(--brand-olive-dark);
+  text-transform: uppercase;
+  font-family: var(--cowboy), sans-serif;
+
+}
+
+.logoOffice {
+  /* The exact mathematical font size and spacing to match the width above */
+  font-size: 1rem; 
+  font-weight: 800;
+  line-height: 1.2;
+  color: var(--brand-olive);
+  text-transform: uppercase;
+  letter-spacing: 0.02em; /* Tweak this slightly if your .otf font makes it too long/short */
+  margin-top: 0.02rem;
+}
+
+/* Optional: Make it slightly smaller on mobile phones so it doesn't crowd the hamburger menu */
+@media screen and (max-width: 768px) {
+  .logoImage {
+    height: 38px;
+    margin-left: -0.1rem;
+  }
+  .logoFirstName {
+    font-size: 1.2rem;
+    letter-spacing: -0.08rem;
+  }
+  .logoLastName {
+    font-size: 1.2rem;
+    letter-spacing: -0.08rem;
+  }
+  .logoOffice {
+    font-size: 0.7rem;
+    letter-spacing:0.06em;
+  }
 }
 
 .navMenu {
@@ -81,19 +144,20 @@
   border-radius: 3px;
 }
 
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 950px) {
   .mobileMenuBtn { display: block; }
   .navMenu {
     position: fixed;
     flex-direction: column;
     justify-content: center;
-    top: 0;
+    top: calc(100svh - var(--exact-hero-height));
     right: -100%;
     width: 100%;
-    height: 100vh;
     background-color: var(--brand-cream-light);
     transition: right 0.3s ease;
     gap: 2.5rem;
+    height: var(--exact-hero-height);
+    min-height: var(--exact-hero-height);
   }
   .navMenu.active { right: 0; }
   .navLink { font-size: 1.5rem; }

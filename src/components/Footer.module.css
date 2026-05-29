@@ -1,0 +1,117 @@
+/* src/components/Footer.module.css */
+
+.footer {
+  /* Sage Green background from your campaign signs */
+  background-color: var(--brand-olive-dark);
+  padding: 4rem 0 2rem 0;
+  margin-top: auto; /* Pushes the footer to the bottom of a page */
+  border-top: 2px solid var(--brand-cream);
+}
+
+.container {
+  display: flex;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 2rem;
+  gap: 3rem;
+  width: 100%;
+}
+
+.column {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Base text on the dark background */
+.heading {
+  color: #ffffff; /* White headings for high contrast */
+  font-size: 1.25rem;
+  margin-bottom: 1.25rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sectionText, .finePrint {
+  color: var(--brand-cream-light); /* Lighter contrast color */
+  font-size: 0.95rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+/* Legalese */
+.disclaimerText {
+  color: #ffffff; /* White text for the required legal disclaimer */
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.finePrint {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+/* Link Lists */
+.linkList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.linkList li {
+  margin-bottom: 0.75rem;
+}
+
+.linkList a {
+  color: var(--brand-cream-light);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 1rem;
+  transition: color 0.2s ease;
+}
+
+.linkList a:hover {
+  color: var(--brand-orange); /* Vibrant hover from your campaign sign */
+  text-decoration: underline;
+}
+
+/* Social Icons */
+.socialGroup {
+  display: flex;
+  gap: 1rem;
+  margin-top: auto; /* Pushes links to the bottom if content is short */
+}
+
+.socialLink {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 1rem;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.socialLink:hover {
+  opacity: 0.7;
+}
+
+/* --- Mobile Responsiveness --- */
+@media screen and (max-width: 992px) {
+  .container {
+    flex-direction: column;
+    text-align: center;
+    gap: 3rem;
+  }
+  
+  .column {
+    align-items: center;
+  }
+
+  .socialGroup {
+    justify-content: center;
+    margin-top: 1rem;
+  }
+}

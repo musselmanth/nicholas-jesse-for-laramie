@@ -3,13 +3,14 @@
 
 :root {
   /* Extracted directly from your campaign sign */
-  --brand-orange: #E05A3D;
+  --brand-orange: #dc653a;
   --brand-orange-hover: #C24A30;
-  --brand-olive: #5C5C42;
+  --brand-olive: #83895b;
   --brand-olive-hover: #4A4A35;
-  --brand-cream: #EAE5D1;
+  --brand-olive-dark:#4e5134;
+  --brand-cream: #eee6cd;
   --brand-cream-light: #F7F6F0; /* A lighter version for the main background */
-  --brand-text: #2D2D22; /* Very dark olive for high-contrast reading */
+  --brand-text: #2b2b2b; /* Very dark olive for high-contrast reading */
 }
 
 *, *::before, *::after {
