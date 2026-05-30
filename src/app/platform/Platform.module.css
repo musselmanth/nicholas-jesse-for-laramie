@@ -1,0 +1,213 @@
+/* src/app/platform/Platform.module.css */
+
+.pageWrapper {
+  width: 100%;
+}
+
+/* ========================================= */
+/* --- Page Header --- */
+/* ========================================= */
+
+/* ========================================= */
+/* --- Page Header (Editorial Style) --- */
+/* ========================================= */
+
+.pageHeader {
+  background-color: var(--brand-olive); /* Back to the bold standard olive */
+  padding: 8rem 2rem 6rem;
+  text-align: center;
+  border-bottom: 4px double var(--brand-orange); 
+}
+
+.headerContent {
+  max-width: 800px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center; 
+}
+
+.headerIcon {
+  width: 140px;
+  height: 140px;
+  margin-bottom: 2rem;
+}
+
+
+.pageTitle {
+  font-family: var(--cowboy), sans-serif;
+  font-weight: normal;
+  font-size: clamp(3rem, 7vw, 5rem);
+  text-transform: uppercase;
+  color: var(--brand-cream-light); /* Cream text popping off the olive */
+  margin-bottom: 1.5rem;
+  line-height: 1;
+}
+
+
+/* ========================================= */
+/* --- Section Layouts --- */
+/* ========================================= */
+
+.issueSection {
+  padding: 6rem 2rem;
+  width: 100%;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  gap: 4rem;
+  align-items: flex-start;
+}
+
+/* ========================================= */
+/* --- Alternating Themes --- */
+/* ========================================= */
+
+.themeLight {
+  background-color: var(--brand-cream-light);
+  color: var(--brand-text);
+}
+.themeLight .bigNumber {
+  color: var(--brand-orange);
+}
+.themeLight .issueTitle {
+  color: var(--brand-olive); 
+}
+.themeLight .prioritiesHeading {
+  color: var(--brand-orange);
+  display: inline-block;
+  border-bottom: 3px solid var(--brand-olive-dark); /* Keeps the orange brand pop */
+  padding-bottom: 0.15rem;
+  margin-bottom:3rem;
+}
+.themeLight .prioritiesGrid li {
+  background-color: #ffffff;
+  border: 1px solid rgba(0,0,0,0.05);
+  border-left: 4px solid var(--brand-orange);
+}
+
+.themeOlive {
+  background-color: var(--brand-olive);
+  color: var(--brand-cream-light);
+}
+.themeOlive .bigNumber {
+  color: var(--brand-cream);
+}
+.themeOlive .issueTitle {
+  color: var(--brand-cream-light);
+}
+.themeOlive .issueIntro {
+  color: var(--brand-cream);
+}
+.themeOlive .prioritiesHeading {
+  color: var(--brand-cream-light); /* High contrast readable text */
+  display: inline-block;
+  border-bottom: 3px solid var(--brand-orange); /* Keeps the orange brand pop */
+  padding-bottom: 0.15rem;
+  margin-bottom: 3rem;
+}
+.themeOlive .prioritiesGrid li {
+  background-color: rgba(255, 255, 255, 0.08); 
+  border: 1px solid rgba(255,255,255,0.15);
+  border-left: 4px solid var(--brand-orange);
+}
+
+/* ========================================= */
+/* --- Typography & Structural Elements --- */
+/* ========================================= */
+
+.titleColumn {
+  flex: 1;
+  position: sticky;
+  top: 120px;
+}
+
+.bigNumber {
+  font-family: var(--cowboy), sans-serif;
+  font-weight: normal; 
+  font-size: 6rem;
+  line-height: 0.8;
+  display: block;
+  margin-bottom: 1rem;
+  opacity: 0.9;
+}
+
+.issueTitle {
+  font-family: var(--cowboy), sans-serif;
+  font-weight: normal;
+  font-size: 3rem;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.contentColumn {
+  flex: 2.2;
+}
+
+.issueIntro {
+  font-size: 1.2rem;
+  line-height: 1.7;
+  margin-bottom: 3rem;
+  font-weight: 400;
+}
+
+.prioritiesHeading {
+  font-family: var(--cowboy), sans-serif;
+  font-weight: normal;
+  font-size: 1.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  margin-bottom: 1.5rem;
+}
+
+.prioritiesGrid {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.prioritiesGrid li {
+  padding: 1.5rem;
+  border-radius: 4px;
+  font-size: 1.05rem;
+  line-height: 1.5;
+  font-weight: 500;
+  box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+}
+
+/* ========================================= */
+/* --- Mobile Responsiveness --- */
+/* ========================================= */
+
+@media screen and (max-width: 992px) {
+  .issueSection {
+    padding: 4rem 1.5rem;
+  }
+
+  .container {
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .titleColumn {
+    position: static; 
+  }
+
+  .bigNumber {
+    font-size: 4rem;
+  }
+
+  .issueTitle {
+    font-size: 2.2rem;
+  }
+
+  .prioritiesGrid {
+    grid-template-columns: 1fr;
+  }
+}

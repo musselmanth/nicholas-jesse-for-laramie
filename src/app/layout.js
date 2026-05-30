@@ -1,5 +1,4 @@
 // src/app/layout.jsx
-import Hero from '@/components/Hero';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import localFont from 'next/font/local';
@@ -22,8 +21,7 @@ export default function RootLayout({ children }) {
     <html lang="en" className={`${ranchWater.variable} ${cowboy.variable}`}>
       <body>
         <Navbar />
-        <Hero />
-        {children}
+          {children}
         <Footer />
       </body>
     </html>

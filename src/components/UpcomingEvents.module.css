@@ -1,0 +1,161 @@
+/* ========================================= */
+/* --- Layout Containers --- */
+/* ========================================= */
+
+.eventsContainer {
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* This allows the wrapper to extend past the main content column */
+.carouselWrapper {
+  display: grid;
+  /* The arrows live in the outer space, content lives in the center */
+  grid-template-columns: 1fr minmax(0, 1200px) 1fr;
+  align-items: center;
+  gap: 1rem;
+  width: 120%;
+  margin-left: -10%; /* Pulls the carousel back to align with the main content edges */
+}
+
+/* The viewport now constrains only to the center column */
+.viewport {
+  grid-column: 2;
+  overflow: hidden;
+  width: 100%;
+  padding: 1rem 0;
+}
+
+.navButton {
+  background: none;
+  border: none;
+  color: var(--brand-orange);
+  cursor: pointer;
+  padding: 1rem;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  justify-self: center; /* Positions arrows in the outer grid columns */
+}
+
+.navButton:hover:not(:disabled) {
+  transform: scale(1.15);
+  color: var(--brand-olive-dark);
+}
+
+.navButton:disabled {
+  opacity: 0.2;
+  pointer-events: none;
+}
+
+/* ========================================= */
+/* --- The Sliding Track --- */
+/* ========================================= */
+
+.track {
+  display: flex;
+  transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.cardWrapper {
+  /* Flex basis manages width. We use calc to ensure gaps are handled */
+  flex: 0 0 33.3333%;
+  padding: 0 0.75rem; 
+}
+
+/* ========================================= */
+/* --- Dynamic Card Sizing (Modern Hero) --- */
+/* ========================================= */
+
+/* When 1 card: force it to take up a larger, centered portion of the grid */
+.track:has(.cardWrapper:only-child) .cardWrapper {
+  flex: 0 0 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+/* When 2 cards: force them to share the space more broadly */
+.track:has(.cardWrapper:nth-child(2):last-child) .cardWrapper {
+  flex: 0 0 50%;
+  max-width: 500px;
+}
+.track:has(.cardWrapper:nth-child(2):last-child) {
+  justify-content: center;
+}
+
+/* ========================================= */
+/* --- Card Styling --- */
+/* ========================================= */
+
+.eventCard {
+  background: #ffffff;
+  border-left: 6px solid var(--brand-orange); 
+  border-radius: 8px;
+  padding: 2rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.dateBlock {
+  border-bottom: 2px solid var(--brand-cream);
+  padding-bottom: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.dateText {
+  display: block;
+  font-size: 1.4rem;
+  font-weight: 900;
+  color: var(--brand-olive-dark);
+  line-height: 1.2;
+}
+
+.timeText {
+  font-size: 0.9rem;
+  color: var(--brand-orange);
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.eventDetails {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.eventTitle {
+  font-size: 1.4rem;
+  color: var(--brand-olive-dark);
+  margin: 0 0 0.5rem 0;
+  line-height: 1.3;
+}
+
+.eventLocation {
+  font-size: 0.95rem;
+  color: var(--brand-text);
+  margin: 0 0 1rem 0;
+}
+
+.eventDescription {
+  font-size: 1rem;
+  color: #555;
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ========================================= */
+/* --- Mobile Adjustments --- */
+/* ========================================= */
+
+@media (max-width: 768px) {
+  .carouselWrapper {
+    grid-template-columns: 20px 1fr 20px;
+    gap: 0.25rem;
+    width: 100%;
+    margin-left: 0;
+  }
+  
+  .cardWrapper {
+    flex: 0 0 100%;
+  }
+}
