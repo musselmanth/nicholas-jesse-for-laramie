@@ -2,7 +2,8 @@
 const nextConfig = {
   // Tells Next.js to build a static HTML export in an "out" folder
   output: 'export',
-  basePath: process.env.NEXT_PUBLIC_BASE_PATH || '',
+  basePath: '/nicholas-jesse-for-laramie', // Change this to your GitHub repo name if it's not the root of your user/organization page
+  assetPrefix: '/nicholas-jesse-for-laramie/',
   
   // Required if you plan to use the <Image /> component, as GitHub Pages 
   // doesn't have an image optimization server.

@@ -20,7 +20,7 @@ useEffect(() => {
     if (mapInstance.current) return;
 
     const vectorSource = new VectorSource({
-      url: `${process.env.NEXT_PUBLIC_BASE_PATH || ''}/ward1.geojson`,
+      url: '/ward1.geojson',
       format: new GeoJSON(),
     });
 

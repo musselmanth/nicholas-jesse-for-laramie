@@ -46,7 +46,7 @@ export default function Navbar() {
             <span className={styles.logoName}><span className={styles.logoFirstName}>Nicholas</span><span className={styles.logoLastName}>Jesse</span></span>
             <span className={styles.logoOffice}>Laramie City Council Ward 1</span>
           </div>
-          <img src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/nj-paintbrush.svg`} alt="Campaign Logo" className={styles.logoImage} />
+          <img src='/nj-paintbrush.svg' alt="Campaign Logo" className={styles.logoImage} />
         </Link>
 
         {/* Mobile Hamburger Button */}

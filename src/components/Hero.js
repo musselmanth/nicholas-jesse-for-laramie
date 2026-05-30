@@ -32,7 +32,7 @@ export default function Hero() {
   return (
     <section 
       className={styles.heroSection} 
-      style={{ '--exact-hero-height': dynamicHeight, backgroundImage: `url('${basePath}/hero.jpg')` }}
+      style={{ '--exact-hero-height': dynamicHeight }}
     >
       {/* Background Overlay */}
       <div className={styles.heroOverlay}></div>
@@ -72,7 +72,7 @@ export default function Hero() {
 
         {/* Right Column: Headshot */}
         <div className={styles.rightContent}>
-          <img src={`${process.env.NEXT_PUBLIC_BASE_PATH || ''}/head.webp`} alt="Nicholas Jesse" className={styles.headshot} />
+          <img src='/head.webp' alt="Nicholas Jesse" className={styles.headshot} />
         </div>
 
       </div>
