@@ -87,7 +87,7 @@ export default function Home() {
             Drop a message to let me know what you hope Laramie can achieve, 
             what makes our town completely unique, and what local challenges we need to tackle next.
           </p>
-          <Link href="/about" className={styles.textLink}>
+          <Link href="/contact" className={styles.textLink}>
             Let's Connect! &rarr;
           </Link>
         </div>
