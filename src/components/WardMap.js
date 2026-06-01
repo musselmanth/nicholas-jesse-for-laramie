@@ -20,7 +20,7 @@ useEffect(() => {
     if (mapInstance.current) return;
 
     const vectorSource = new VectorSource({
-      url: '/ward1.geojson',
+      url: '/nicholas-jesse-for-laramie/ward1.geojson',
       format: new GeoJSON(),
     });
 

@@ -17,7 +17,7 @@ export default function PlatformPage() {
           </div>
           <div className={styles.headerImageSide}>
             <img 
-              src="/paintbrushes.svg" 
+              src="/nicholas-jesse-for-laramie/paintbrushes.svg" 
               alt="Wyoming Indian Paintbrush Illustration" 
               className={styles.paintbrushIllustration}
             />
