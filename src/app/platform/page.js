@@ -9,20 +9,19 @@ export default function PlatformPage() {
   return (
     <main className={styles.pageWrapper}>
       
-      {/* Page Header (Clean & Bold) */}
+      {/* Updated Split Header Layout */}
       <header className={styles.pageHeader}>
-        <div className={styles.headerContent}>
-          
-          {/* Custom Civic Compass/Star SVG */}
-          <svg viewBox="0 0 100 100" className={styles.headerIcon} xmlns="http://www.w3.org/2000/svg">
-            <circle cx="50" cy="50" r="45" fill="none" stroke="var(--brand-orange)" strokeWidth="2" strokeDasharray="6 6"/>
-            <circle cx="50" cy="50" r="35" fill="none" stroke="var(--brand-cream-light)" strokeWidth="1" opacity="0.4"/>
-            <path d="M50 15 L55 42 L82 50 L55 58 L50 85 L45 58 L18 50 L45 42 Z" fill="var(--brand-cream-light)"/>
-            <circle cx="50" cy="50" r="6" fill="var(--brand-orange)"/>
-          </svg>
-
-          <h1 className={styles.pageTitle}>Vision for Laramie</h1>
-          
+        <div className={styles.headerContainer}>
+          <div className={styles.headerTextSide}>
+            <h1 className={styles.pageTitle}>Vision for Laramie</h1>
+          </div>
+          <div className={styles.headerImageSide}>
+            <img 
+              src="/paintbrushes.svg" 
+              alt="Wyoming Indian Paintbrush Illustration" 
+              className={styles.paintbrushIllustration}
+            />
+          </div>
         </div>
       </header>
 

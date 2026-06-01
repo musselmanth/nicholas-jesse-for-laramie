@@ -70,6 +70,11 @@
   font-weight: 900;
 }
 
+.sign {
+  width:75%;
+  margin-bottom: 2.5rem;
+}
+
 .subtitle {
   font-size: clamp(1.25rem, 2vw, 1.75rem);
   font-weight: 700;
@@ -115,11 +120,13 @@
   background-color: transparent;
   color: #ffffff;
   border: 2px solid #ffffff;
+  cursor:pointer;
 }
 
 .secondaryBtn:hover {
   background-color: #ffffff;
   color: var(--brand-olive);
+    cursor:pointer;
 }
 
 .socials {

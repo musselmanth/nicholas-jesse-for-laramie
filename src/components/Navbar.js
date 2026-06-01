@@ -3,13 +3,17 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import styles from './Navbar.module.css';
+import { useDonate } from '@/context/DonateContext';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const { openDonate } = useDonate();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
+
+  const closeMenu = () => { setIsOpen(false) }
 
     // We set a fallback estimate for the server-side render
   const [dynamicHeight, setDynamicHeight] = useState('calc(100svh - 75px)');
@@ -38,7 +42,7 @@ export default function Navbar() {
     <nav className={styles.navbar} style={{ '--exact-hero-height': dynamicHeight }}>
       <div className={styles.navContainer}>
         {/* Replace with an <img /> or <Image /> tag later if you have a graphic logo */}
-        <Link href="/" className={styles.logoContainer}>
+        <Link href="/" className={styles.logoContainer} onClick={closeMenu}>
           {/* Replace this src with your actual icon file */}
           
           
@@ -63,35 +67,29 @@ export default function Navbar() {
         {/* Menu Links */}
         <ul className={`${styles.navMenu} ${isOpen ? styles.active : ''}`}>
           <li className={styles.navItem}>
-            <Link href="/about" className={styles.navLink} onClick={toggleMenu}>
+            <Link href="/about" className={styles.navLink} onClick={closeMenu}>
               About Me
             </Link>
           </li>
           <li className={styles.navItem}>
-            <Link href="/platform" className={styles.navLink} onClick={toggleMenu}>
+            <Link href="/platform" className={styles.navLink} onClick={closeMenu}>
               Platform
             </Link>
           </li>
           <li className={styles.navItem}>
-            <Link href="/election-info" className={styles.navLink} onClick={toggleMenu}>
+            <Link href="/election" className={styles.navLink} onClick={closeMenu}>
               Election Info
             </Link>
           </li>
                     <li className={styles.navItem}>
-            <Link href="/contact" className={styles.navLink} onClick={toggleMenu}>
+            <Link href="/contact" className={styles.navLink} onClick={closeMenu}>
               Contact
             </Link>
           </li>
           <li className={styles.navItem}>
-            {/* Standard <a> tag for external links, not Next.js <Link> */}
-            <a 
-              href="https://secure.actblue.com/donate/..." 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className={styles.donateBtn}
-            >
+            <div onClick={()=>{openDonate(); closeMenu();}} className={styles.donateBtn}>
               Donate
-            </a>
+            </div>
           </li>
         </ul>
       </div>

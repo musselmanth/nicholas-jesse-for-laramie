@@ -42,10 +42,10 @@ export default function Footer() {
           </p>
           <div className={styles.socialGroup}>
             {/* Standard <a> tags for external links */}
-            <a href="https://facebook.com/..." target="_blank" rel="noopener noreferrer" className={styles.socialLink}>
+            <a href="https://www.facebook.com/profile.php?id=61590168326305" target="_blank" rel="noopener noreferrer" className={styles.socialLink}>
               Facebook
             </a>
-            <a href="https://instagram.com/..." target="_blank" rel="noopener noreferrer" className={styles.socialLink}>
+            <a href="https://www.instagram.com/nicholasjesse4laramie/" target="_blank" rel="noopener noreferrer" className={styles.socialLink}>
               Instagram
             </a>
           </div>

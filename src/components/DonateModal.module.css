@@ -1,0 +1,93 @@
+/* --- Desktop Default (Centered Pop-up) --- */
+
+.overlay {
+  position: fixed;
+  top: 0; 
+  left: 0; 
+  right: 0; 
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center; /* Centers vertically */
+  justify-content: center; /* Centers horizontally */
+  z-index: 1000;
+  padding: 1rem;
+}
+
+.modal {
+  background: white;
+  padding: 2.5rem 2rem 2rem 2rem;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 100%;
+  max-height: 90vh; /* Prevents it from getting taller than the screen */
+  overflow-y: auto; /* Allows scrolling inside the modal if the widget gets long */
+  position: relative;
+  border-top: 6px solid var(--brand-orange);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.closeButton {
+  position: absolute;
+  top: 10px; 
+  right: 15px;
+  background: none; 
+  border: none;
+  font-size: 2rem; 
+  line-height: 1;
+  color: #888;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.closeButton:hover {
+  color: var(--brand-orange);
+}
+
+.content h2 { 
+  margin-top: 0; 
+  margin-bottom: 1.5rem;
+  color: var(--brand-olive-dark); 
+  text-align: center;
+}
+
+
+/* --- Mobile Override (Bottom Sheet / Drawer) --- */
+
+@media (max-width: 768px) {
+  .overlay {
+    padding: 0; /* Remove outside padding so it touches the screen edges */
+    align-items: flex-end; /* Pushes the modal to the bottom of the screen */
+  }
+
+  .modal {
+    max-width: 100%;
+    /* Use svh (Small Viewport Height) to account for mobile browser UI bars */
+    max-height: 92svh; 
+    height: 100%; /* Expands to fill the space */
+    border-radius: 20px 20px 0 0; /* Rounds only the top corners */
+    padding: 3rem 1rem 1rem 1rem;
+    animation: slideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  
+  .closeButton {
+    /* Make the close button a highly visible target for thumbs */
+    top: 15px;
+    right: 15px;
+    background: #f0f0f0; 
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: #333;
+  }
+}
+
+/* Optional: Smooth slide-up animation for mobile */
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}

@@ -118,6 +118,7 @@
   font-weight: 700;
   text-decoration: none;
   transition: background-color 0.2s ease;
+  cursor: pointer;
 }
 
 .donateBtn:hover {

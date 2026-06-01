@@ -80,7 +80,7 @@
     height: auto;
     filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.05));
   }
-  
+
   .headerTextSide {
     display: flex;
     justify-content: center;
@@ -99,7 +99,7 @@
 /* --- Section Layouts --- */
 /* ========================================= */
 
-.issueSection {
+.infoSection {
   padding: 6rem 2rem;
   width: 100%;
 }
@@ -120,50 +120,30 @@
   background-color: var(--brand-cream-light);
   color: var(--brand-text);
 }
-.themeLight .bigNumber {
+.themeLight .bigNumber { color: var(--brand-orange); }
+.themeLight .sectionTitle { color: var(--brand-olive); }
+.themeLight .subHeading {
   color: var(--brand-orange);
-}
-.themeLight .issueTitle {
-  color: var(--brand-olive); 
-}
-.themeLight .prioritiesHeading {
-  color: var(--brand-orange);
-  display: inline-block;
   border-bottom: 3px solid var(--brand-olive-dark); 
-  padding-bottom: 0.15rem;
-  margin-bottom:3rem;
-}
-.themeLight .prioritiesGrid li {
-  background-color: #ffffff;
-  border: 1px solid rgba(0,0,0,0.05);
-  border-left: 4px solid var(--brand-orange);
 }
 
 .themeOlive {
   background-color: var(--brand-olive);
   color: var(--brand-cream-light);
 }
-.themeOlive .bigNumber {
-  color: var(--brand-cream);
-}
-.themeOlive .issueTitle {
-  color: var(--brand-cream-light);
-}
-.themeOlive .issueIntro {
-  color: var(--brand-cream);
-}
-.themeOlive .prioritiesHeading {
+.themeOlive .bigNumber { color: var(--brand-cream); }
+.themeOlive .sectionTitle { color: var(--brand-cream-light); }
+.themeOlive .introText { color: var(--brand-cream); }
+.themeOlive .subHeading {
   color: var(--brand-cream-light); 
-  display: inline-block;
   border-bottom: 3px solid var(--brand-orange); 
-  padding-bottom: 0.15rem;
-  margin-bottom: 3rem;
 }
-.themeOlive .prioritiesGrid li {
-  background-color: rgba(255, 255, 255, 0.08); 
-  border: 1px solid rgba(255,255,255,0.15);
-  border-left: 4px solid var(--brand-orange);
+.themeOlive .resourceList a {
+  color: var(--brand-cream-light);
+  text-decoration-color: var(--brand-orange);
 }
+.themeOlive .resourceList a:hover { color: var(--brand-orange); }
+.themeOlive .resourceNote { color: var(--brand-cream); }
 
 /* ========================================= */
 /* --- Typography & Structural Elements --- */
@@ -185,7 +165,7 @@
   opacity: 0.9;
 }
 
-.issueTitle {
+.sectionTitle {
   font-family: var(--cowboy), sans-serif;
   font-weight: normal;
   font-size: 3rem;
@@ -197,38 +177,127 @@
   flex: 2.2;
 }
 
-.issueIntro {
+.introText {
   font-size: 1.2rem;
   line-height: 1.7;
-  margin-bottom: 3rem;
+  margin-bottom: 1.5rem;
   font-weight: 400;
 }
 
-.prioritiesHeading {
+.subHeading {
   font-family: var(--cowboy), sans-serif;
   font-weight: normal;
   font-size: 1.75rem;
   text-transform: uppercase;
   letter-spacing: 1.5px;
-  margin-bottom: 1.5rem;
+  display: inline-block;
+  padding-bottom: 0.15rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
 }
 
-.prioritiesGrid {
+/* ========================================= */
+/* --- Dates & Links Components --- */
+/* ========================================= */
+
+.datesGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.dateCard {
+  background-color: #ffffff;
+  border-left: 4px solid var(--brand-orange);
+  padding: 1.5rem;
+  border-radius: 4px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+}
+
+.dateLabel {
+  display: block;
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  letter-spacing: 1px;
+  color: var(--brand-olive-dark);
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.dateValue {
+  display: block;
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--brand-orange);
+  margin-bottom: 1rem;
+  line-height: 1;
+}
+
+.dateDetails {
+  font-size: 0.95rem;
+  line-height: 1.5;
+  color: var(--brand-text);
+  margin: 0;
+}
+
+.resourceList {
   list-style: none;
   padding: 0;
   margin: 0;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 1.5rem;
 }
 
-.prioritiesGrid li {
-  padding: 1.5rem;
-  border-radius: 4px;
-  font-size: 1.05rem;
-  line-height: 1.5;
-  font-weight: 500;
-  box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+.resourceList li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  padding-left: 1.5rem;
+  position: relative;
+}
+
+.resourceList li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  top: 2px;
+  color: var(--brand-orange);
+  font-weight: bold;
+}
+
+.resourceList a {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--brand-olive-dark);
+  text-decoration: underline;
+  text-decoration-color: var(--brand-orange);
+  text-underline-offset: 4px;
+  transition: color 0.2s ease;
+}
+
+.resourceList a:hover {
+  color: var(--brand-orange);
+}
+
+.resourceNote {
+  font-size: 0.95rem;
+  opacity: 0.8;
+  font-style: italic;
+}
+
+/* ========================================= */
+/* --- Ward Map Container --- */
+/* ========================================= */
+
+.mapContainer {
+  margin-top: 2rem;
+  width: 100%;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+  border: 4px solid #fff;
+  background-color: #fff;
 }
 
 /* ========================================= */
@@ -236,7 +305,6 @@
 /* ========================================= */
 
 @media screen and (max-width: 992px) {
-  /* Header Mobile Adjustments */
   .pageHeader {
     padding: 6rem 1.5rem 3rem 1.5rem;
   }
@@ -260,8 +328,7 @@
     max-width: 160px;
   }
 
-  /* Content Mobile Adjustments */
-  .issueSection {
+  .infoSection {
     padding: 4rem 1.5rem;
   }
 
@@ -278,11 +345,11 @@
     font-size: 4rem;
   }
 
-  .issueTitle {
+  .sectionTitle {
     font-size: 2.2rem;
   }
 
-  .prioritiesGrid {
+  .datesGrid {
     grid-template-columns: 1fr;
   }
 }

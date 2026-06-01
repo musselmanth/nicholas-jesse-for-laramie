@@ -2,6 +2,8 @@
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import localFont from 'next/font/local';
+import { DonateProvider } from '@/context/DonateContext';
+import DonateModal from '@/components/DonateModal';
 import './globals.css';
 
 const ranchWater = localFont({
@@ -20,9 +22,12 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${ranchWater.variable} ${cowboy.variable}`}>
       <body>
-        <Navbar />
-          {children}
-        <Footer />
+        <DonateProvider>
+          <Navbar />
+            {children}
+            <DonateModal />
+          <Footer />
+        </DonateProvider>
       </body>
     </html>
   );

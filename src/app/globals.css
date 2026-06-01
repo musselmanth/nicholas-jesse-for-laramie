@@ -53,3 +53,7 @@ h1, h2, h3 {
   font-weight: 900; /* Uses the thickest weight to match the "JESSE" style */
   letter-spacing: -0.5px;
 }
+
+h1, h2 {
+  font-family: var(--cowboy);
+}
