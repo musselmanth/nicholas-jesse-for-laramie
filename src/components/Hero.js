@@ -72,7 +72,7 @@ export default function Hero() {
 
         {/* Right Column: Headshot */}
         <div className={styles.rightContent}>
-          <img src='/nicholas-jesse-for-laramie/head.webp' alt="Nicholas Jesse" className={styles.headshot} />
+          <img src='/head.webp' alt="Nicholas Jesse" className={styles.headshot} />
         </div>
 
       </div>
