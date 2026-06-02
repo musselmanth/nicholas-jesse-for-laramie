@@ -4,12 +4,13 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import styles from './Hero.module.css';
 import { useDonate } from '@/context/DonateContext';
+import { useGetInvolved } from '@/context/GetInvolvedContext';
 
 export default function Hero() {
   // We set a fallback estimate for the server-side render
   const [dynamicHeight, setDynamicHeight] = useState('calc(100svh - 75px)');
-  const basePath = process.env.NEXT_PUBLIC_BASE_PATH || '';
   const { openDonate } = useDonate();
+  const { openGetInvolved } = useGetInvolved();
 
   useEffect(() => {
     const calculateHeight = () => {
@@ -51,8 +52,8 @@ export default function Hero() {
           </p>
 
           <div className={styles.actions}>
-            <Link href="/contact" className={styles.primaryBtn}>Get Involved</Link>
-            <div onClick={openDonate} className={styles.secondaryBtn}>Donate</div>
+            <div onClick={openDonate} className={styles.primaryBtn}>Donate</div>
+            <div onClick={openGetInvolved} className={styles.secondaryBtn}>Get Involved</div>
           </div>
 
           {/* Social Links */}

@@ -120,13 +120,17 @@
 }
 
 .tabButton:hover {
-  background-color: rgba(0, 0, 0, 0.03);
   transform: translateY(-1px);
+  color: var(--brand-olive);
+}
+
+.tabActive:hover {
+  color: var(--brand-cream-light);
 }
 
 .tabActive {
   background-color: var(--brand-olive);
-  color: var(--brand-orange);
+  color: var(--brand-cream);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 

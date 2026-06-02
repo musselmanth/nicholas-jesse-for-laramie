@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useDonate } from '@/context/DonateContext';
-import styles from './DonateModal.module.css';
+import styles from './Modal.module.css';
 
 export default function DonateModal() {
   const { isOpen, closeDonate } = useDonate();

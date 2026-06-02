@@ -15,16 +15,20 @@
 }
 
 .modal {
+  display: flex;
+  flex-direction: column;
   background: white;
   padding: 2.5rem 2rem 2rem 2rem;
   border-radius: 8px;
-  max-width: 500px;
+  max-width: 600px;
   width: 100%;
-  max-height: 90vh; /* Prevents it from getting taller than the screen */
+  max-height: 90vh;
+  min-height: 700px; /* Prevents it from getting taller than the screen */
   overflow-y: auto; /* Allows scrolling inside the modal if the widget gets long */
   position: relative;
   border-top: 6px solid var(--brand-orange);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  align-items:center;
 }
 
 .closeButton {

@@ -17,8 +17,7 @@ export default function GetInvolvedForm() {
   const checkboxes = [
     { id: 'sign', label: 'Host a Yard Sign' },
     { id: 'canvas', label: 'Walk Neighborhoods / Canvass' },
-    { id: 'phone', label: 'Make Phone Calls' },
-    { id: 'event', label: 'Host a Meet & Greet Event' },
+    { id: 'event', label: 'Postcard Writing / Friend-banking' },
     { id: 'lit', label: 'Help Distribute Campaign Literature' },
   ];
 
@@ -83,11 +82,10 @@ export default function GetInvolvedForm() {
       </div>
 
       <div className={styles.formGroup}>
-        <label htmlFor="vol-address">Street Address (For Ward Verification & Signs)</label>
+        <label htmlFor="vol-address">Street Address (Optional—for Yard Sign Delivery)</label>
         <input
           id="vol-address"
           type="text"
-          required
           value={formData.address}
           onChange={(e) => setFormData({ ...formData, address: e.target.value })}
         />
@@ -111,7 +109,7 @@ export default function GetInvolvedForm() {
       </div>
 
       <div className={styles.formGroup}>
-        <label htmlFor="vol-notes">Other ideas or skills you want to share?</label>
+        <label htmlFor="vol-notes">Anything else you want to share?</label>
         <textarea
           id="vol-notes"
           rows="3"
