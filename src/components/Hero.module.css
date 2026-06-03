@@ -255,3 +255,40 @@
   40% { transform: translateY(-10px); }
   60% { transform: translateY(-5px); }
 }
+
+/* --- Strict Mobile Adjustments (Phones) --- */
+@media screen and (max-width: 600px) {
+  .leftContent {
+    padding-top: 1.5rem; /* Reclaim vertical space at the top */
+  }
+
+  .sign {
+    width: 60%; /* Shrink the logo so it doesn't dominate the screen */
+    margin-bottom: 1rem;
+  }
+
+  .pitch {
+    font-size: 1rem; /* Slightly smaller to save space */
+    line-height: 1.4;
+    margin-bottom: 1.25rem;
+  }
+
+  .actions {
+    gap: 0.5rem; /* Bring buttons closer together */
+    margin-bottom: 1.25rem;
+  }
+
+  .primaryBtn, .secondaryBtn {
+    padding: 0.7rem 1rem; /* Reduce padding so they fit side-by-side */
+    font-size: 0.95rem; /* Shrink text */
+    white-space: nowrap; /* CRITICAL: Forces "Get Involved" to stay on one line */
+  }
+
+  .socialText {
+    font-size: 0.8rem;
+  }
+
+  .socials {
+    margin-bottom: 1rem; /* Ensures the social icons don't crash into the headshot */
+  }
+}

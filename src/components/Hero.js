@@ -11,40 +11,51 @@ export default function Hero() {
   const { openGetInvolved } = useGetInvolved();
 
   useEffect(() => {
+    // Keep track of the initial width to ignore vertical-only resize events
+    let currentWidth = window.innerWidth;
+
     const calculateHeight = () => {
       const navbar = document.querySelector('nav') || document.querySelector('[class*="navbar"]');
-      // Use offsetHeight to dynamically grab the exact pixel height of your navbar
       const navHeight = navbar ? navbar.offsetHeight : 75;
-      
-      // Calculate remaining exact screen height
       const exactHeight = window.innerHeight - navHeight;
       setDynamicHeight(`${exactHeight}px`);
     };
 
+    const handleResize = () => {
+      // ONLY recalculate if the width actually changed. 
+      // This stops the Android/Safari URL bar from stretching the hero on scroll!
+      if (window.innerWidth !== currentWidth) {
+        currentWidth = window.innerWidth;
+        calculateHeight();
+      }
+    };
+
+    const handleOrientation = () => {
+      // Give the browser 100ms to register the new dimensions after a rotation
+      setTimeout(() => {
+        currentWidth = window.innerWidth;
+        calculateHeight();
+      }, 100);
+    };
+
+    // Calculate immediately on initial page load
     calculateHeight();
 
-    window.addEventListener('resize', calculateHeight);
-    // Extra listener for mobile rotation to ensure it updates immediately
-    window.addEventListener('orientationchange', () => setTimeout(calculateHeight, 100));
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('orientationchange', handleOrientation);
     
     return () => {
-      window.removeEventListener('resize', calculateHeight);
-      window.removeEventListener('orientationchange', calculateHeight);
+      window.removeEventListener('resize', handleResize);
+      window.removeEventListener('orientationchange', handleOrientation);
     };
   }, []);
 
   useEffect(() => {
-    // 1. Check if we are in the browser (required for Next.js static exports)
     if (typeof window !== 'undefined') {
-      // 2. Grab the URL parameters using standard browser JavaScript
       const params = new URLSearchParams(window.location.search);
       
-      // 3. If the trigger is there, open the modal!
       if (params.get('open') === 'donate') {
         openDonate();
-        
-        // 4. Silently clean up the URL so it goes back to just "nicholasjesse.com/"
-        // This prevents the modal from annoyingly reopening if they refresh the page.
         window.history.replaceState(null, '', '/');
       }
     }
