@@ -16,7 +16,7 @@ export default function Home() {
         <div className={styles.container}>
           <h2 className={styles.sectionTitle}>About Nicholas</h2>
           <p className={styles.sectionText}>
-Nicholas is a proud, lifelong Laramie resident with a passion for serving his hometown. Grounded by a Wyoming work ethic and a genuine love for his community, he is ready to bring an honest, hardworking, and collaborative approach to the City Council.
+            Born and raised in Laramie, Nicholas is deeply passionate about serving his hometown. Grounded by a Wyoming work ethic and a genuine love for his community, he is ready to bring an honest, hardworking, and collaborative approach to the City Council.
           </p>
           <Link href="/about" className={styles.textLink}>
             Get to know Nicholas &rarr;
