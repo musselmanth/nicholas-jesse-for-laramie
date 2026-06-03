@@ -6,54 +6,46 @@ import { useDonate } from '@/context/DonateContext';
 import { useGetInvolved } from '@/context/GetInvolvedContext';
 
 export default function Hero() {
-  const [dynamicHeight, setDynamicHeight] = useState('100vh');
+  // Default to 75px, but it will instantly update to the real pixel height
+  const [navHeight, setNavHeight] = useState('75px');
   const { openDonate } = useDonate();
   const { openGetInvolved } = useGetInvolved();
 
   useEffect(() => {
-    // Keep track of the initial width to ignore vertical-only resize events
     let currentWidth = window.innerWidth;
 
-    const calculateHeight = () => {
+    // We ONLY measure the navbar now. No screen height math!
+    const measureNavbar = () => {
       const navbar = document.querySelector('nav') || document.querySelector('[class*="navbar"]');
-      const navHeight = navbar ? navbar.offsetHeight : 75;
-      const exactHeight = window.innerHeight - navHeight;
-      setDynamicHeight(`${exactHeight}px`);
-    };
-
-    const handleResize = () => {
-      // ONLY recalculate if the width actually changed. 
-      // This stops the Android/Safari URL bar from stretching the hero on scroll!
-      if (window.innerWidth !== currentWidth) {
-        currentWidth = window.innerWidth;
-        calculateHeight();
+      if (navbar) {
+        setNavHeight(`${navbar.offsetHeight}px`);
       }
     };
 
-    const handleOrientation = () => {
-      // Give the browser 100ms to register the new dimensions after a rotation
-      setTimeout(() => {
+    const handleResize = () => {
+      // Only remeasure if the actual screen width changes (ignores scroll resizes on mobile)
+      if (window.innerWidth !== currentWidth) {
         currentWidth = window.innerWidth;
-        calculateHeight();
-      }, 100);
+        measureNavbar();
+      }
     };
 
-    // Calculate immediately on initial page load
-    calculateHeight();
+    // Measure immediately on component mount
+    measureNavbar();
 
+    // Listeners to remeasure if they rotate their phone or resize desktop
     window.addEventListener('resize', handleResize);
-    window.addEventListener('orientationchange', handleOrientation);
+    window.addEventListener('orientationchange', () => setTimeout(measureNavbar, 100));
     
     return () => {
       window.removeEventListener('resize', handleResize);
-      window.removeEventListener('orientationchange', handleOrientation);
+      window.removeEventListener('orientationchange', measureNavbar);
     };
   }, []);
 
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const params = new URLSearchParams(window.location.search);
-      
       if (params.get('open') === 'donate') {
         openDonate();
         window.history.replaceState(null, '', '/');
@@ -64,7 +56,8 @@ export default function Hero() {
   return (
     <section 
       className={styles.heroSection} 
-      style={{ '--exact-hero-height': dynamicHeight }}
+      // We pass that exact pixel height into CSS to do the margin trick
+      style={{ '--dynamic-nav-height': navHeight }}
     >
       <div className={styles.heroOverlay}></div>
 

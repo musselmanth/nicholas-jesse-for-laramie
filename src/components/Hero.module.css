@@ -155,10 +155,19 @@
 @media screen and (max-width: 1220px) {
   
   .heroSection {
-    /* HARD RESET: Force explicit strict height so flexbox correctly pushes children down */
-    height: var(--exact-hero-height);
-    min-height: var(--exact-hero-height);
-    align-items: flex-start; /* Stops desktop layout from centering the whole block */
+    /* 1. Pure viewport height. No calc(), no variables mixed in. Safe for Safari! */
+    height: 100vh; /* Fallback */
+    height: 100svh;
+    min-height: 100svh;
+    
+    /* 2. Pull the entire Hero UP so it slides perfectly underneath the Navbar */
+    margin-top: calc(-1 * var(--dynamic-nav-height));
+    
+    /* 3. Push the internal content safely DOWN so it doesn't get covered by the Navbar */
+    padding-top: var(--dynamic-nav-height);
+    box-sizing: border-box;
+
+    align-items: flex-start;
   }
 
   .heroOverlay {
@@ -168,10 +177,11 @@
   .heroContainer {
     flex-direction: column;
     padding: 0 1.5rem;
-    height: 100%; /* Now works flawlessly because parent has explicit height */
+    height: 100%; 
     width: 100%;
-    justify-content: flex-start; /* Ensure elements stack from the top down */
+    justify-content: flex-start;
   }
+  
 
   .leftContent {
     flex: 0 0 auto; 
