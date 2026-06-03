@@ -20,7 +20,7 @@ export default function ContactPage() {
           </div>
           <div className={styles.headerImageSide}>
             <img 
-              src="/nicholas-jesse-for-laramie/paintbrushes.svg" 
+              src="/paintbrushes.svg" 
               alt="Wyoming Indian Paintbrush Illustration" 
               className={styles.paintbrushIllustration}
             />

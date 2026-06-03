@@ -13,7 +13,7 @@ export default function AboutPage() {
       <header className={styles.pageHeader}>
         <div className={styles.headerContainer}>
           <img 
-            src="/nicholas-jesse-for-laramie/nj-paintbrush.svg" 
+            src="/nj-paintbrush.svg" 
             alt="Wyoming Indian Paintbrush Illustration" 
             className={styles.paintbrushIllustration}
           />
@@ -33,7 +33,7 @@ export default function AboutPage() {
               <div className={styles.mobileTopImage}>
                 <div className={styles.imageBox}>
                   <img 
-                    src="/nicholas-jesse-for-laramie/nick-downtown.jpg" 
+                    src="/nick-downtown.jpg" 
                     alt="Nicholas with the Downtown Laramie sign" 
                     className={styles.fluidImg}
                   />
@@ -66,7 +66,7 @@ export default function AboutPage() {
             <div className={styles.verticalMediaStack}>
               <div className={`${styles.imageBox} ${styles.hideOnMobile}`}>
                 <img 
-                  src="/nicholas-jesse-for-laramie/nick-downtown.jpg" 
+                  src="/nick-downtown.jpg" 
                   alt="Nicholas with the Downtown Laramie sign" 
                   className={styles.fluidImg}
                 />
@@ -74,7 +74,7 @@ export default function AboutPage() {
               </div>
               <div className={styles.imageBox}>
                 <img 
-                  src="/nicholas-jesse-for-laramie/square-top.jpg" 
+                  src="/square-top.jpg" 
                   alt="Nicholas hiking at squaretop mountain" 
                   className={styles.fluidImg}
                 />
@@ -82,7 +82,7 @@ export default function AboutPage() {
               </div>
               <div className={styles.imageBox}>
                 <img 
-                  src="/nicholas-jesse-for-laramie/nick-and-tom.jpg" 
+                  src="/nick-and-tom.jpg" 
                   alt="Nicholas Jesse with his partner Tom" 
                   className={styles.fluidImg}
                 />
@@ -147,7 +147,7 @@ export default function AboutPage() {
             <div className={styles.singleMediaBox}>
               <div className={styles.imageBox}>
                 <img 
-                  src="/nicholas-jesse-for-laramie/city-hall.jpg" 
+                  src="/city-hall.jpg" 
                   alt="Pride Proclamation at City Hall" 
                   className={styles.fluidImg}
                 />

@@ -61,7 +61,7 @@ export default function Hero() {
         
         {/* Left Column: Text & Actions */}
         <div className={styles.leftContent}>
-          <img src='/nicholas-jesse-for-laramie/sign.png' alt='campaign logo' className={styles.sign} />
+          <img src='/sign.png' alt='campaign logo' className={styles.sign} />
           <p className={styles.pitch}>
             Cultivating community, rooted in Laramie.
           </p>
@@ -91,7 +91,7 @@ export default function Hero() {
 
         {/* Right Column: Headshot */}
         <div className={styles.rightContent}>
-          <img src='/nicholas-jesse-for-laramie/head.webp' alt="Nicholas Jesse" className={styles.headshot} />
+          <img src='/head.webp' alt="Nicholas Jesse" className={styles.headshot} />
         </div>
 
       </div>

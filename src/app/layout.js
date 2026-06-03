@@ -35,7 +35,7 @@ export const metadata = {
     siteName: 'Nicholas Jesse for Laramie City Council',
     images: [
       {
-        url: '/nicholas-jesse-for-laramie/social.jpg', // You can change this to a specific social sharing card later
+        url: '/social.jpg', // You can change this to a specific social sharing card later
         width: 1200,
         height: 630,
       },
