@@ -1,10 +1,9 @@
 /* src/components/Footer.module.css */
 
 .footer {
-  /* Sage Green background from your campaign signs */
   background-color: var(--brand-olive-dark);
-  padding: 4rem 0 2rem 0;
-  margin-top: auto; /* Pushes the footer to the bottom of a page */
+  padding: 4rem 0 3rem 0;
+  margin-top: auto; 
   border-top: 2px solid var(--brand-cream);
 }
 
@@ -24,9 +23,8 @@
   flex-direction: column;
 }
 
-/* Base text on the dark background */
 .heading {
-  color: #ffffff; /* White headings for high contrast */
+  color: #ffffff; 
   font-size: 1.25rem;
   margin-bottom: 1.25rem;
   font-weight: 700;
@@ -34,16 +32,8 @@
   letter-spacing: 0.5px;
 }
 
-.sectionText, .finePrint {
-  color: var(--brand-cream-light); /* Lighter contrast color */
-  font-size: 0.95rem;
-  line-height: 1.6;
-  margin-bottom: 1rem;
-}
-
-/* Legalese */
 .disclaimerText {
-  color: #ffffff; /* White text for the required legal disclaimer */
+  color: #ffffff; 
   font-size: 1rem;
   font-weight: 700;
   line-height: 1.6;
@@ -51,7 +41,9 @@
 }
 
 .finePrint {
+  color: var(--brand-cream-light);
   font-size: 0.85rem;
+  line-height: 1.6;
   opacity: 0.8;
 }
 
@@ -75,43 +67,76 @@
 }
 
 .linkList a:hover {
-  color: var(--brand-orange); /* Vibrant hover from your campaign sign */
+  color: var(--brand-orange); 
   text-decoration: underline;
 }
 
-/* Social Icons */
+/* Contact Info Text Links */
+.contactInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.contactInfo a {
+  color: var(--brand-cream-light);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: color 0.2s ease;
+}
+
+.contactInfo a:hover {
+  color: var(--brand-orange);
+  text-decoration: underline;
+}
+
+/* Social SVG Icons */
 .socialGroup {
   display: flex;
-  gap: 1rem;
-  margin-top: auto; /* Pushes links to the bottom if content is short */
+  gap: 1.25rem;
 }
 
 .socialLink {
-  color: #ffffff;
-  font-weight: 600;
-  font-size: 1rem;
-  text-decoration: none;
-  transition: opacity 0.2s ease;
+  color: var(--brand-cream-light);
+  display: flex;
+  align-items: center;
+  transition: color 0.2s ease;
 }
 
 .socialLink:hover {
-  opacity: 0.7;
+  color: var(--brand-orange);
 }
 
 /* --- Mobile Responsiveness --- */
 @media screen and (max-width: 992px) {
+  .footer {
+    /* Significantly reduces the vertical footprint on mobile */
+    padding: 2.5rem 0 1.5rem 0; 
+  }
+
   .container {
     flex-direction: column;
     text-align: center;
-    gap: 3rem;
+    gap: 2.5rem; /* Tighter spacing between blocks */
   }
   
   .column {
     align-items: center;
   }
 
+  .disclaimerText {
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .contactInfo {
+    align-items: center;
+    margin-bottom: 1.25rem;
+  }
+
   .socialGroup {
     justify-content: center;
-    margin-top: 1rem;
   }
 }

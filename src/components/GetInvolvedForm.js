@@ -29,15 +29,34 @@ export default function GetInvolvedForm() {
     setFormData({ ...formData, interests: updatedInterests });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setStatus('sending');
 
-    setTimeout(() => {
-      console.log('Get Involved Submission:', formData);
+    try {
+      // Replace with your actual deployed Apps Script URL
+      const scriptURL = 'https://script.google.com/macros/s/AKfycbzIMRFchyYABUxkHWUt2HI_BGtBvViPhsdmRGgKQpmGDskE0tgzkMownpG8ixipkUZ12g/exec';
+      
+      const response = await fetch(scriptURL, {
+        method: 'POST',
+        // Apps Script prefers text/plain to avoid triggering CORS preflight checks
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        redirect: 'follow',
+        body: JSON.stringify({ formType: 'involved', ...formData }), // Change to 'involved' for the other form
+      });
+
+      const data = await response.json();
+      
+      if (data.status !== 'success') {
+        throw new Error(data.message);
+      }
+      
       setStatus('success');
-      setFormData({ name: '', email: '', phone: '', address: '', interests: [], notes: '' });
-    }, 1000);
+      // Reset your form state here...
+    } catch (error) {
+      console.error('Submission failed:', error);
+      setStatus('error');
+    }
   };
 
   return (

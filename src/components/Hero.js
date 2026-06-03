@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import Link from 'next/link';
 import styles from './Hero.module.css';
 import { useDonate } from '@/context/DonateContext';
 import { useGetInvolved } from '@/context/GetInvolvedContext';
@@ -33,6 +32,23 @@ export default function Hero() {
       window.removeEventListener('orientationchange', calculateHeight);
     };
   }, []);
+
+  useEffect(() => {
+    // 1. Check if we are in the browser (required for Next.js static exports)
+    if (typeof window !== 'undefined') {
+      // 2. Grab the URL parameters using standard browser JavaScript
+      const params = new URLSearchParams(window.location.search);
+      
+      // 3. If the trigger is there, open the modal!
+      if (params.get('open') === 'donate') {
+        openDonate();
+        
+        // 4. Silently clean up the URL so it goes back to just "nicholasjesse.com/"
+        // This prevents the modal from annoyingly reopening if they refresh the page.
+        window.history.replaceState(null, '', '/');
+      }
+    }
+  }, [openDonate]);
 
   return (
     <section 

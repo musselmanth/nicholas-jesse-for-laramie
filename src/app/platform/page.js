@@ -1,8 +1,8 @@
 import styles from './Platform.module.css';
 
 export const metadata = {
-  title: 'Platform | Nicholas Jesse for Laramie',
-  description: 'Read about Nicholas Jesse’s priorities for housing, economic development, public resources, and city staff in Laramie Ward 1.',
+  title: 'Platform',
+  description: 'Read about Nicholas Jesse\'s priorities for housing, economic development, public resources, and city staff in Laramie Ward 1.',
 };
 
 export default function PlatformPage() {
@@ -34,7 +34,7 @@ export default function PlatformPage() {
           </div>
           <div className={styles.contentColumn}>
             <p className={styles.issueIntro}>
-              Laramie is hurting for real housing solutions across a variety of demographics. I support practical housing expansion that utilizes the limited land we have wisely, encourages and increases affordability, strengthens partnerships in development, and contributes to Laramie’s growth with intention.
+              Laramie is hurting for real housing solutions across a variety of demographics. As a former renter and current homeowner I support practical housing expansion that utilizes the limited land we have wisely, encourages and increases affordability, strengthens partnerships in development, and contributes to Laramie's growth with intention.
             </p>
             <h3 className={styles.prioritiesHeading}>Key Priorities</h3>
             <ul className={styles.prioritiesGrid}>
@@ -108,15 +108,14 @@ export default function PlatformPage() {
             </p>
             <h3 className={styles.prioritiesHeading}>Key Priorities</h3>
             <ul className={styles.prioritiesGrid}>
+              <li>Improving communication and creating meaningful collaboration between the greater Laramie community and the city government through committees, invitations, and structured engagement.</li>
               <li>Support cost of living adjustments and merit-based pay increases where appropriate.</li>
               <li>Expansion of professional development opportunities.</li>
               <li>Introduction of youth in government programs that get youth acquainted with city processes, departments, roles in public service, and advisory committees at an earlier age.</li>
-              <li>Improving communication and creating meaningful collaboration between the greater Laramie community and the city government through committees, invitations, and structured engagement.</li>
             </ul>
           </div>
         </div>
       </section>
-
     </main>
   );
 }

@@ -20,9 +20,37 @@ const cowboy = localFont({
   display: 'swap',
 });
 
+export const metadata = {
+  metadataBase: new URL('https://nicholasjesseforlaramie.com'),
+  title: {
+    template: '%s | Nicholas Jesse for Laramie City Council',
+    default: 'Nicholas Jesse | Laramie City Council Ward 1', // Falls back to this on the homepage
+  },
+  description: 'Cultivating community, rooted in Laramie. Nicholas Jesse is running for City Council to keep Laramie livable, expand housing, and support our local future.',
+  keywords: ['Nicholas Jesse', 'Laramie City Council', 'Ward 1', 'Laramie Wyoming', 'Local Election', 'Voting'],
+  openGraph: {
+    title: 'Nicholas Jesse for Laramie City Council',
+    description: 'Cultivating community, rooted in Laramie.',
+    url: 'https://nicholasjesseforlaramie.com',
+    siteName: 'Nicholas Jesse for Laramie City Council',
+    images: [
+      {
+        url: '/nicholas-jesse-for-laramie/social.jpg', // You can change this to a specific social sharing card later
+        width: 1200,
+        height: 630,
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+};
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${ranchWater.variable} ${cowboy.variable}`}>
+      <head>
+        <meta name="apple-mobile-web-app-title" content="NJ for Laramie" />
+      </head>
       <body>
         <DonateProvider>
           <GetInvolvedProvider>

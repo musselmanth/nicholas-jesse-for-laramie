@@ -7,16 +7,34 @@ export default function GeneralContactForm() {
   const [formData, setFormData] = useState({ name: '', email: '', phone: '', message: '' });
   const [status, setStatus] = useState(null);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setStatus('sending');
-    
-    // Placeholder for your Google Workspace / Sheets endpoint
-    setTimeout(() => {
-      console.log('General Contact Submission:', formData);
+
+    try {
+      // Replace with your actual deployed Apps Script URL
+      const scriptURL = 'https://script.google.com/macros/s/AKfycbzIMRFchyYABUxkHWUt2HI_BGtBvViPhsdmRGgKQpmGDskE0tgzkMownpG8ixipkUZ12g/exec';
+      
+      const response = await fetch(scriptURL, {
+        method: 'POST',
+        // Apps Script prefers text/plain to avoid triggering CORS preflight checks
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        redirect: 'follow',
+        body: JSON.stringify({ formType: 'message', ...formData }), // Change to 'involved' for the other form
+      });
+
+      const data = await response.json();
+      
+      if (data.status !== 'success') {
+        throw new Error(data.message);
+      }
+      
       setStatus('success');
-      setFormData({ name: '', email: '', phone: '', message: '' });
-    }, 1000);
+      // Reset your form state here...
+    } catch (error) {
+      console.error('Submission failed:', error);
+      setStatus('error');
+    }
   };
 
   return (

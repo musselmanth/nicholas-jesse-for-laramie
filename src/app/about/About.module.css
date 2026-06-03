@@ -4,11 +4,7 @@
 }
 
 /* ========================================= */
-/* --- Header Layout (Desktop Default) --- */
-/* ========================================= */
-
-/* ========================================= */
-/* --- Header Layout (Desktop Default) --- */
+/* --- Header Layout --- */
 /* ========================================= */
 
 .pageHeader {
@@ -20,84 +16,28 @@
 .headerContainer {
   max-width: 1100px;
   margin: 0 auto;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
   align-items: center;
+  text-align: center;
 }
 
-.headerTextSide {
-  display: flex;
-  justify-content: flex-end;
+.paintbrushIllustration {
+  width: 75px; 
+  max-width: 100%; 
+  height: auto;
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.08));
 }
 
 .pageTitle {
   font-family: var(--cowboy), sans-serif;
   font-weight: normal;
-  font-size: clamp(4rem, 8vw, 6.5rem); 
+  font-size: clamp(3.5rem, 8vw, 6.5rem); 
   text-transform: uppercase;
   color: var(--brand-olive-dark);
   line-height: 0.9;
   margin: 0;
-  text-align: right;
-}
-
-.headerImageSide {
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  flex-shrink: 0; /* Prevents the container from doing weird flex math */
-}
-
-.paintbrushIllustration {
-  width: 200px; /* Use a hard width instead of max-width */
-  max-width: 100%; /* Keeps it responsive if the screen gets super tiny */
-  height: auto;
-  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.08));
-}
-
-
-/* ========================================= */
-/* --- Mobile Header Adjustments (Breakpoint) --- */
-/* ========================================= */
-
-@media screen and (max-width: 768px) {
-  .pageHeader {
-    padding: 3rem 1.5rem 2rem 1.5rem; /* Balanced, compact vertical breathing room */
-  }
-
-  .headerContainer {
-    display: flex;
-    flex-direction: column; /* Force a vertical stack */
-    align-items: center;
-    justify-content: center;
-    gap: 1rem; /* Clean spacing between image and text */
-  }
-
-.headerImageSide {
-    display: flex;
-    justify-content: center;
-    order: 1; 
-  }
-
-  .paintbrushIllustration {
-    width: 55px; /* Hard width for the mobile stamp look */
-    height: auto;
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.05));
-  }
-  
-  .headerTextSide {
-    display: flex;
-    justify-content: center;
-    order: 2;
-  }
-
-  .pageTitle {
-    font-size: 2.5rem; /* Scaled down perfectly to fit phone screens without breaking */
-    text-align: center; /* Centered alignment for a clean, balanced stack */
-    line-height: 1.1;
-    letter-spacing: -0.5px;
-  }
 }
 
 /* ========================================= */
@@ -116,7 +56,7 @@
   margin: 0 auto;
   display: flex;
   flex-direction: column;
-  gap: 8rem; /* Creates breathing room between the two blocks */
+  gap: 8rem; 
 }
 
 .sectionHeading {
@@ -134,22 +74,21 @@
 /* --- Dynamic Direction Grids --- */
 .dynamicGrid {
   display: grid;
-  grid-template-columns: 1fr 1.1fr;
+  /* 1.4fr for text, 1fr for images gives the long text a bit more breathing room */
+  grid-template-columns: 1.4fr 1fr;
   gap: 4rem;
-  align-items: center; /* Vertically centers the text alongside the photo cluster */
+  align-items: start; 
 }
 
 .dynamicGridReverse {
-  display: grid;
-  grid-template-columns: 1.1fr 1fr;
-  gap: 4rem;
+  grid-template-columns: 1fr 1.4fr;
 }
 
 .dynamicGridReverse .textContent {
   grid-column: 2;
-  grid-row: 1; /* Ensures text stays in flow */
+  grid-row: 1; 
 }
-.dynamicGridReverse .mediaCluster {
+.dynamicGridReverse .singleMediaBox {
   grid-column: 1;
   grid-row: 1;
 }
@@ -164,17 +103,31 @@
 }
 
 /* ========================================= */
-/* --- Interactive Image Clusters --- */
+/* --- Interactive Image Components --- */
 /* ========================================= */
 
-.mediaCluster {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-  align-items: end;
+/* Stack for the 3 images */
+.verticalMediaStack {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+  margin-top: 1rem;
 }
 
-.imageBoxPortrait, .imageBoxLandscape {
+.mobileTopImage {
+  display: none; /* Hidden on desktop */
+}
+
+/* Wrapper for the 1 image */
+.singleMediaBox {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  margin-top: 1rem;
+}
+
+/* Base style for all images */
+.imageBox {
   background: #fff;
   padding: 0.75rem;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
@@ -183,16 +136,17 @@
   transition: transform 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
-.imageBoxPortrait:hover, .imageBoxLandscape:hover {
+.imageBox:hover {
   transform: translateY(-5px) rotate(1deg);
 }
 
-/* Offset the alignment slightly for a less structural, organic scrapbook feel */
-.imageBoxLandscape {
-  transform: translateY(-2rem);
+/* Offset the middle image in the stack slightly for a scrapbook feel */
+.verticalMediaStack .imageBox:nth-child(even) {
+  transform: translateX(-15px) rotate(-1.5deg);
 }
-.imageBoxLandscape:hover {
-  transform: translateY(-2.3rem) rotate(-1deg);
+
+.verticalMediaStack .imageBox:nth-child(even):hover {
+  transform: translateY(-5px) translateX(-15px) rotate(-2deg);
 }
 
 .fluidImg {
@@ -203,9 +157,6 @@
   border-radius: 2px;
   background-color: rgba(0,0,0,0.05);
 }
-
-.imageBoxPortrait .fluidImg { aspect-ratio: 3/4; }
-.imageBoxLandscape .fluidImg { aspect-ratio: 4/3; }
 
 .caption {
   display: block;
@@ -282,31 +233,99 @@
 }
 
 /* ========================================= */
+/* --- Portfolio & Awards Lists --- */
+/* ========================================= */
+
+.portfolioSection {
+  margin-top: 2.5rem;
+  margin-bottom: 3rem;
+}
+
+.portfolioHeading {
+  font-size: 1.1rem;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  color: var(--brand-orange);
+  margin-top: 2rem;
+  margin-bottom: 1.25rem;
+  font-weight: bold;
+}
+
+.portfolioList, .awardList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* Portfolio Items */
+.portfolioList li {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding-left: 1.5rem;
+}
+
+.portfolioList li::before {
+  content: '→';
+  position: absolute;
+  left: 0;
+  color: var(--brand-olive);
+  font-weight: bold;
+}
+
+.portfolioList strong {
+  color: var(--brand-olive-dark);
+  font-size: 1.1rem;
+  line-height: 1.2;
+}
+
+.portfolioList span {
+  font-size: 0.95rem;
+  opacity: 0.85;
+  margin-top: 0.2rem;
+  line-height: 1.4;
+}
+
+/* Award Items */
+.awardList li {
+  position: relative;
+  padding-left: 1.5rem;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.awardList li::before {
+  content: '★'; /* Star icon for the awards list */
+  position: absolute;
+  left: 0;
+  color: var(--brand-orange);
+  font-size: 0.9rem;
+}
+
+.awardList strong {
+  color: var(--brand-olive-dark);
+  margin-right: 0.5rem;
+}
+
+/* ========================================= */
 /* --- Mobile Responsiveness --- */
 /* ========================================= */
 
 @media screen and (max-width: 992px) {
   .pageHeader {
-    padding: 6rem 1.5rem 3rem 1.5rem;
-  }
-
-  .headerContainer {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    text-align: center;
-  }
-
-  .headerTextSide, .headerImageSide {
-    justify-content: center;
-    text-align: center;
+    padding: 4rem 1.5rem 3rem 1.5rem;
   }
   
-  .pageTitle {
-    text-align: center;
+  .paintbrushIllustration {
+    width: 60px;
   }
 
-  .paintbrushIllustration {
-    max-width: 160px;
+  .pageTitle {
+    font-size: 3rem;
+    letter-spacing: -0.5px;
   }
 
   .aboutSection {
@@ -314,7 +333,7 @@
   }
 
   .sectionContainer {
-    gap: 5rem; /* Reduces gap between blocks on mobile */
+    gap: 6rem; 
   }
 
   .dynamicGrid, .dynamicGridReverse {
@@ -322,21 +341,33 @@
     gap: 3rem;
   }
 
-  /* Reset ordering on mobile so text always stays stacked properly above photos */
+  /* Reset ordering on mobile so text always stays stacked properly */
   .dynamicGridReverse .textContent { grid-column: auto; grid-row: auto; }
-  .dynamicGridReverse .mediaCluster { grid-column: auto; grid-row: auto; }
+  .dynamicGridReverse .singleMediaBox { grid-column: auto; grid-row: auto; }
 
-  .mediaCluster {
-    grid-template-columns: 1fr;
-    gap: 2rem;
-    max-width: 500px;
-    margin: 0 auto;
+  /* Change the vertical stack into a wrapping gallery on mobile */
+  .verticalMediaStack {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+    margin-top: 0;
   }
 
-  .imageBoxLandscape {
-    transform: none; /* Strip off the desktop playful alignment offsets */
+  /* NEW: Toggle the images for mobile flow */
+  .mobileTopImage {
+    display: block;
+    margin-bottom: 2rem;
   }
-  .imageBoxLandscape:hover {
-    transform: translateY(-5px);
+
+  .hideOnMobile {
+    display: none !important;
   }
+  .verticalMediaStack .imageBox {
+    /* Allow images to sit side-by-side on tablets, stack on small phones */
+    flex: 1 1 250px;
+    transform: none !important; /* Disables the playful tilt on mobile */
+  }
+
+  
 }

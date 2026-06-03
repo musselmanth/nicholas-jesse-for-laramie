@@ -10,8 +10,22 @@ export default function Home() {
 
     <main className={styles.main}>
       <Hero />
-      {/* Platform Section */}
+      
+      {/* About Section */}
       <section className={styles.section}>
+        <div className={styles.container}>
+          <h2 className={styles.sectionTitle}>About Nicholas</h2>
+          <p className={styles.sectionText}>
+Nicholas is a proud, lifelong Laramie resident with a passion for serving his hometown. Grounded by a Wyoming work ethic and a genuine love for his community, he is ready to bring an honest, hardworking, and collaborative approach to the City Council.
+          </p>
+          <Link href="/about" className={styles.textLink}>
+            Get to know Nicholas &rarr;
+          </Link>
+        </div>
+      </section>
+
+      {/* Platform Section */}
+      <section className={`${styles.section} ${styles.altBackground}`}>
         <div className={styles.container}>
           <h2 className={styles.sectionTitle}>Key Priorities</h2>
           <ul className={styles.platformList}>
@@ -34,29 +48,14 @@ export default function Home() {
         </div>
       </section>
 
-{/* Upcoming Events Section (Using your global page classes) */}
-      <section className={`${styles.section} ${styles.altBackground}`}>
+      {/* Upcoming Events Section (Using your global page classes) */}
+      <section className={styles.section}>
         <div className={styles.container}>
           <h2 className={styles.sectionTitle}>Upcoming Events</h2>
           
           {/* The new horizontal carousel loads right here */}
           <UpcomingEvents />
           
-        </div>
-      </section>
-
-      {/* About Section */}
-      <section className={styles.section}>
-        <div className={styles.container}>
-          <h2 className={styles.sectionTitle}>About Nicholas</h2>
-          <p className={styles.sectionText}>
-            Nicholas is a professional developer, problem-solver, and proud Laramie resident. 
-            He believes that city government works best when it focuses on the mechanics of making 
-            a city run smoothly. He is committed to bringing a logical, transparent approach to the City Council.
-          </p>
-          <Link href="/about" className={styles.textLink}>
-            Get to know Nicholas &rarr;
-          </Link>
         </div>
       </section>
 
