@@ -49,7 +49,6 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" className={`${ranchWater.variable} ${cowboy.variable}`}>
       <head>
-        <meta name="apple-mobile-web-app-title" content="NJ for Laramie" />
       </head>
       <body>
         <DonateProvider>

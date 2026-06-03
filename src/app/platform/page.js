@@ -41,7 +41,7 @@ export default function PlatformPage() {
               <li>Unlock and Expand mixed-use zoning where appropriate.</li>
               <li>Support housing initiatives that serve our working families, young professionals, seniors, and unhoused and low-income populations.</li>
               <li>Cultivating robust development partnerships that create truly affordable and attainable housing solutions.</li>
-              <li>Increasing Density where density makes sense.</li>
+              <li>Increasing density where density makes sense.</li>
               <li>Engage with community members to identify development opportunities for thoughtful city expansion.</li>
               <li>Support housing initiatives that reduce pressure on existing neighborhoods and keep Laramie livable in the 21st century.</li>
             </ul>
