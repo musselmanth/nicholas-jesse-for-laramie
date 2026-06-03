@@ -74,6 +74,7 @@
   text-decoration: none;
   text-align: center;
   transition: all 0.2s ease;
+  cursor: pointer;
 }
 
 .primaryBtn {
@@ -91,7 +92,6 @@
   background-color: transparent;
   color: #ffffff;
   border: 2px solid #ffffff;
-  cursor: pointer;
 }
 
 .secondaryBtn:hover {
