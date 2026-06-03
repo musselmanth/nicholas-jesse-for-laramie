@@ -3,8 +3,8 @@ import styles from './Election.module.css';
 import WardMap from '@/components/WardMap'; 
 
 export const metadata = {
-  title: 'Voter Information | Nicholas Jesse for Laramie',
-  description: 'Everything you need to know about voting in Laramie Ward 1. Find key election dates, voter registration links, and your polling location.',
+  title: 'Voter Information',
+  description: 'Everything you need to know about voting in Laramie Ward 1. Find key election dates, voter registration links, and a map of Ward 1',
 };
 
 export default function ElectionPage() {
