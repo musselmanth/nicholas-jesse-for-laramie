@@ -39,7 +39,7 @@ useEffect(() => {
           
           {/* Using dangerouslySetInnerHTML forces the browser to handle the attributes, preventing the React DOM error */}
           <div dangerouslySetInnerHTML={{ 
-            __html: '<dbox-widget campaign="nicholas-jesse-for-laramie" type="donation_form" enable-auto-scroll="true"></dbox-widget>' 
+            __html: '<script type="module" src="https://donorbox.org/widgets.js" async></script><dbox-widget campaign="nicholas-jesse-for-laramie" type="donation_form" enable-auto-scroll="true" show-content="true"></dbox-widget>' 
           }} />
           
         </div>

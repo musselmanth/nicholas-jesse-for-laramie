@@ -7,29 +7,31 @@ import { useDonate } from '@/context/DonateContext';
 import { useGetInvolved } from '@/context/GetInvolvedContext';
 
 export default function Hero() {
-  // We set a fallback estimate for the server-side render
-  const [dynamicHeight, setDynamicHeight] = useState('calc(100svh - 75px)');
+  const [dynamicHeight, setDynamicHeight] = useState('100vh');
   const { openDonate } = useDonate();
   const { openGetInvolved } = useGetInvolved();
 
   useEffect(() => {
     const calculateHeight = () => {
-      // Find the navbar in the DOM (looks for a <nav> tag or any class containing "navbar")
       const navbar = document.querySelector('nav') || document.querySelector('[class*="navbar"]');
+      // Use offsetHeight to dynamically grab the exact pixel height of your navbar
+      const navHeight = navbar ? navbar.offsetHeight : 75;
       
-      if (navbar) {
-        // Grab the exact current pixel height of the navbar and update our CSS variable
-        const navHeight = navbar.offsetHeight;
-        setDynamicHeight(`calc(100svh - ${navHeight}px)`);
-      }
+      // Calculate remaining exact screen height
+      const exactHeight = window.innerHeight - navHeight;
+      setDynamicHeight(`${exactHeight}px`);
     };
 
-    // Calculate immediately on mount
     calculateHeight();
 
-    // Recalculate if the user rotates their phone or resizes the browser window
     window.addEventListener('resize', calculateHeight);
-    return () => window.removeEventListener('resize', calculateHeight);
+    // Extra listener for mobile rotation to ensure it updates immediately
+    window.addEventListener('orientationchange', () => setTimeout(calculateHeight, 100));
+    
+    return () => {
+      window.removeEventListener('resize', calculateHeight);
+      window.removeEventListener('orientationchange', calculateHeight);
+    };
   }, []);
 
   return (
@@ -37,15 +39,12 @@ export default function Hero() {
       className={styles.heroSection} 
       style={{ '--exact-hero-height': dynamicHeight }}
     >
-      {/* Background Overlay */}
       <div className={styles.heroOverlay}></div>
 
       <div className={styles.heroContainer}>
         
         {/* Left Column: Text & Actions */}
         <div className={styles.leftContent}>
-          {/* <h1 className={styles.title}><span className={styles.titleFirst}>Nicholas</span><span className={styles.titleLast}>Jesse</span></h1>
-          <h3 className={styles.subtitle}>For Laramie City Council, Ward 1</h3> */}
           <img src='/nicholas-jesse-for-laramie/sign.png' alt='campaign logo' className={styles.sign} />
           <p className={styles.pitch}>
             Cultivating community, rooted in Laramie.

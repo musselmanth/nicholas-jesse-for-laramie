@@ -19,6 +19,7 @@ export default function GetInvolvedForm() {
     { id: 'canvas', label: 'Walk Neighborhoods / Canvass' },
     { id: 'event', label: 'Postcard Writing / Friend-banking' },
     { id: 'lit', label: 'Help Distribute Campaign Literature' },
+    { id: 'parade', label: 'Participate in Parade or Event' },
   ];
 
   const handleCheckboxChange = (id) => {

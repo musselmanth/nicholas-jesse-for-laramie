@@ -1,7 +1,6 @@
-/* src/components/Navbar.module.css */
-
+/* --- Base Navbar (Desktop) --- */
 .navbar {
-  background-color: var(--brand-cream-light); /* Keep navbar crisp white to contrast the cream body */
+  background-color: var(--brand-cream-light); 
   border-bottom: 2px solid var(--brand-cream);
   position: sticky;
   top: 0;
@@ -17,15 +16,15 @@
   padding: 1rem 2rem;
 }
 
+/* --- Logo Lockup (Desktop) --- */
 .logoContainer {
   display: flex;
   align-items: center;
-  gap: 0.75rem; /* The space between the image and the text */
+  gap: 0.75rem; 
   text-decoration: none;
 }
 
 .logoImage {
-  /* Set to roughly the height of the two text lines combined */
   height: 44px; 
   width: auto;
   object-fit: contain;
@@ -39,7 +38,7 @@
 }
 
 .logoFirstName {
-  font-size: 1.5rem; /* Large font for the name */
+  font-size: 1.5rem; 
   line-height: 1;
   font-weight: 500;
   color: var(--brand-orange);
@@ -49,53 +48,37 @@
 }
 
 .logoLastName {
-  font-size: 1.5rem; /* Large font for the name */
+  font-size: 1.5rem; 
   font-weight: 900;
   line-height: 1;
   color: var(--brand-olive-dark);
   text-transform: uppercase;
   font-family: var(--cowboy), sans-serif;
-
 }
 
 .logoOffice {
-  /* The exact mathematical font size and spacing to match the width above */
   font-size: 1rem; 
   font-weight: 800;
   line-height: 1.2;
   color: var(--brand-olive);
   text-transform: uppercase;
-  letter-spacing: 0.02em; /* Tweak this slightly if your .otf font makes it too long/short */
+  letter-spacing: 0.02em; 
   margin-top: 0.02rem;
 }
 
-/* Optional: Make it slightly smaller on mobile phones so it doesn't crowd the hamburger menu */
-@media screen and (max-width: 768px) {
-  .logoImage {
-    height: 38px;
-    margin-left: -0.1rem;
-  }
-  .logoFirstName {
-    font-size: 1.2rem;
-    letter-spacing: -0.08rem;
-  }
-  .logoLastName {
-    font-size: 1.2rem;
-    letter-spacing: -0.08rem;
-  }
-  .logoOffice {
-    font-size: 0.7rem;
-    letter-spacing:0.06em;
-  }
-}
-
+/* --- Navigation Menu (Desktop) --- */
 .navMenu {
   display: flex;
+  flex-direction: row;
   align-items: center;
-  list-style: none;
+  list-style: none; /* Removes the bullet points */
   gap: 2rem;
   margin: 0;
   padding: 0;
+}
+
+.navItem {
+  list-style: none;
 }
 
 .navLink {
@@ -114,11 +97,12 @@
   background-color: var(--brand-orange);
   color: #ffffff;
   padding: 0.6rem 1.4rem;
-  border-radius: 8px; /* Slightly rounder buttons to match the font */
+  border-radius: 8px; 
   font-weight: 700;
   text-decoration: none;
   transition: background-color 0.2s ease;
   cursor: pointer;
+  display: inline-block;
 }
 
 .donateBtn:hover {
@@ -126,6 +110,7 @@
   color: #ffffff;
 }
 
+/* --- Mobile Menu Button Base --- */
 .mobileMenuBtn {
   display: none;
   background: none;
@@ -133,6 +118,7 @@
   cursor: pointer;
   padding: 0;
   z-index: 101;
+  flex-shrink: 0;
 }
 
 .bar {
@@ -145,8 +131,58 @@
   border-radius: 3px;
 }
 
+/* --- Tablet & Mobile Responsiveness (Combined) --- */
 @media screen and (max-width: 950px) {
-  .mobileMenuBtn { display: block; }
+  
+  /* 1. Navbar Container Adjustments */
+  .navContainer {
+    padding: 0.75rem 1.5rem; 
+  }
+
+ /* 2. Logo Scaling */
+  .logoContainer {
+    gap: 0.25rem; /* Brings the graphic a little closer to the text */
+  }
+  
+  .logoTextStack {
+    flex-shrink: 0; 
+    align-items: flex-start; /* Forces both lines of text to be perfectly flush left */
+  }
+
+  .logoName, .logoOffice {
+    white-space: nowrap; /* Prevents the text from ever wrapping to a new line */
+  }
+
+  .logoImage {
+    height: 36px; /* Bumped up slightly to match the text height better */
+    margin-left: 0; 
+    flex-shrink: 0; 
+  }
+
+  .logoFirstName {
+    font-size: 1.15rem;
+    letter-spacing: -0.02rem;
+    margin-right: 0.4rem; /* Scaled down the gap between the first and last name for mobile */
+  }
+  
+  .logoLastName {
+    font-size: 1.15rem;
+    letter-spacing: -0.02rem;
+  }
+
+  .logoOffice {
+    font-size: 0.62rem; /* Tweaked to perfectly match the width of the top line */
+    letter-spacing: 0.15em;
+    margin-top: -0.1rem; /* Pulls the subtitle up slightly to center the whole block with the brush */
+  }
+
+  /* 3. Hamburger Button Override */
+  .mobileMenuBtn {
+    display: block;
+    margin-left: 1rem;
+  }
+
+  /* 4. Slide-Out Menu Drawer Override */
   .navMenu {
     position: fixed;
     flex-direction: column;
@@ -160,8 +196,16 @@
     height: var(--exact-hero-height);
     min-height: var(--exact-hero-height);
   }
-  .navMenu.active { right: 0; }
-  .navLink { font-size: 1.5rem; }
+
+  .navMenu.active { 
+    right: 0; 
+  }
+  
+  .navLink { 
+    font-size: 1.5rem; 
+  }
+  
+  /* 5. Hamburger Animations */
   .barOpen1 { transform: translateY(8px) rotate(45deg); }
   .barOpen2 { opacity: 0; }
   .barOpen3 { transform: translateY(-8px) rotate(-45deg); }

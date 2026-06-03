@@ -34,7 +34,7 @@
   padding: 0 2rem;
   display: flex;
   align-items: stretch;
-  min-height: inherit;
+  height: 100%; 
 }
 
 /* --- Left Column (Text & Buttons) --- */
@@ -48,38 +48,9 @@
   max-width: 600px;
 }
 
-.title {
-  font-size: clamp(2rem, 5vw, 3rem);
-  font-weight: 900;
-  line-height: 1.1;
-  margin-bottom: 0.5rem;
-
-}
-
-.titleFirst {
-
-  font-family: var(--cowboy), sans-serif;
-  font-weight: 500;
-  margin-right:1rem;
-  color: var(--brand-orange);
-}
-
-.titleLast {
-  font-family: var(--cowboy), sans-serif;
-  color: var(--brand-cream);
-  font-weight: 900;
-}
-
 .sign {
-  width:75%;
+  width: 75%;
   margin-bottom: 2.5rem;
-}
-
-.subtitle {
-  font-size: clamp(1.25rem, 2vw, 1.75rem);
-  font-weight: 700;
-  margin-bottom: 1.5rem;
-  color: var(--brand-cream-light);
 }
 
 .pitch {
@@ -120,13 +91,12 @@
   background-color: transparent;
   color: #ffffff;
   border: 2px solid #ffffff;
-  cursor:pointer;
+  cursor: pointer;
 }
 
 .secondaryBtn:hover {
   background-color: #ffffff;
   color: var(--brand-olive);
-    cursor:pointer;
 }
 
 .socials {
@@ -171,7 +141,6 @@
 .headshot {
   max-width: 100%;
   height: auto;
-  /* Cap desktop headshot to match the 800px hero framing */
   max-height: 800px;
   object-fit: contain;
   object-position: bottom right;
@@ -186,18 +155,22 @@
 @media screen and (max-width: 1220px) {
   
   .heroSection {
-    /* MOBILE STYLING: Activate the smart viewport calculations */
+    /* HARD RESET: Force explicit strict height so flexbox correctly pushes children down */
     height: var(--exact-hero-height);
     min-height: var(--exact-hero-height);
+    align-items: flex-start; /* Stops desktop layout from centering the whole block */
   }
 
   .heroOverlay {
-    background: linear-gradient(to bottom, rgba(45, 45, 34, 0.9) 0%, rgba(45, 45, 34, 0.7) 50%, rgba(45, 45, 34, 0.1) 100%);
+    background: linear-gradient(to bottom, rgba(45, 45, 34, 0.9) 0%, rgba(45, 45, 34, 0.7) 45%, rgba(45, 45, 34, 0.1) 100%);
   }
 
   .heroContainer {
     flex-direction: column;
     padding: 0 1.5rem;
+    height: 100%; /* Now works flawlessly because parent has explicit height */
+    width: 100%;
+    justify-content: flex-start; /* Ensure elements stack from the top down */
   }
 
   .leftContent {
@@ -207,15 +180,24 @@
     padding-top: 2.5rem;
     padding-bottom: 0;
     margin: 0 auto;
+    z-index: 2; /* Keeps text above the headshot if things get tight */
+  }
+
+  /* Compact the spacing for balanced mobile layout */
+  .sign {
+    width: 75%; 
+    margin-bottom: 1.25rem;
   }
 
   .pitch {
     max-width: 100%;
+    margin-bottom: 1.5rem;
   }
 
   .actions {
     justify-content: center;
     width: 100%;
+    margin-bottom: 1.5rem;
   }
 
   .socials {
@@ -224,44 +206,44 @@
   }
 
   .rightContent {
+    /* MAGIC FLEXBOX: Eat up 100% of the remaining vertical space */
     flex: 1 1 0; 
+    display: flex;
     justify-content: center;
+    align-items: flex-end; /* Locks the image perfectly to the bottom floor */
     width: 100%;
-    min-height: 0; 
+    min-height: 0; /* Lets the image shrink if the screen is tiny */
   }
 
   .headshot {
-    /* Let the headshot dynamically match whatever space is left in the mobile container */
-    height: 100%;
-    max-height: var(--exact-hero-height);
+    height: 100%; 
+    max-height: 100%; /* Replaced 45vh. Now just naturally fills the empty space! */
     width: auto;
     object-position: bottom center;
+    object-fit: contain;
   }
 
-.scrollIndicator {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: absolute;
-  bottom: 1rem;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 10;
-  color: #ffffff;
-  
-  /* NEW: Heavy Drop Shadow */
-  filter: drop-shadow(0px 2px 6px rgba(0, 0, 0, 0.9));
-}
+  .scrollIndicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    color: #ffffff;
+    filter: drop-shadow(0px 2px 6px rgba(0, 0, 0, 0.9));
+  }
 
-.scrollText {
-  font-size: 0.8rem;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  margin-bottom: 0.25rem;
-  font-weight: 900;
-  /* Extra text shadow for maximum crispness */
-  text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.8);
-}
+  .scrollText {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.25rem;
+    font-weight: 900;
+    text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.8);
+  }
 
   .bounce {
     animation: bounce 2s infinite;
