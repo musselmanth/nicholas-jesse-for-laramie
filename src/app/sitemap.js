@@ -1,3 +1,6 @@
+
+export const dynamic = 'force-static';
+
 export default function sitemap() {
   const baseUrl = 'https://nicholasjesseforlaramie.com';
 
