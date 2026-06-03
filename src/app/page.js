@@ -71,7 +71,7 @@ export default function Home() {
           <div className={styles.mapContainer}>
             <WardMap />
           </div>
-          <Link href="/election-info" className={styles.textLink}>
+          <Link href="/election" className={styles.textLink}>
             Voter Information & Deadlines &rarr;
           </Link>
         </div>
