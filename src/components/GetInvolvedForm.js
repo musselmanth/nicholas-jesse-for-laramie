@@ -102,10 +102,11 @@ export default function GetInvolvedForm() {
       </div>
 
       <div className={styles.formGroup}>
-        <label htmlFor="vol-address">Street Address (Optional—for Yard Sign Delivery)</label>
+        <label htmlFor="vol-address">Street Address</label>
         <input
           id="vol-address"
           type="text"
+          required
           value={formData.address}
           onChange={(e) => setFormData({ ...formData, address: e.target.value })}
         />
