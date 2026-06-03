@@ -33,11 +33,11 @@ export default function AboutPage() {
               <div className={styles.mobileTopImage}>
                 <div className={styles.imageBox}>
                   <img 
-                    src="/api/placeholder/400/300" 
-                    alt="Nicholas Jesse early years or roots" 
+                    src="/nicholas-jesse-for-laramie/nick-downtown.jpg" 
+                    alt="Nicholas with the Downtown Laramie sign" 
                     className={styles.fluidImg}
                   />
-                  <span className={styles.caption}>[Placeholder: Early years / Laramie Roots]</span>
+                  <span className={styles.caption}>Downtown Laramie</span>
                 </div>
               </div>
 
