@@ -59,6 +59,7 @@
   /* Flex basis manages width. We use calc to ensure gaps are handled */
   flex: 0 0 33.3333%;
   padding: 0 0.75rem; 
+  box-sizing: border-box;
 }
 
 /* ========================================= */
@@ -66,19 +67,22 @@
 /* ========================================= */
 
 /* When 1 card: force it to take up a larger, centered portion of the grid */
-.track:has(.cardWrapper:only-child) .cardWrapper {
-  flex: 0 0 100%;
-  max-width: 800px;
-  margin: 0 auto;
-}
+@media (min-width: 769px) {
+  /* When 1 card: force it to take up a larger, centered portion of the grid */
+  .track:has(.cardWrapper:only-child) .cardWrapper {
+    flex: 0 0 100%;
+    max-width: 800px;
+    margin: 0 auto;
+  }
 
-/* When 2 cards: force them to share the space more broadly */
-.track:has(.cardWrapper:nth-child(2):last-child) .cardWrapper {
-  flex: 0 0 50%;
-  max-width: 500px;
-}
-.track:has(.cardWrapper:nth-child(2):last-child) {
-  justify-content: center;
+  /* When 2 cards: force them to share the space more broadly */
+  .track:has(.cardWrapper:nth-child(2):last-child) .cardWrapper {
+    flex: 0 0 50%;
+    max-width: 500px;
+  }
+  .track:has(.cardWrapper:nth-child(2):last-child) {
+    justify-content: center;
+  }
 }
 
 /* ========================================= */
@@ -141,6 +145,17 @@
   color: #555;
   line-height: 1.6;
   margin: 0;
+}
+
+/* ========================================= */
+/* --- Tablet Adjustments (2 Cards) --- */
+/* ========================================= */
+
+/* Targets screens between 768px and 991px */
+@media (max-width: 991px) and (min-width: 768px) {
+  .cardWrapper {
+    flex: 0 0 50%; /* Forces exactly 2 cards per view */
+  }
 }
 
 /* ========================================= */
