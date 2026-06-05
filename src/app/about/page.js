@@ -147,7 +147,7 @@ export default function AboutPage() {
             <div className={styles.singleMediaBox}>
               <div className={styles.imageBox}>
                 <img 
-                  src="/city-hall.jpg" 
+                  src="/city-hall-2.jpg" 
                   alt="Pride Proclamation at City Hall" 
                   className={styles.fluidImg}
                 />
