@@ -7,6 +7,7 @@ import { GetInvolvedProvider } from '@/context/GetInvolvedContext';
 import DonateModal from '@/components/DonateModal';
 import './globals.css';
 import GetInvolvedModal from '@/components/GetInvolvedModal';
+import Script from 'next/script';
 
 const ranchWater = localFont({
   src: './fonts/RanchWater.otf', // Point directly to your file
@@ -60,6 +61,21 @@ export default function RootLayout({ children }) {
             <Footer />
             </GetInvolvedProvider>
         </DonateProvider>
+        <Script 
+          src="https://www.googletagmanager.com/gtag/js?id=G-XBTJ622G7F" 
+          strategy="afterInteractive" 
+        />
+        
+        {/* 2. Initialize it with your configuration */}
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+
+            gtag('config', 'G-XBTJ622G7F');
+          `}
+        </Script>
       </body>
     </html>
   );
