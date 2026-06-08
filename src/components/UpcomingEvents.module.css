@@ -57,8 +57,8 @@
 
 .cardWrapper {
   /* Flex basis manages width. We use calc to ensure gaps are handled */
-  flex: 0 0 33.3333%;
-  padding: 0 0.75rem; 
+  flex: 0 0 50%;
+  padding: 0 0.25rem; 
   box-sizing: border-box;
 }
 
@@ -67,7 +67,7 @@
 /* ========================================= */
 
 /* When 1 card: force it to take up a larger, centered portion of the grid */
-@media (min-width: 769px) {
+@media (min-width: 1150px) {
   /* When 1 card: force it to take up a larger, centered portion of the grid */
   .track:has(.cardWrapper:only-child) .cardWrapper {
     flex: 0 0 100%;
@@ -147,22 +147,13 @@
   margin: 0;
 }
 
-/* ========================================= */
-/* --- Tablet Adjustments (2 Cards) --- */
-/* ========================================= */
 
-/* Targets screens between 768px and 991px */
-@media (max-width: 991px) and (min-width: 768px) {
-  .cardWrapper {
-    flex: 0 0 50%; /* Forces exactly 2 cards per view */
-  }
-}
 
 /* ========================================= */
 /* --- Mobile Adjustments --- */
 /* ========================================= */
 
-@media (max-width: 768px) {
+@media (max-width: 1150px) {
   .carouselWrapper {
     grid-template-columns: 20px 1fr 20px;
     gap: 0.25rem;

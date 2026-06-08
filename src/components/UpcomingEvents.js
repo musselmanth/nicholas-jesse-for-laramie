@@ -144,12 +144,10 @@ export default function UpcomingEvents() {
   // Track screen size changes for responsive sliding tracks
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth < 768) {
+      if (window.innerWidth < 1150) {
         setCardsPerPage(1);
-      } else if (window.innerWidth < 992) {
-        setCardsPerPage(2);
       } else {
-        setCardsPerPage(3);
+        setCardsPerPage(2);
       }
     };
 
