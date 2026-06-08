@@ -62,16 +62,16 @@ export default function Home() {
       {/* Map & Election Info Section */}
       <section className={`${styles.section} ${styles.altBackground}`}>
         <div className={styles.container}>
-          <h2 className={styles.sectionTitle}>Ward 1 Map & Election Info</h2>
+          <h2 className={styles.sectionTitle}>Ward Map & Election Info</h2>
           <p className={styles.sectionText}>
-            Are you a resident of Ward 1? Check the boundary map below and make sure you have 
+            Are you a resident of Ward 1? Check the map below and make sure you have 
             a plan to vote in the upcoming municipal election.
           </p>
           
           <div className={styles.mapContainer}>
             <WardMap />
           </div>
-          <Link href="/election" className={styles.textLink}>
+          <Link href="/election" className={styles.textLink} style={{ display: 'inline-block',marginTop: '1.5em' }}>
             Voter Information & Deadlines &rarr;
           </Link>
         </div>

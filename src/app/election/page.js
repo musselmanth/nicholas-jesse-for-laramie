@@ -28,7 +28,7 @@ export default function ElectionPage() {
       </header>
 
       {/* Section 01: How the Election Works & Key Dates (Light Theme) */}
-      <section className={`${styles.infoSection} ${styles.themeLight}`}>
+      <section className={`${styles.infoSection} ${styles.themeLight}`} id='plan'>
         <div className={styles.container}>
           <div className={styles.titleColumn}>
             <span className={styles.bigNumber}>01</span>
