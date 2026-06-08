@@ -12,8 +12,8 @@ export const metadata = {
 export default function ElectionPage() {
 
   const primaryElection = {
-    name: 'Laramie Municipal Primary Election',
-    description: 'Primary Election Day in Laramie. Vote to ensure your preferred candidate makes it to the top two spots and advances to the General Election!',
+    name: 'Primary Election Day',
+    description: 'Primary Election Day in Laramie. Vote for Nicholas Jesse to make sure he makes it to the top two spots and advances to the General Election!',
     startDate: '2026-08-18',
     endDate: '2026-08-18',
     startTime: '07:00',
@@ -23,8 +23,8 @@ export default function ElectionPage() {
   };
 
   const generalElection = {
-    name: 'Laramie Municipal General Election',
-    description: 'General Election Day in Laramie! This is the final decision for City Council representatives.',
+    name: 'General Election Day',
+    description: 'General Election Day in Laramie! This is the final decision for City Council representatives. Don\'t forget to vote for Nicholas Jesse!',
     startDate: '2026-11-03',
     endDate: '2026-11-03',
     startTime: '07:00',
@@ -120,7 +120,7 @@ export default function ElectionPage() {
                 <a href="https://www.albanycountywy.gov/166/Absentee-Ballot-Information-and-Requests" target="_blank" rel="noopener noreferrer">
                   Request an Absentee Ballot
                 </a>
-                <span className={styles.resourceNote}>Vote early by mail. Any registered Wyoming voter can request an absentee ballot.</span>
+                <span className={styles.resourceNote}>Vote early by mail. Any registered Wyoming voter can request an absentee ballot. You can also reqeust an absentee ballot in-person and vote early at the election building on the east side of the Albany County Courthouse. This is <strong>not</strong> available on election day.</span>
               </li>
               <li>
                 <a href="https://sos.wyo.gov/Elections/" target="_blank" rel="noopener noreferrer">

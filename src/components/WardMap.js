@@ -192,7 +192,7 @@ export default function WardMap() {
         });
 
         if (wardName === 'Ward 1') {
-          setStatus({ type: 'ward1', message: 'You are located in Ward 1.', ward: wardName });
+          setStatus({ type: 'ward1', message: 'You are located in Ward 1!', ward: wardName });
         } else {
           setStatus({ type: 'otherWard', message: `You are located in ${wardName}.`, ward: wardName });
         }
