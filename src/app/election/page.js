@@ -1,17 +1,42 @@
 import styles from './Election.module.css';
-// Make sure this path matches wherever your WardMap component is stored
 import WardMap from '@/components/WardMap'; 
+import CalendarButton from '@/components/CalendarButton';
 
 export const metadata = {
   title: 'Voter Information',
   description: 'Everything you need to know about voting in Laramie Ward 1. Find key election dates, voter registration links, and a map of Ward 1',
 };
 
+
+
 export default function ElectionPage() {
+
+  const primaryElection = {
+    name: 'Laramie Municipal Primary Election',
+    description: 'Primary Election Day in Laramie. Vote to ensure your preferred candidate makes it to the top two spots and advances to the General Election!',
+    startDate: '2026-08-18',
+    endDate: '2026-08-18',
+    startTime: '07:00',
+    endTime: '19:00',
+    location: 'Your Polling Place, Laramie, WY',
+    timeZone: 'America/Denver'
+  };
+
+  const generalElection = {
+    name: 'Laramie Municipal General Election',
+    description: 'General Election Day in Laramie! This is the final decision for City Council representatives.',
+    startDate: '2026-11-03',
+    endDate: '2026-11-03',
+    startTime: '07:00',
+    endTime: '19:00',
+    location: 'Your Polling Place, Laramie, WY',
+    timeZone: 'America/Denver'
+  };
+
   return (
     <main className={styles.pageWrapper}>
       
-      {/* Updated Header Layout with Cream Background & Dark Olive Text */}
+      {/* Header Layout */}
       <header className={styles.pageHeader}>
         <div className={styles.headerContainer}>
           <div className={styles.headerTextSide}>
@@ -27,7 +52,7 @@ export default function ElectionPage() {
         </div>
       </header>
 
-      {/* Section 01: How the Election Works & Key Dates (Light Theme) */}
+      {/* Section 01: How the Election Works & Key Dates */}
       <section className={`${styles.infoSection} ${styles.themeLight}`} id='plan'>
         <div className={styles.container}>
           <div className={styles.titleColumn}>
@@ -41,22 +66,31 @@ export default function ElectionPage() {
 
             <h3 className={styles.subHeading}>Key Dates to Remember</h3>
             <div className={styles.datesGrid}>
+              
+              {/* Primary Election Card */}
               <div className={styles.dateCard}>
                 <span className={styles.dateLabel}>Primary Election</span>
                 <span className={styles.dateValue}>August 18, 2026</span>
                 <p className={styles.dateDetails}>Polls are open from 7:00 AM to 7:00 PM. The top two candidates advance.</p>
+                {/* Embedded Primary Reminder */}
+                <CalendarButton {...primaryElection} />
               </div>
+
+              {/* General Election Card */}
               <div className={styles.dateCard}>
                 <span className={styles.dateLabel}>General Election</span>
                 <span className={styles.dateValue}>November 3, 2026</span>
                 <p className={styles.dateDetails}>Polls are open from 7:00 AM to 7:00 PM. The final decision for Ward 1.</p>
+                {/* Embedded General Reminder */}
+                <CalendarButton {...generalElection}/>
               </div>
+
             </div>
           </div>
         </div>
       </section>
 
-      {/* Section 02: Voter Resources (Olive Theme) */}
+      {/* Section 02: Voter Resources */}
       <section className={`${styles.infoSection} ${styles.themeOlive}`}>
         <div className={styles.container}>
           <div className={styles.titleColumn}>
@@ -99,7 +133,7 @@ export default function ElectionPage() {
         </div>
       </section>
 
-      {/* Section 03: Ward 1 Map (Light Theme) */}
+      {/* Section 03: Ward 1 Map */}
       <section className={`${styles.infoSection} ${styles.themeLight}`}>
         <div className={styles.container}>
           <div className={styles.titleColumn}>
@@ -111,11 +145,9 @@ export default function ElectionPage() {
               City Council representatives are elected by the residents of their specific wards. Nicholas Jesse is running to represent Laramie's Ward 1. Use the interactive map below to confirm your ward based on your current residence.
             </p>
             
-            {/* The Interactive Map Component */}
             <div className={styles.mapContainer}>
               <WardMap />
             </div>
-
           </div>
         </div>
       </section>

@@ -2,9 +2,88 @@
 
 import { useState, useEffect } from 'react';
 import Papa from 'papaparse';
+import CalendarButton from './CalendarButton';
 import styles from './UpcomingEvents.module.css';
 
 const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRamfKDIEDgulyoRNE646czTRqz1AhxkneUauGsVnLEjJTpWSXp0kRj6qliZOMxdQ2ukRGoWceaEXc3/pub?gid=0&single=true&output=csv";
+
+// Helper utility to convert human strings like "Friday June 1st" and "7PM" to ISO standards
+function transformEventDateTime(rawDate, rawTime) {
+  const months = {
+    january: '01', february: '02', march: '03', april: '04', may: '05', june: '06',
+    july: '07', august: '08', september: '09', october: '10', november: '11', december: '12'
+  };
+
+  // 1. Parse Date String (e.g., "Friday June 1st")
+  let startDateIso = '2026-11-03'; // Resilient fallback
+  const cleanDateStr = rawDate.toLowerCase().replace(/(st|nd|rd|th)/g, '');
+  const dateMatch = cleanDateStr.match(/(january|february|march|april|may|june|july|august|september|october|november|december)\s+(\d+)/);
+  
+  if (dateMatch) {
+    const monthNum = months[dateMatch[1]];
+    const dayNum = dateMatch[2].padStart(2, '0');
+    startDateIso = `2026-${monthNum}-${dayNum}`; // Assuming the 2026 cycle
+  }
+
+  // 2. Parse Time String (e.g., "7PM", "8:30PM-9:30PM")
+  let startTimeIso = '19:00';
+  let endTimeIso = '20:00';
+  let crossMidnight = false;
+
+  const timeParts = rawTime.split('-');
+  const startRaw = timeParts[0].trim();
+  const endRaw = timeParts[1] ? timeParts[1].trim() : null;
+
+  function convertTo24Hour(timeStr) {
+    const match = timeStr.toUpperCase().match(/(\d+)(?::(\d+))?\s*(AM|PM)/);
+    if (!match) return null;
+    
+    let hours = parseInt(match[1], 10);
+    const minutes = match[2] ? match[2].padStart(2, '0') : '00';
+    const ampm = match[3];
+
+    if (ampm === 'PM' && hours < 12) hours += 12;
+    if (ampm === 'AM' && hours === 12) hours = 0;
+
+    return { hours, minutes, formatted: `${String(hours).padStart(2, '0')}:${minutes}` };
+  }
+
+  const startParsed = convertTo24Hour(startRaw);
+  if (startParsed) {
+    startTimeIso = startParsed.formatted;
+
+    if (endRaw) {
+      // If the end time string lacks AM/PM (e.g., "8-9:30PM"), inherit it from the start string
+      let normalizedEnd = endRaw;
+      if (!normalizedEnd.includes('AM') && !normalizedEnd.includes('PM')) {
+        const trailingAmpm = startRaw.toUpperCase().match(/(AM|PM)/);
+        if (trailingAmpm) normalizedEnd += trailingAmpm[1];
+      }
+      const endParsed = convertTo24Hour(normalizedEnd);
+      if (endParsed) {
+        endTimeIso = endParsed.formatted;
+      }
+    } else {
+      // Default fallback: Increment by exactly 1 hour if no end time exists
+      let endHours = startParsed.hours + 1;
+      if (endHours >= 24) {
+        endHours -= 24;
+        crossMidnight = true;
+      }
+      endTimeIso = `${String(endHours).padStart(2, '0')}:${startParsed.minutes}`;
+    }
+  }
+
+  // Calculate clean end date strings if an event crosses the midnight hour line
+  let endDateIso = startDateIso;
+  if (crossMidnight) {
+    const nextDate = new Date(`${startDateIso}T00:00:00`);
+    nextDate.setDate(nextDate.getDate() + 1);
+    endDateIso = nextDate.toISOString().split('T')[0];
+  }
+
+  return { startDateIso, endDateIso, startTimeIso, endTimeIso };
+}
 
 export default function UpcomingEvents() {
   const [events, setEvents] = useState([]);
@@ -14,7 +93,7 @@ export default function UpcomingEvents() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [cardsPerPage, setCardsPerPage] = useState(3);
 
-  // 1. Fetch Data
+  // Fetch and Process Data
   useEffect(() => {
     async function fetchEvents() {
       try {
@@ -27,7 +106,25 @@ export default function UpcomingEvents() {
           header: true,
           skipEmptyLines: true,
           complete: (result) => {
-            setEvents(result.data);
+            // Map over elements dynamically to pre-calculate standard calendar configurations
+            const processedEvents = result.data.map(event => {
+              const timing = transformEventDateTime(event.Date, event.Time);
+              return {
+                ...event,
+                calendarProps: {
+                  name: "Nicholas Jesse Campaign Event: " + event.Title,
+                  description: event.Description || '',
+                  location: event.Location || 'Laramie, WY',
+                  startDate: timing.startDateIso,
+                  endDate: timing.endDateIso,
+                  startTime: timing.startTimeIso,
+                  endTime: timing.endTimeIso,
+                  timeZone: 'America/Denver'
+                }
+              };
+            });
+
+            setEvents(processedEvents);
             setIsLoading(false);
           },
           error: () => {
@@ -44,7 +141,7 @@ export default function UpcomingEvents() {
     fetchEvents();
   }, []);
 
-  // 2. Track screen size to know exactly how many cards fit
+  // Track screen size changes for responsive sliding tracks
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth < 768) {
@@ -61,7 +158,6 @@ export default function UpcomingEvents() {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // 3. NEW MATH: Adjust index if resizing the window breaks the sliding window
   useEffect(() => {
     const maxIndex = Math.max(0, events.length - cardsPerPage);
     if (currentIndex > maxIndex) {
@@ -70,10 +166,9 @@ export default function UpcomingEvents() {
   }, [cardsPerPage, events.length, currentIndex]);
 
   if (isLoading) return <div className={styles.diagnosticState}>Loading campaign events...</div>;
-  if (fetchError) return <div className={styles.diagnosticState}>Error connecting to the event calendar. Please check the Google Sheet link.</div>;
+  if (fetchError) return <div className={styles.diagnosticState}>Error connecting to the event calendar. Try again later.</div>;
   if (!events || events.length === 0) return <div className={styles.diagnosticState}>No upcoming events at this time. Check back soon!</div>;
 
-  // NEW MATH: Maximum allowed clicks is Total Events minus Visible Cards
   const maxIndex = Math.max(0, events.length - cardsPerPage);
   const canScrollLeft = currentIndex > 0;
   const canScrollRight = currentIndex < maxIndex;
@@ -83,7 +178,6 @@ export default function UpcomingEvents() {
 
   return (
     <div className={styles.eventsContainer}>
-      
       <div className={styles.carouselWrapper}>
         
         <button 
@@ -98,8 +192,6 @@ export default function UpcomingEvents() {
         </button>
 
         <div className={styles.viewport}>
-          
-          {/* NEW MATH: Translates by exactly the width of ONE card per click */}
           <div 
             className={styles.track} 
             style={{ transform: `translateX(-${currentIndex * (100 / cardsPerPage)}%)` }}
@@ -113,14 +205,20 @@ export default function UpcomingEvents() {
                   </div>
                   <div className={styles.eventDetails}>
                     <h3 className={styles.eventTitle}>{event.Title}</h3>
-                    <p className={styles.eventLocation}><strong>📍 {event.Location}</strong></p>
+                    <a href={event.LocationLink} target="_blank" rel="noopener noreferrer" className={styles.eventLocation}>
+                      <strong>📍 {event.Location}</strong>
+                    </a>
                     <p className={styles.eventDescription}>{event.Description}</p>
+                    
+                    {/* Render the unified button using the pre-calculated props bundle */}
+                    <div className={styles.calendarButtonContainer}>
+                      <CalendarButton {...event.calendarProps} />
+                    </div>
                   </div>
                 </div>
               </div>
             ))}
           </div>
-
         </div>
 
         <button 

@@ -174,3 +174,11 @@
     flex: 0 0 100%;
   }
 }
+
+.calendarButtonContainer {
+  /* This magically pushes the container to the absolute bottom of the flex column! */
+  margin-top: auto;
+  
+  /* Adds a little breathing room above the button just in case the description is super long */
+  padding-top: 1.5rem; 
+}
