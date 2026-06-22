@@ -10,7 +10,8 @@ export default function GetInvolvedForm() {
     phone: '',
     address: '',
     interests: [],
-    notes: ''
+    notes: '',
+    permissionToInstall: false // Added this new state property
   });
   const [status, setStatus] = useState(null);
 
@@ -23,10 +24,27 @@ export default function GetInvolvedForm() {
   ];
 
   const handleCheckboxChange = (id) => {
-    const updatedInterests = formData.interests.includes(id)
-      ? formData.interests.filter(item => item !== id)
-      : [...formData.interests, id];
-    setFormData({ ...formData, interests: updatedInterests });
+    let updatedInterests;
+    let newPermissionState = formData.permissionToInstall;
+
+    if (formData.interests.includes(id)) {
+      // User is unchecking the box
+      updatedInterests = formData.interests.filter(item => item !== id);
+      
+      // Safety check: If they uncheck the sign, automatically revoke installation permission
+      if (id === 'sign') {
+        newPermissionState = false;
+      }
+    } else {
+      // User is checking the box
+      updatedInterests = [...formData.interests, id];
+    }
+
+    setFormData({ 
+      ...formData, 
+      interests: updatedInterests,
+      permissionToInstall: newPermissionState
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -34,15 +52,13 @@ export default function GetInvolvedForm() {
     setStatus('sending');
 
     try {
-      // Replace with your actual deployed Apps Script URL
       const scriptURL = 'https://script.google.com/macros/s/AKfycbzIMRFchyYABUxkHWUt2HI_BGtBvViPhsdmRGgKQpmGDskE0tgzkMownpG8ixipkUZ12g/exec';
       
       const response = await fetch(scriptURL, {
         method: 'POST',
-        // Apps Script prefers text/plain to avoid triggering CORS preflight checks
         headers: { 'Content-Type': 'text/plain;charset=utf-8' },
         redirect: 'follow',
-        body: JSON.stringify({ formType: 'involved', ...formData }), // Change to 'involved' for the other form
+        body: JSON.stringify({ formType: 'involved', ...formData }), 
       });
 
       const data = await response.json();
@@ -52,7 +68,18 @@ export default function GetInvolvedForm() {
       }
       
       setStatus('success');
-      // Reset your form state here...
+      
+      // Reset the form state completely after a successful submission
+      setFormData({
+        name: '',
+        email: '',
+        phone: '',
+        address: '',
+        interests: [],
+        notes: '',
+        permissionToInstall: false
+      });
+      
     } catch (error) {
       console.error('Submission failed:', error);
       setStatus('error');
@@ -127,6 +154,27 @@ export default function GetInvolvedForm() {
             </label>
           ))}
         </div>
+
+        {/* Dynamic Conditional Render for the Sign Installation Permission */}
+        {formData.interests.includes('sign') && (
+          <div style={{
+            marginTop: '1rem',
+            padding: '1rem',
+            backgroundColor: 'var(--brand-cream-light)',
+            borderRadius: '6px',
+            borderLeft: '4px solid var(--brand-orange)'
+          }}>
+            <label className={styles.checkboxLabel} style={{ marginBottom: 0 }}>
+              <input
+                type="checkbox"
+                checked={formData.permissionToInstall}
+                onChange={(e) => setFormData({ ...formData, permissionToInstall: e.target.checked })}
+              />
+              <span className={styles.checkboxCustom}></span>
+              Yes, a campaign volunteer has my permission to securely place the sign in my yard for me.
+            </label>
+          </div>
+        )}
       </div>
 
       <div className={styles.formGroup}>
