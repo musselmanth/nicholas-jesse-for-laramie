@@ -39,11 +39,6 @@ export default function GeneralContactForm() {
 
   return (
     <form onSubmit={handleSubmit} className={styles.formContainer}>
-      {status === 'success' && (
-        <div className={styles.successMessage}>
-          Thank you for reaching out! We will get back to you as soon as possible.
-        </div>
-      )}
       
       <div className={styles.formGroup}>
         <label htmlFor="gen-name">Name</label>
@@ -91,6 +86,11 @@ export default function GeneralContactForm() {
       <button type="submit" className={styles.submitButton} disabled={status === 'sending'}>
         {status === 'sending' ? 'Sending...' : 'Send Message'}
       </button>
+      {status === 'success' && (
+        <div className={styles.successMessage}>
+          Thank you for reaching out! We will get back to you as soon as possible.
+        </div>
+      )}
     </form>
   );
 }

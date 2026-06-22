@@ -17,8 +17,8 @@ export default function GetInvolvedForm() {
 
   const checkboxes = [
     { id: 'sign', label: 'Host a Yard Sign' },
-    { id: 'canvas', label: 'Walk Neighborhoods / Canvass' },
-    { id: 'event', label: 'Postcard Writing / Friend-banking' },
+    { id: 'canvas', label: 'Walk Neighborhoods / Canvas' },
+    { id: 'postcard', label: 'Postcard Writing / Friend-banking' },
     { id: 'lit', label: 'Help Distribute Campaign Literature' },
     { id: 'parade', label: 'Participate in Parade or Event' },
   ];
@@ -88,11 +88,7 @@ export default function GetInvolvedForm() {
 
   return (
     <form onSubmit={handleSubmit} className={styles.formContainer}>
-      {status === 'success' && (
-        <div className={styles.successMessage}>
-          Awesome! Thanks for stepping up to help the campaign. We will be in touch soon!
-        </div>
-      )}
+
 
       <div className={styles.formGroup}>
         <label htmlFor="vol-name">Name</label>
@@ -188,8 +184,13 @@ export default function GetInvolvedForm() {
       </div>
 
       <button type="submit" className={styles.submitButton} disabled={status === 'sending'}>
-        {status === 'sending' ? 'Joining...' : 'Count Me In!'}
+        {status === 'sending' ? 'Sending...' : 'Count Me In!'}
       </button>
+      {status === 'success' && (
+        <div className={styles.successMessage}>
+          Awesome! Thanks for stepping up to help the campaign. We will be in touch soon!
+        </div>
+      )}
     </form>
   );
 }
