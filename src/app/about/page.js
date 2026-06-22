@@ -133,12 +133,12 @@ export default function AboutPage() {
                 <h3 className={styles.portfolioHeading}>Engagement Awards</h3>
                 <ul className={styles.awardList}>
                   <li><strong>2025</strong> Laramie Young Professionals 20 Under 40 Award</li>
-                  <li><strong>2024</strong> Laramigo Award for Community Engagement</li>
-                  <li><strong>2024</strong> True Grit Award</li>
-                  <li><strong>2022</strong> Outstanding Contributions Toward Improving the Climate of the College</li>
-                  <li><strong>2021</strong> Service Excellence Award</li>
-                  <li><strong>2019</strong> Continuous Improvement Award</li>
-                  <li><strong>2016</strong> Excellence In Service and Commitment Award</li>
+                  <li><strong>2024</strong> Laramigo Award for Community Engagement—<em>UWYO</em></li>
+                  <li><strong>2024</strong> True Grit Award—<em>UWYO</em></li>
+                  <li><strong>2022</strong> Outstanding Contributions Toward Improving the Climate of the College—<em>UWYO, College of Education</em></li>
+                  <li><strong>2021</strong> Service Excellence Award—<em>Davita</em></li>
+                  <li><strong>2019</strong> Continuous Improvement Award—<em>Davita</em></li>
+                  <li><strong>2016</strong> Excellence In Service and Commitment Award—<em>Shepard Symposium on Social Justice</em></li>
                 </ul>
               </div>
             </div>

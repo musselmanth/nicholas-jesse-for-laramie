@@ -36,7 +36,7 @@ export default function Home() {
               <strong>Economic Development:</strong> Championing young professionals, supporting local businesses, and building economic pipelines for sustainable, long-term success.
             </li>
             <li>
-              <strong>Public Resource Protection:</strong> Defending the Casper aquifer, the Green Belt, and our public lands by making conservation decisions based on long-term community needs.
+              <strong>Public Resource Protection:</strong> Protecting the Casper aquifer and our public lands by making conservation decisions based on long-term community needs.
             </li>
             <li>
               <strong>Supporting City Staff:</strong> Cultivating trust in local government and advocating for the hardworking staff across all departments who keep Laramie running safely.
