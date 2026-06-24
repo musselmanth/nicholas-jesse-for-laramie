@@ -17,7 +17,7 @@ export default function GetInvolvedForm() {
 
   const checkboxes = [
     { id: 'sign', label: 'Host a Yard Sign' },
-    { id: 'canvas', label: 'Walk Neighborhoods / Canvas' },
+    { id: 'canvas', label: 'Walk Neighborhoods / Canvass' },
     { id: 'postcard', label: 'Postcard Writing / Friend-banking' },
     { id: 'lit', label: 'Help Distribute Campaign Literature' },
     { id: 'parade', label: 'Participate in Parade or Event' },
