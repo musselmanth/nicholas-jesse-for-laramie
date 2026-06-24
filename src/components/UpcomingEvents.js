@@ -114,6 +114,11 @@ export default function UpcomingEvents() {
           header: true,
           skipEmptyLines: true,
           complete: (result) => {
+            // Today's date as YYYY-MM-DD (local). ISO date strings sort
+            // correctly with plain string comparison, so we can compare directly.
+            const now = new Date();
+            const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
             // Map over elements dynamically to pre-calculate standard calendar configurations
             const processedEvents = result.data.map(event => {
               const timing = transformEventDateTime(event.Date, event.Time);
@@ -134,7 +139,14 @@ export default function UpcomingEvents() {
               };
             });
 
-            setEvents(processedEvents);
+            // Drop events that finished the previous day or earlier. Keying off
+            // the end date keeps today's events visible all day and preserves
+            // any event that ran past midnight into the current day.
+            const upcomingEvents = processedEvents.filter(
+              event => event.calendarProps.endDate >= todayStr
+            );
+
+            setEvents(upcomingEvents);
             setIsLoading(false);
           },
           error: () => {
