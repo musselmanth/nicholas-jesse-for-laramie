@@ -11,7 +11,8 @@ export default function GetInvolvedForm() {
     address: '',
     interests: [],
     notes: '',
-    permissionToInstall: false // Added this new state property
+    permissionToInstall: false,
+    shirtSize: ''
   });
   const [status, setStatus] = useState(null);
 
@@ -31,19 +32,18 @@ export default function GetInvolvedForm() {
       // User is unchecking the box
       updatedInterests = formData.interests.filter(item => item !== id);
       
-      // Safety check: If they uncheck the sign, automatically revoke installation permission
       if (id === 'sign') {
         newPermissionState = false;
       }
     } else {
-      // User is checking the box
       updatedInterests = [...formData.interests, id];
     }
 
-    setFormData({ 
-      ...formData, 
+    setFormData({
+      ...formData,
       interests: updatedInterests,
-      permissionToInstall: newPermissionState
+      permissionToInstall: newPermissionState,
+      shirtSize: updatedInterests.includes('parade') ? formData.shirtSize : ''
     });
   };
 
@@ -77,7 +77,8 @@ export default function GetInvolvedForm() {
         address: '',
         interests: [],
         notes: '',
-        permissionToInstall: false
+        permissionToInstall: false,
+        shirtSize: ''
       });
       
     } catch (error) {
@@ -150,6 +151,35 @@ export default function GetInvolvedForm() {
             </label>
           ))}
         </div>
+
+        {formData.interests.includes('parade') && (
+          <div style={{
+            marginTop: '1rem',
+            padding: '1rem',
+            backgroundColor: 'var(--brand-cream-light)',
+            borderRadius: '6px',
+            borderLeft: '4px solid var(--brand-orange)'
+          }}>
+            <label htmlFor="shirt-size" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600 }}>
+              T-Shirt Size
+            </label>
+            <select
+              id="shirt-size"
+              value={formData.shirtSize}
+              onChange={(e) => setFormData({ ...formData, shirtSize: e.target.value })}
+              style={{ width: '100%', padding: '0.5rem', borderRadius: '4px', border: '1px solid #ccc' }}
+            >
+              <option value="">Select a size...</option>
+              <option value="XS">XS</option>
+              <option value="S">S</option>
+              <option value="M">M</option>
+              <option value="L">L</option>
+              <option value="XL">XL</option>
+              <option value="2XL">2XL</option>
+              <option value="3XL">3XL</option>
+            </select>
+          </div>
+        )}
 
         {/* Dynamic Conditional Render for the Sign Installation Permission */}
         {formData.interests.includes('sign') && (
