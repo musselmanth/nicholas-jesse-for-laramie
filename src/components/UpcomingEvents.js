@@ -7,6 +7,14 @@ import styles from './UpcomingEvents.module.css';
 
 const GOOGLE_SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRamfKDIEDgulyoRNE646czTRqz1AhxkneUauGsVnLEjJTpWSXp0kRj6qliZOMxdQ2ukRGoWceaEXc3/pub?gid=0&single=true&output=csv";
 
+// Normalizes host-provided links: trims, ignores blanks, adds https:// if missing
+function normalizeUrl(url) {
+  if (!url) return null;
+  const trimmed = url.trim();
+  if (!trimmed) return null;
+  return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+}
+
 // Helper utility to convert human strings like "Friday June 1st" and "7PM" to ISO standards
 function transformEventDateTime(rawDate, rawTime) {
   const months = {
@@ -106,11 +114,18 @@ export default function UpcomingEvents() {
           header: true,
           skipEmptyLines: true,
           complete: (result) => {
+            // Today's date as YYYY-MM-DD (local). ISO date strings sort
+            // correctly with plain string comparison, so we can compare directly.
+            const now = new Date();
+            const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+
             // Map over elements dynamically to pre-calculate standard calendar configurations
             const processedEvents = result.data.map(event => {
               const timing = transformEventDateTime(event.Date, event.Time);
               return {
                 ...event,
+                eventLinkUrl: normalizeUrl(event.EventLinkURL),
+                eventLinkText: (event.EventLinkText || '').trim(),
                 calendarProps: {
                   name: "Nicholas Jesse Campaign Event: " + event.Title,
                   description: event.Description || '',
@@ -124,7 +139,14 @@ export default function UpcomingEvents() {
               };
             });
 
-            setEvents(processedEvents);
+            // Drop events that finished the previous day or earlier. Keying off
+            // the end date keeps today's events visible all day and preserves
+            // any event that ran past midnight into the current day.
+            const upcomingEvents = processedEvents.filter(
+              event => event.calendarProps.endDate >= todayStr
+            );
+
+            setEvents(upcomingEvents);
             setIsLoading(false);
           },
           error: () => {
@@ -207,8 +229,29 @@ export default function UpcomingEvents() {
                       <strong>📍 {event.Location}</strong>
                     </a>
                     <p className={styles.eventDescription}>{event.Description}</p>
-                    
-                    {/* Render the unified button using the pre-calculated props bundle */}
+
+                    {/* Optional host website link — sits just below the description */}
+                    {event.eventLinkUrl && (
+                      <a
+                        href={event.eventLinkUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className={styles.eventLink}
+                      >
+                        {event.eventLinkText || 'Event Website'}
+                        <svg
+                          viewBox="0 0 24 24" width="15" height="15" fill="none"
+                          stroke="currentColor" strokeWidth="2"
+                          strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"
+                        >
+                          <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                          <polyline points="15 3 21 3 21 9"></polyline>
+                          <line x1="10" y1="14" x2="21" y2="3"></line>
+                        </svg>
+                      </a>
+                    )}
+
+                    {/* Add-to-calendar button, pinned to the bottom of the card */}
                     <div className={styles.calendarButtonContainer}>
                       <CalendarButton {...event.calendarProps} />
                     </div>
