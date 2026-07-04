@@ -1,6 +1,5 @@
 import styles from './Election.module.css';
-import dynamic from 'next/dynamic';
-const WardMap = dynamic(() => import('@/components/WardMap'), { ssr: false });
+import WardMap from '@/components/WardMapClient';
 import CalendarButton from '@/components/CalendarButton';
 
 export const metadata = {

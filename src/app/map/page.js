@@ -1,6 +1,4 @@
-import dynamic from 'next/dynamic';
-
-const WardMap = dynamic(() => import('@/components/WardMap'), { ssr: false });
+import WardMap from '@/components/WardMapClient';
 
 export default function MapPage() {
   return (
