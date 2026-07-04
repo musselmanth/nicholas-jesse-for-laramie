@@ -112,10 +112,13 @@ export default function WardMap({ fullScreen = false }) {
         markerLayer // Layer order ensures pin stays on top of boundaries
       ],
       view: new View({
-        center: fromLonLat([-105.5911, 41.3114]), 
+        center: fromLonLat([-105.5911, 41.3114]),
         zoom: 13,
       }),
     });
+
+    // iOS WebKit reports 0 dimensions during init; force a size recalculation
+    setTimeout(() => { mapInstance.current?.updateSize(); }, 200);
 
     const handleReady = () => {
       if (vectorSource.getState() === 'ready' && vectorSource.getFeatures().length > 0) {
@@ -145,6 +148,7 @@ export default function WardMap({ fullScreen = false }) {
     };
 
     vectorSource.on('change', handleReady);
+    handleReady();
 
     return () => {
       if (mapInstance.current) {
@@ -243,14 +247,16 @@ export default function WardMap({ fullScreen = false }) {
       <div
         ref={mapElement}
         style={fullScreen
-          ? { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }
+          ? { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', transform: 'translate3d(0,0,0)', WebkitTransform: 'translate3d(0,0,0)' }
           : {
               width: '100%',
               height: '420px',
               overflow: 'hidden',
               borderRadius: '12px',
               border: '1px solid #E5E7EB',
-              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)'
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
+              transform: 'translate3d(0,0,0)',
+              WebkitTransform: 'translate3d(0,0,0)',
             }
         }
       />
