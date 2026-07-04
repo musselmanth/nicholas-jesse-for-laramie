@@ -15,7 +15,7 @@ import { Style, Fill, Stroke, Text, Circle as CircleStyle } from 'ol/style';
 import { fromLonLat } from 'ol/proj';
 import Link from 'next/link';
 
-export default function WardMap() {
+export default function WardMap({ fullScreen = false }) {
   const mapElement = useRef(null);
   
   // Keep tracks of map elements across renders so our search function can access them
@@ -45,22 +45,43 @@ export default function WardMap() {
     const markerSource = new VectorSource();
     markerSourceRef.current = markerSource;
 
+    const fullScreenColors = {
+      'Ward 1': { fill: 'rgba(220, 101, 58, 0.3)',  stroke: '#dc653a', label: '#7a2c0e' },
+      'Ward 2': { fill: 'rgba(83, 137, 91, 0.3)',   stroke: '#53895b', label: '#1e4024' },
+      'Ward 3': { fill: 'rgba(90, 120, 180, 0.3)',  stroke: '#5a78b4', label: '#1e3060' },
+    };
+
     const wardStyleFunction = (feature) => {
       const wardName = feature.get('Ward');
-      const isWard1 = wardName === 'Ward 1';
 
+      if (fullScreen) {
+        const colors = fullScreenColors[wardName] ?? { fill: 'rgba(120,120,120,0.25)', stroke: '#666', label: '#444' };
+        return new Style({
+          fill: new Fill({ color: colors.fill }),
+          stroke: new Stroke({ color: colors.stroke, width: 2.5 }),
+          text: new Text({
+            text: wardName,
+            font: 'bold 15px sans-serif',
+            fill: new Fill({ color: colors.label }),
+            stroke: new Stroke({ color: '#FFFFFF', width: 4 }),
+            overflow: true,
+          })
+        });
+      }
+
+      const isWard1 = wardName === 'Ward 1';
       return new Style({
         fill: new Fill({ color: isWard1 ? 'rgba(224, 90, 61, 0.25)' : 'rgba(120, 120, 120, 0.25)' }),
-        stroke: new Stroke({ 
-          color: isWard1 ? '#E05A3D' : '#666666', 
-          width: isWard1 ? 3 : 1.5, 
-          lineDash: isWard1 ? null : [5, 5] 
+        stroke: new Stroke({
+          color: isWard1 ? '#E05A3D' : '#666666',
+          width: isWard1 ? 3 : 1.5,
+          lineDash: isWard1 ? null : [5, 5]
         }),
         text: new Text({
           text: wardName,
           font: isWard1 ? 'bold 16px sans-serif' : 'bold 13px sans-serif',
-          fill: new Fill({ color: isWard1 ? '#5c2214' : '#444444' }), 
-          stroke: new Stroke({ color: '#FFFFFF', width: 4 }), 
+          fill: new Fill({ color: isWard1 ? '#5c2214' : '#444444' }),
+          stroke: new Stroke({ color: '#FFFFFF', width: 4 }),
           overflow: true,
         })
       });
@@ -146,7 +167,7 @@ export default function WardMap() {
       // 1. Query OpenStreetMap Nominatim API
       // We append ", Laramie, WY" automatically to anchor local results seamlessly
       const query = encodeURIComponent(`${address}, Laramie, WY`);
-      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${query}&limit=1`);
+      const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&addressdetails=1&q=${query}&limit=1`);
       const data = await response.json();
 
       if (!data || data.length === 0) {
@@ -154,6 +175,14 @@ export default function WardMap() {
         setLoading(false);
         return;
       }
+
+      // Format the returned address into a clean "street, city, state" string
+      const addr = data[0].address ?? {};
+      const streetParts = [addr.house_number, addr.road].filter(Boolean);
+      const cityPart = addr.city || addr.town || addr.village || addr.county || '';
+      const statePart = addr.state || '';
+      const formattedAddress = [...streetParts, cityPart, statePart].filter(Boolean).join(', ');
+      if (formattedAddress) setAddress(formattedAddress);
 
       // Convert result coordinate strings to numbers
       const lon = parseFloat(data[0].lon);
@@ -206,23 +235,49 @@ export default function WardMap() {
   };
 
   return (
-    <div style={{ fontFamily: 'sans-serif', maxWidth: '100%', margin: '0 auto'}}>
+    <div style={fullScreen
+      ? { position: 'relative', width: '100%', height: '100dvh', fontFamily: 'sans-serif' }
+      : { fontFamily: 'sans-serif', maxWidth: '100%', margin: '0 auto' }
+    }>
       {/* Map Element Containers */}
-      <div 
-        ref={mapElement} 
-        style={{ 
-          width: '100%', 
-          height: '420px', 
-          overflow: 'hidden',
-          borderRadius: '12px',
-          border: '1px solid #E5E7EB',
-          boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)'
-        }} 
+      <div
+        ref={mapElement}
+        style={fullScreen
+          ? { position: 'absolute', inset: 0 }
+          : {
+              width: '100%',
+              height: '420px',
+              overflow: 'hidden',
+              borderRadius: '12px',
+              border: '1px solid #E5E7EB',
+              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)'
+            }
+        }
       />
 
       {/* Lookup Interfacing Engine */}
-      <div style={{ marginTop: '16px' }}>
-        <form onSubmit={handleSearch} style={{ display: 'flex', gap: '8px' }}>
+      <div style={fullScreen
+        ? {
+            position: 'absolute',
+            bottom: '2rem',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            width: 'min(560px, calc(100% - 2rem))',
+            zIndex: 10,
+          }
+        : { marginTop: '16px' }
+      }>
+        <form onSubmit={handleSearch} style={{
+          display: 'flex',
+          gap: '8px',
+          ...(fullScreen && {
+            background: 'rgba(247, 246, 240, 0.92)',
+            backdropFilter: 'blur(8px)',
+            borderRadius: '10px',
+            padding: '10px',
+            boxShadow: '0 4px 24px rgba(0,0,0,0.18)'
+          })
+        }}>
           <input
             type="text"
             placeholder="Enter your street address (e.g., 502 Main St)"
@@ -259,7 +314,7 @@ export default function WardMap() {
         {/* Dynamic Status Notifications Panels */}
         {status.type && (
           <div style={{
-            marginTop: '14px',
+            marginTop: '10px',
             padding: '16px',
             borderRadius: '8px',
             display: 'flex',

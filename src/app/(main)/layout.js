@@ -5,18 +5,18 @@ import localFont from 'next/font/local';
 import { DonateProvider } from '@/context/DonateContext';
 import { GetInvolvedProvider } from '@/context/GetInvolvedContext';
 import DonateModal from '@/components/DonateModal';
-import './globals.css';
+import '../globals.css';
 import GetInvolvedModal from '@/components/GetInvolvedModal';
 import Script from 'next/script';
 
 const ranchWater = localFont({
-  src: './fonts/RanchWater.otf', // Point directly to your file
+  src: '../fonts/RanchWater.otf',
   variable: '--ranch-water',         // This creates the CSS variable
   display: 'swap',
 });
 
 const cowboy = localFont({
-  src: './fonts/COWBOY.otf', // Point directly to your file
+  src: '../fonts/COWBOY.otf',
   variable: '--cowboy',         // This creates the CSS variable
   display: 'swap',
 });
