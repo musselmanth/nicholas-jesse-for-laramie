@@ -236,14 +236,14 @@ export default function WardMap({ fullScreen = false }) {
 
   return (
     <div style={fullScreen
-      ? { position: 'relative', width: '100%', height: '100dvh', fontFamily: 'sans-serif' }
+      ? { position: 'relative', width: '100%', height: '100vh', fontFamily: 'sans-serif' }
       : { fontFamily: 'sans-serif', maxWidth: '100%', margin: '0 auto' }
     }>
       {/* Map Element Containers */}
       <div
         ref={mapElement}
         style={fullScreen
-          ? { position: 'absolute', inset: 0 }
+          ? { position: 'absolute', top: 0, left: 0, width: '100%', height: '100%' }
           : {
               width: '100%',
               height: '420px',
@@ -273,6 +273,7 @@ export default function WardMap({ fullScreen = false }) {
           ...(fullScreen && {
             background: 'rgba(247, 246, 240, 0.92)',
             backdropFilter: 'blur(8px)',
+            WebkitBackdropFilter: 'blur(8px)',
             borderRadius: '10px',
             padding: '10px',
             boxShadow: '0 4px 24px rgba(0,0,0,0.18)'
