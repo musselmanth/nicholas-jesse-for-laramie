@@ -66,22 +66,34 @@ export default function ElectionPage() {
 
             <h3 className={styles.subHeading}>Key Dates to Remember</h3>
             <div className={styles.datesGrid}>
-              
+
+              {/* Primary Early Voting Card */}
+              <div className={styles.dateCard}>
+                <span className={styles.dateLabel}>Primary Early Voting Begins</span>
+                <span className={styles.dateValue}>July 21, 2026</span>
+                <p className={styles.dateDetails}>Vote early in person at the Albany County Courthouse election building. Early voting continues through August 17.</p>
+              </div>
+
               {/* Primary Election Card */}
               <div className={styles.dateCard}>
-                <span className={styles.dateLabel}>Primary Election</span>
+                <span className={styles.dateLabel}>Primary Election Day</span>
                 <span className={styles.dateValue}>August 18, 2026</span>
                 <p className={styles.dateDetails}>Polls are open from 7:00 AM to 7:00 PM. The top two candidates advance.</p>
-                {/* Embedded Primary Reminder */}
                 <CalendarButton {...primaryElection} />
+              </div>
+
+              {/* General Early Voting Card */}
+              <div className={styles.dateCard}>
+                <span className={styles.dateLabel}>General Early Voting Begins</span>
+                <span className={styles.dateValue}>October 6, 2026</span>
+                <p className={styles.dateDetails}>Vote early in person at the Albany County Courthouse election building. Early voting continues through November 2.</p>
               </div>
 
               {/* General Election Card */}
               <div className={styles.dateCard}>
-                <span className={styles.dateLabel}>General Election</span>
+                <span className={styles.dateLabel}>General Election Day</span>
                 <span className={styles.dateValue}>November 3, 2026</span>
                 <p className={styles.dateDetails}>Polls are open from 7:00 AM to 7:00 PM. The final decision for Ward 1.</p>
-                {/* Embedded General Reminder */}
                 <CalendarButton {...generalElection}/>
               </div>
 
