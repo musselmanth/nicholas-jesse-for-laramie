@@ -1,0 +1,188 @@
+.pageWrapper {
+  width: 100%;
+}
+
+/* ========================================= */
+/* --- Header --- */
+/* ========================================= */
+
+.pageHeader {
+  background-color: var(--brand-cream);
+  padding: 6rem 2rem 4rem 2rem;
+  border-bottom: 4px solid var(--brand-orange);
+}
+
+.headerContainer {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
+  text-align: center;
+}
+
+.pageTitle {
+  font-family: var(--cowboy), sans-serif;
+  font-weight: normal;
+  font-size: clamp(3.5rem, 8vw, 6.5rem);
+  text-transform: uppercase;
+  color: var(--brand-olive-dark);
+  line-height: 0.9;
+  margin: 0;
+}
+
+.paintbrushIllustration {
+  width: 75px;
+  max-width: 100%;
+  height: auto;
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.08));
+}
+
+/* ========================================= */
+/* --- Section Layout --- */
+/* ========================================= */
+
+.section {
+  padding: 6rem 2rem;
+  width: 100%;
+  background-color: var(--brand-cream-light);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  gap: 4rem;
+  align-items: flex-start;
+}
+
+.titleColumn {
+  flex: 1;
+  position: sticky;
+  top: 120px;
+}
+
+.sectionTitle {
+  font-family: var(--cowboy), sans-serif;
+  font-weight: normal;
+  font-size: 3rem;
+  line-height: 1.1;
+  text-transform: uppercase;
+  color: var(--brand-olive);
+}
+
+.contentColumn {
+  flex: 2.2;
+}
+
+.introText {
+  font-size: 1.2rem;
+  line-height: 1.7;
+  margin-bottom: 3rem;
+  font-weight: 400;
+  color: var(--brand-text);
+}
+
+/* ========================================= */
+/* --- Endorsement Cards --- */
+/* ========================================= */
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+
+.card {
+  background-color: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-left: 4px solid var(--brand-orange);
+  border-radius: 4px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.endorserName {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--brand-olive-dark);
+  margin: 0;
+}
+
+.endorserTitle {
+  font-size: 0.95rem;
+  color: var(--brand-olive);
+  margin: 0;
+  line-height: 1.4;
+}
+
+.endorserLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--brand-orange);
+  text-decoration: none;
+}
+
+.endorserLink:hover {
+  text-decoration: underline;
+}
+
+/* ========================================= */
+/* --- Loading / Error States --- */
+/* ========================================= */
+
+.diagnosticState {
+  padding: 2rem;
+  color: var(--brand-olive);
+  font-size: 1rem;
+}
+
+/* ========================================= */
+/* --- Mobile --- */
+/* ========================================= */
+
+@media screen and (max-width: 768px) {
+  .pageHeader {
+    padding: 3rem 1.5rem 2rem 1.5rem;
+  }
+
+  .paintbrushIllustration {
+    width: 60px;
+  }
+
+  .pageTitle {
+    font-size: 3rem;
+    letter-spacing: -0.5px;
+  }
+}
+
+@media screen and (max-width: 992px) {
+  .section {
+    padding: 4rem 1.5rem;
+  }
+
+  .container {
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .titleColumn {
+    position: static;
+  }
+
+  .sectionTitle {
+    font-size: 2.2rem;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}

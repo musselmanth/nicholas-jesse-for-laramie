@@ -77,6 +77,11 @@ export default function Navbar() {
             </Link>
           </li>
           <li className={styles.navItem}>
+            <Link href="/endorsements" className={styles.navLink} onClick={closeMenu}>
+              Endorsements
+            </Link>
+          </li>
+          <li className={styles.navItem}>
             <Link href="/election" className={styles.navLink} onClick={closeMenu}>
               Election Info
             </Link>
