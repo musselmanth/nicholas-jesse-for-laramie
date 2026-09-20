@@ -31,6 +31,11 @@
   align-items:center;
 }
 
+/* Modifier for shorter forms that shouldn't force the full 700px height */
+.compact {
+  min-height: unset;
+}
+
 .closeButton {
   position: absolute;
   top: 10px; 
@@ -67,13 +72,17 @@
   .modal {
     max-width: 100%;
     /* Use svh (Small Viewport Height) to account for mobile browser UI bars */
-    max-height: 92svh; 
+    max-height: 92svh;
     height: 100%; /* Expands to fill the space */
     border-radius: 20px 20px 0 0; /* Rounds only the top corners */
     padding: 3rem 1rem 1rem 1rem;
     animation: slideUp 0.3s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
-  
+
+  .compact {
+    height: auto; /* Don't force short forms to fill the full-height drawer */
+  }
+
   .closeButton {
     /* Make the close button a highly visible target for thumbs */
     top: 15px;

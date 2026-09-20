@@ -206,6 +206,7 @@
 
   .actions {
     justify-content: center;
+    flex-wrap: wrap;
     width: 100%;
     margin-bottom: 1.5rem;
   }
@@ -291,7 +292,7 @@
   .primaryBtn, .secondaryBtn {
     padding: 0.7rem 1rem; /* Reduce padding so they fit side-by-side */
     font-size: 0.95rem; /* Shrink text */
-    white-space: nowrap; /* CRITICAL: Forces "Get Involved" to stay on one line */
+    white-space: nowrap; /* CRITICAL: Keeps each button's label on one line */
   }
 
   .socialText {

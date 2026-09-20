@@ -4,12 +4,14 @@ import { useEffect, useState } from 'react';
 import styles from './Hero.module.css';
 import { useDonate } from '@/context/DonateContext';
 import { useGetInvolved } from '@/context/GetInvolvedContext';
+import { useYardSign } from '@/context/YardSignContext';
 
 export default function Hero() {
   // Default to 75px, but it will instantly update to the real pixel height
   const [navHeight, setNavHeight] = useState('75px');
   const { openDonate } = useDonate();
   const { openGetInvolved } = useGetInvolved();
+  const { openYardSign } = useYardSign();
 
   useEffect(() => {
     let currentWidth = window.innerWidth;
@@ -73,6 +75,7 @@ export default function Hero() {
           <div className={styles.actions}>
             <div onClick={openDonate} className={styles.primaryBtn}>Donate</div>
             <div onClick={openGetInvolved} className={styles.secondaryBtn}>Get Involved</div>
+            <div onClick={openYardSign} className={styles.secondaryBtn}>Get a Yard Sign</div>
           </div>
 
           {/* Social Links */}

@@ -4,9 +4,11 @@ import Footer from '@/components/Footer';
 import localFont from 'next/font/local';
 import { DonateProvider } from '@/context/DonateContext';
 import { GetInvolvedProvider } from '@/context/GetInvolvedContext';
+import { YardSignProvider } from '@/context/YardSignContext';
 import DonateModal from '@/components/DonateModal';
 import '../globals.css';
 import GetInvolvedModal from '@/components/GetInvolvedModal';
+import YardSignModal from '@/components/YardSignModal';
 import Script from 'next/script';
 
 const ranchWater = localFont({
@@ -54,11 +56,14 @@ export default function RootLayout({ children }) {
       <body>
         <DonateProvider>
           <GetInvolvedProvider>
-            <Navbar />
-              {children}
-              <DonateModal />
-              <GetInvolvedModal />
-            <Footer />
+            <YardSignProvider>
+              <Navbar />
+                {children}
+                <DonateModal />
+                <GetInvolvedModal />
+                <YardSignModal />
+              <Footer />
+              </YardSignProvider>
             </GetInvolvedProvider>
         </DonateProvider>
         <Script 
