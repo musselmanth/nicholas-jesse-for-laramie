@@ -4,6 +4,7 @@ import styles from './page.module.css';
 import WardMap from '@/components/WardMap';
 import Hero from '@/components/Hero';
 import UpcomingEvents from '@/components/UpcomingEvents';
+import EndorsementsList from '@/components/EndorsementsList';
 
 export default function Home() {
   return (
@@ -52,22 +53,33 @@ export default function Home() {
       <section className={styles.section}>
         <div className={styles.container}>
           <h2 className={styles.sectionTitle}>Upcoming Events</h2>
-          
+
           {/* The new horizontal carousel loads right here */}
           <UpcomingEvents />
-          
+
+        </div>
+      </section>
+
+      {/* Endorsements Section */}
+      <section id="endorsements" className={`${styles.section} ${styles.altBackground}`}>
+        <div className={styles.container}>
+          <h2 className={styles.sectionTitle}>Community Support</h2>
+          <p className={styles.sectionText}>
+            Nicholas is proud to have the support of community members, local leaders, and organizations who share a vision for a more livable, equitable, and thriving Laramie.
+          </p>
+          <EndorsementsList />
         </div>
       </section>
 
       {/* Map & Election Info Section */}
-      <section className={`${styles.section} ${styles.altBackground}`}>
+      <section className={styles.section}>
         <div className={styles.container}>
           <h2 className={styles.sectionTitle}>Ward Map & Election Info</h2>
           <p className={styles.sectionText}>
-            Are you a resident of Ward 1? Check the map below and make sure you have 
+            Are you a resident of Ward 1? Check the map below and make sure you have
             a plan to vote in the upcoming municipal election.
           </p>
-          
+
           <div className={styles.mapContainer}>
             <WardMap />
           </div>
@@ -78,7 +90,7 @@ export default function Home() {
       </section>
 
             {/* About Section */}
-      <section className={styles.section}>
+      <section className={`${styles.section} ${styles.altBackground}`}>
         <div className={styles.container}>
           <h2 className={styles.sectionTitle}>I want to hear from you!</h2>
           <p className={styles.sectionText}>

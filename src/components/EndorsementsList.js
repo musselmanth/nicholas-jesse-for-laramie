@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Papa from 'papaparse';
-import styles from '@/app/(main)/endorsements/Endorsements.module.css';
+import styles from './EndorsementsList.module.css';
 
 const SHEET_CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSoitHJ31CAvtUhWnEP530DtYQcH9AKHO-nkw2gMDMMGQhibL0OgV_57MPHPUIeF-Xu789QjlRGEIle/pub?gid=0&single=true&output=csv';
 
