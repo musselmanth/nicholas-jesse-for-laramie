@@ -8,6 +8,7 @@ export default function YardSignForm() {
     name: '',
     address: '',
     permissionToInstall: false,
+    notes: '',
   });
   const [status, setStatus] = useState(null);
 
@@ -31,7 +32,7 @@ export default function YardSignForm() {
           phone: '',
           address: formData.address,
           interests: ['sign'],
-          notes: '',
+          notes: formData.notes,
           permissionToInstall: formData.permissionToInstall,
           shirtSize: '',
         }),
@@ -50,6 +51,7 @@ export default function YardSignForm() {
         name: '',
         address: '',
         permissionToInstall: false,
+        notes: '',
       });
 
     } catch (error) {
@@ -94,6 +96,16 @@ export default function YardSignForm() {
           <span className={styles.checkboxCustom}></span>
           Yes, a campaign volunteer has my permission to securely place the sign in my yard for me.
         </label>
+      </div>
+
+      <div className={styles.formGroup}>
+        <label htmlFor="sign-notes">Anything else we need to know to deliver your sign?</label>
+        <textarea
+          id="sign-notes"
+          rows="3"
+          value={formData.notes}
+          onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+        />
       </div>
 
       <button type="submit" className={styles.submitButton} disabled={status === 'sending'}>
