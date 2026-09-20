@@ -81,6 +81,11 @@ export default function Navbar() {
               Election Info
             </Link>
           </li>
+          <li className={styles.navItem}>
+            <Link href="/media" className={styles.navLink} onClick={closeMenu}>
+              In the Media
+            </Link>
+          </li>
                     <li className={styles.navItem}>
             <Link href="/contact" className={styles.navLink} onClick={closeMenu}>
               Contact

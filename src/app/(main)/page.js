@@ -5,6 +5,7 @@ import WardMap from '@/components/WardMap';
 import Hero from '@/components/Hero';
 import UpcomingEvents from '@/components/UpcomingEvents';
 import EndorsementsList from '@/components/EndorsementsList';
+import NewsList from '@/components/NewsList';
 
 export default function Home() {
   return (
@@ -49,8 +50,22 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Upcoming Events Section (Using your global page classes) */}
+      {/* In the Media Section */}
       <section className={styles.section}>
+        <div className={styles.container}>
+          <h2 className={styles.sectionTitle}>In the Media</h2>
+          <p className={styles.sectionText}>
+            See what local outlets, forums, and organizations are saying about Nicholas and the campaign.
+          </p>
+          <NewsList featuredOnly limit={3} />
+          <Link href="/media" className={styles.textLink} style={{ display: 'inline-block', marginTop: '1.5rem' }}>
+            See all media coverage &rarr;
+          </Link>
+        </div>
+      </section>
+
+      {/* Upcoming Events Section (Using your global page classes) */}
+      <section className={`${styles.section} ${styles.altBackground}`}>
         <div className={styles.container}>
           <h2 className={styles.sectionTitle}>Upcoming Events</h2>
 
@@ -61,7 +76,7 @@ export default function Home() {
       </section>
 
       {/* Endorsements Section */}
-      <section id="endorsements" className={`${styles.section} ${styles.altBackground}`}>
+      <section id="endorsements" className={styles.section}>
         <div className={styles.container}>
           <h2 className={styles.sectionTitle}>Community Support</h2>
           <p className={styles.sectionText}>
@@ -72,7 +87,7 @@ export default function Home() {
       </section>
 
       {/* Map & Election Info Section */}
-      <section className={styles.section}>
+      <section className={`${styles.section} ${styles.altBackground}`}>
         <div className={styles.container}>
           <h2 className={styles.sectionTitle}>Ward Map & Election Info</h2>
           <p className={styles.sectionText}>
@@ -90,7 +105,7 @@ export default function Home() {
       </section>
 
             {/* About Section */}
-      <section className={`${styles.section} ${styles.altBackground}`}>
+      <section className={styles.section}>
         <div className={styles.container}>
           <h2 className={styles.sectionTitle}>I want to hear from you!</h2>
           <p className={styles.sectionText}>

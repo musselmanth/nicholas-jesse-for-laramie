@@ -1,0 +1,208 @@
+/* ========================================= */
+/* --- Grid Containers --- */
+/* ========================================= */
+
+/* Simple 3-across row, used for the homepage teaser */
+.teaserGrid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+
+/* Denser 2-column "mosaic" grid, used on the full media page. The first
+   tile in the grid spans both columns so each column reads like a brick
+   pattern instead of a plain uniform list. */
+.mosaicGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
+}
+
+.tileWide {
+  grid-column: span 2;
+}
+
+/* Plain stacked list, used for the Questionnaires & Forums column - these
+   are simple one-line entries rather than mosaic cards. */
+.listGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* ========================================= */
+/* --- Tile --- */
+/* ========================================= */
+
+.tile {
+  background-color: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-left: 4px solid var(--brand-orange);
+  border-radius: 4px;
+  padding: 1.25rem 1.5rem;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Cycle the accent color across tiles so a column of cards reads as a
+   mosaic rather than one flat block of orange. */
+.tile:nth-child(3n+2) {
+  border-left-color: var(--brand-olive);
+}
+
+.tile:nth-child(3n+3) {
+  border-left-color: var(--brand-olive-dark);
+}
+
+.tileLink {
+  text-decoration: none;
+  color: inherit;
+}
+
+.tileImage {
+  width: calc(100% + 3rem);
+  max-width: none;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  border-radius: 4px 4px 0 0;
+  margin: -1.25rem -1.5rem 0.75rem -1.5rem;
+  display: block;
+}
+
+/* ========================================= */
+/* --- List Variant (Questionnaires & Forums) --- */
+/* ========================================= */
+
+.tileList {
+  flex-direction: row;
+  align-items: center;
+  padding: 0.85rem 1.25rem;
+  gap: 1rem;
+}
+
+.tileList .tileLink {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.tileLogo {
+  flex-shrink: 0;
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
+  border-radius: 4px;
+  background-color: var(--brand-cream-light);
+  padding: 6px;
+}
+
+.listContent {
+  min-width: 0;
+}
+
+.tileList .tileTitle {
+  font-size: 1rem;
+}
+
+.tileList .shareRow {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.tileTitle {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--brand-olive-dark);
+  margin: 0;
+  line-height: 1.35;
+}
+
+.tileLink:hover .tileTitle {
+  color: var(--brand-orange);
+}
+
+.externalIcon {
+  flex-shrink: 0;
+  opacity: 0.6;
+}
+
+.tileMeta {
+  font-size: 0.9rem;
+  color: var(--brand-olive);
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* ========================================= */
+/* --- Share Row --- */
+/* ========================================= */
+
+.shareRow {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: auto;
+  padding-top: 0.5rem;
+}
+
+.shareLabel {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #999;
+}
+
+.shareBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background-color: var(--brand-cream-light);
+  color: var(--brand-olive-dark);
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.shareBtn:hover {
+  background-color: var(--brand-orange);
+  color: #ffffff;
+}
+
+/* ========================================= */
+/* --- Loading / Error States --- */
+/* ========================================= */
+
+.diagnosticState {
+  padding: 1rem 0;
+  color: var(--brand-olive);
+  font-size: 1rem;
+}
+
+/* ========================================= */
+/* --- Mobile --- */
+/* ========================================= */
+
+@media screen and (max-width: 768px) {
+  .teaserGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .mosaicGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .tileWide {
+    grid-column: span 1;
+  }
+}

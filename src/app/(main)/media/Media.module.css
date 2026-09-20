@@ -1,0 +1,118 @@
+.pageWrapper {
+  width: 100%;
+}
+
+/* ========================================= */
+/* --- Header --- */
+/* ========================================= */
+
+.pageHeader {
+  background-color: var(--brand-cream);
+  padding: 6rem 2rem 4rem 2rem;
+  border-bottom: 4px solid var(--brand-orange);
+}
+
+.headerContainer {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
+  text-align: center;
+}
+
+.pageTitle {
+  font-family: var(--cowboy), sans-serif;
+  font-weight: normal;
+  font-size: clamp(3.5rem, 8vw, 6.5rem);
+  text-transform: uppercase;
+  color: var(--brand-olive-dark);
+  line-height: 0.9;
+  margin: 0;
+}
+
+.paintbrushIllustration {
+  width: 75px;
+  max-width: 100%;
+  height: auto;
+  filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.08));
+}
+
+/* ========================================= */
+/* --- Two Column Layout --- */
+/* ========================================= */
+
+.section {
+  padding: 6rem 2rem;
+  width: 100%;
+  background-color: var(--brand-cream-light);
+}
+
+.columns {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  gap: 4rem;
+  align-items: start;
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Visible divider between the two columns, centered in the gap */
+.newsColumn {
+  padding-right: 2rem;
+  border-right: 3px solid var(--brand-olive);
+}
+
+.columnTitle {
+  font-family: var(--cowboy), sans-serif;
+  font-weight: normal;
+  font-size: 2rem;
+  line-height: 1.1;
+  text-transform: uppercase;
+  color: var(--brand-olive);
+  margin: 0;
+}
+
+/* ========================================= */
+/* --- Mobile --- */
+/* ========================================= */
+
+@media screen and (max-width: 768px) {
+  .pageHeader {
+    padding: 3rem 1.5rem 2rem 1.5rem;
+  }
+
+  .paintbrushIllustration {
+    width: 60px;
+  }
+
+  .pageTitle {
+    font-size: 3rem;
+    letter-spacing: -0.5px;
+  }
+}
+
+@media screen and (max-width: 900px) {
+  .section {
+    padding: 4rem 1.5rem;
+  }
+
+  .columns {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+  }
+
+  .newsColumn {
+    padding-right: 0;
+    padding-bottom: 2rem;
+    border-right: none;
+    border-bottom: 3px solid var(--brand-olive);
+  }
+}
