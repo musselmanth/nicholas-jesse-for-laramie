@@ -39,6 +39,23 @@
   filter: drop-shadow(0 10px 20px rgba(0, 0, 0, 0.08));
 }
 
+/* Mobile-only jump links (the two columns stack, so this gives an obvious
+   way to skip straight to whichever one you want without scrolling). */
+.jumpNav {
+  display: none;
+}
+
+.jumpLink {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--brand-orange);
+  text-decoration: underline;
+}
+
+.jumpLink:hover {
+  color: var(--brand-orange-hover);
+}
+
 /* ========================================= */
 /* --- Two Column Layout --- */
 /* ========================================= */
@@ -62,6 +79,8 @@
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  /* Accounts for the sticky navbar when jumping here via an anchor link */
+  scroll-margin-top: 90px;
 }
 
 /* Visible divider between the two columns, centered in the gap */
@@ -114,5 +133,14 @@
     padding-bottom: 2rem;
     border-right: none;
     border-bottom: 3px solid var(--brand-olive);
+  }
+
+  .jumpNav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.5rem;
+    padding: 1rem 1.5rem;
+    background-color: var(--brand-cream-light);
   }
 }

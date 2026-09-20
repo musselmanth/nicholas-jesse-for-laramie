@@ -35,6 +35,7 @@
 /* ========================================= */
 
 .tile {
+  position: relative;
   background-color: #ffffff;
   border: 1px solid rgba(0, 0, 0, 0.05);
   border-left: 4px solid var(--brand-orange);
@@ -69,6 +70,10 @@
   border-radius: 4px 4px 0 0;
   margin: -1.25rem -1.5rem 0.75rem -1.5rem;
   display: block;
+}
+
+.cardContent {
+  min-width: 0;
 }
 
 /* ========================================= */
@@ -106,11 +111,14 @@
 
 .tileList .tileTitle {
   font-size: 1rem;
+  padding-right: 1.5rem;
 }
 
-.tileList .shareRow {
-  margin-top: 0;
-  padding-top: 0;
+.externalIconCorner {
+  position: absolute;
+  top: 0.85rem;
+  right: 1.25rem;
+  opacity: 0.6;
 }
 
 .tileTitle {
@@ -141,43 +149,6 @@
 }
 
 /* ========================================= */
-/* --- Share Row --- */
-/* ========================================= */
-
-.shareRow {
-  display: flex;
-  align-items: center;
-  gap: 0.6rem;
-  margin-top: auto;
-  padding-top: 0.5rem;
-}
-
-.shareLabel {
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: #999;
-}
-
-.shareBtn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background-color: var(--brand-cream-light);
-  color: var(--brand-olive-dark);
-  transition: background-color 0.2s ease, color 0.2s ease;
-}
-
-.shareBtn:hover {
-  background-color: var(--brand-orange);
-  color: #ffffff;
-}
-
-/* ========================================= */
 /* --- Loading / Error States --- */
 /* ========================================= */
 
@@ -204,5 +175,49 @@
 
   .tileWide {
     grid-column: span 1;
+  }
+
+  /* Shrink news cards into a compact row (small thumbnail + text) instead
+     of a full-width banner image, so a long list is less to scroll through. */
+  .tileCard {
+    padding: 0.85rem 1rem;
+    gap: 0.35rem;
+  }
+
+  .tileCard .tileLink {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .tileCard .tileImage {
+    width: 64px;
+    height: 64px;
+    max-width: 64px;
+    aspect-ratio: 1 / 1;
+    border-radius: 4px;
+    margin: 0;
+    flex-shrink: 0;
+  }
+
+  .tileCard .cardContent {
+    flex: 1;
+  }
+
+  .tileCard .tileTitle {
+    font-size: 0.95rem;
+  }
+
+  .tileCard .tileMeta {
+    font-size: 0.8rem;
+  }
+
+  .tileList {
+    padding: 0.6rem 0.9rem;
+  }
+
+  .tileLogo {
+    width: 44px;
+    height: 44px;
   }
 }

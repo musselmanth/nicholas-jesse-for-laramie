@@ -22,13 +22,19 @@ export default function MediaPage() {
         </div>
       </header>
 
+      {/* Mobile-only: the two columns stack, so give a way to jump straight to either one */}
+      <nav className={styles.jumpNav} aria-label="Jump to section">
+        <a href="#news-coverage" className={styles.jumpLink}>News Coverage &darr;</a>
+        <a href="#questionnaires-forums" className={styles.jumpLink}>Questionnaires &amp; Forums &darr;</a>
+      </nav>
+
       <section className={styles.section}>
         <div className={styles.columns}>
-          <div className={`${styles.column} ${styles.newsColumn}`}>
+          <div id="news-coverage" className={`${styles.column} ${styles.newsColumn}`}>
             <h2 className={styles.columnTitle}>News Coverage</h2>
             <NewsList mosaic />
           </div>
-          <div className={styles.column}>
+          <div id="questionnaires-forums" className={styles.column}>
             <h2 className={styles.columnTitle}>Questionnaires &amp; Forums</h2>
             <ForumsList />
           </div>
