@@ -172,6 +172,25 @@
   color: #fff;
 }
 
+.nowrap {
+  white-space: nowrap;
+}
+
+.badgeLarge {
+  padding: clamp(0.75rem, 2vw, 1.25rem) clamp(1.25rem, 4vw, 2.75rem);
+  text-align: center;
+}
+
+.badgeLarge .badgeCounty {
+  font-size: clamp(2rem, min(7vw, 7.5vh), 5rem);
+  text-wrap: balance;
+}
+
+.badgeLarge .badgeState {
+  font-size: clamp(0.7rem, 1.6vw, 1.05rem);
+  margin-top: 0.5rem;
+}
+
 .badgeState {
   font-weight: 700;
   text-transform: uppercase;
@@ -196,7 +215,7 @@
   text-transform: uppercase;
   letter-spacing: 0.02em;
   line-height: 1;
-  font-size: clamp(2.25rem, min(8vw, 10vh), 6rem);
+  font-size: clamp(2rem, min(8vw, 8vh), 6rem);
 }
 
 /* Countdown */
@@ -217,7 +236,7 @@
   flex-direction: column;
   align-items: center;
   min-width: 1.15em;
-  font-size: clamp(3.5rem, min(15vw, 22vh), 12rem);
+  font-size: clamp(3rem, min(15vw, 18vh), 12rem);
 }
 
 .digits {
@@ -233,7 +252,7 @@
 
 .colon {
   font-family: var(--font-display), Impact, sans-serif;
-  font-size: clamp(3.5rem, min(15vw, 22vh), 12rem);
+  font-size: clamp(3rem, min(15vw, 18vh), 12rem);
   line-height: 1;
   color: var(--red);
   padding: 0 0.1em;
@@ -262,41 +281,75 @@
   max-width: 40rem;
 }
 
-/* Polling ring */
-.ring {
-  position: relative;
-  width: min(70vw, 38vh, 320px);
-  aspect-ratio: 1;
+/* Checking status */
+.statusBlock {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: clamp(0.5rem, 3vh, 2rem);
 }
 
-.ring svg {
-  width: 100%;
-  height: 100%;
+.statusMain {
+  font-family: var(--font-display), Impact, sans-serif;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  line-height: 1;
+  font-size: clamp(2.25rem, min(7vw, 9vh), 5.5rem);
+  text-wrap: balance;
+  background: linear-gradient(180deg, #fff 30%, var(--gold));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.statusSub {
+  font-weight: 700;
+  font-size: clamp(1.15rem, min(3vw, 4vh), 2rem);
+  font-variant-numeric: tabular-nums;
+  color: var(--text);
+}
+
+.nextCheck {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: clamp(0.5rem, 3vh, 2rem);
+  color: var(--muted);
+  font-size: clamp(0.85rem, 1.6vw, 1rem);
+  font-variant-numeric: tabular-nums;
+}
+
+.checkCount {
+  opacity: 0.7;
+}
+
+.ring {
+  width: 1.4em;
+  height: 1.4em;
   transform: rotate(-90deg);
 }
 
 .ringTrack {
   fill: none;
-  stroke: rgba(255, 255, 255, 0.08);
-  stroke-width: 14;
+  stroke: rgba(255, 255, 255, 0.12);
+  stroke-width: 3;
 }
 
 .ringBar {
   fill: none;
   stroke: var(--blue);
-  stroke-width: 14;
+  stroke-width: 3;
   stroke-linecap: round;
   transition: stroke-dashoffset 0.25s linear;
-  filter: drop-shadow(0 0 8px var(--blue));
 }
 
 .ringChecking .ringBar {
   stroke: var(--gold);
-  filter: drop-shadow(0 0 8px var(--gold));
 }
 
-.ringChecking svg {
-  animation: spin 1.2s linear infinite;
+.ringChecking {
+  animation: spin 0.9s linear infinite;
 }
 
 @keyframes spin {
@@ -308,32 +361,9 @@
   }
 }
 
-.ringCenter {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-.ringDigits {
-  font-family: var(--font-display), Impact, sans-serif;
-  font-size: clamp(3rem, 10vw, 5.5rem);
-  line-height: 1;
-  font-variant-numeric: tabular-nums;
-}
-
-.ringCheckingText {
-  font-family: var(--font-display), Impact, sans-serif;
-  font-size: clamp(1.75rem, 5vw, 2.5rem);
-  text-transform: uppercase;
-  color: var(--gold);
-}
-
 .footer {
   position: relative;
-  padding: 1.25rem;
+  padding: 0.5rem 1.25rem 1rem;
   text-align: center;
   font-size: 0.85rem;
 }
@@ -341,6 +371,21 @@
 .footer a {
   color: var(--muted);
   text-decoration: none;
+}
+
+.footerNote {
+  max-width: 44rem;
+  margin: 0 auto;
+  color: var(--muted);
+  font-size: clamp(0.85rem, 1.6vw, 1.05rem);
+  line-height: 1.5;
+  text-wrap: balance;
+}
+
+.footerNote a {
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
 }
 
 .footer a:hover {
@@ -412,6 +457,9 @@
 
 .resultButton {
   display: block;
+  font: inherit;
+  border: none;
+  cursor: pointer;
   padding: clamp(1rem, 2.5vw, 1.5rem) 2rem;
   border-radius: 1rem;
   background: var(--gold);
@@ -458,7 +506,7 @@
   .colon,
   .foundTitle,
   .confetti span,
-  .ringChecking svg {
+  .ringChecking {
     animation: none;
   }
 
@@ -477,4 +525,232 @@
   font-size: clamp(1.25rem, 3.5vw, 2.25rem);
   letter-spacing: 0.05em;
   color: #fff;
+}
+
+.reveal {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.6rem 0.6rem 0.6rem 1.5rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  font-weight: 800;
+  font-size: clamp(1rem, 2.5vw, 1.5rem);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.revealNum {
+  display: grid;
+  place-items: center;
+  width: 2.2em;
+  height: 2.2em;
+  border-radius: 50%;
+  background: var(--gold);
+  color: var(--bg);
+  font-family: var(--font-display), Impact, sans-serif;
+  font-weight: 400;
+  font-size: 1.6em;
+  animation: pop 1s ease-out;
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(1.8) rotate(-12deg);
+    opacity: 0;
+  }
+  25% {
+    transform: scale(0.9) rotate(4deg);
+    opacity: 1;
+  }
+  40% {
+    transform: scale(1.05) rotate(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Results dashboard. Everything on the board is sized in em so the whole board
+   can be scaled to fit the screen (see RaceBoard). */
+.board {
+  position: relative;
+  padding: 0.25em clamp(1rem, 2.5vw, 2.5rem) 1em;
+}
+
+.dashHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.5em 2em;
+  margin-bottom: 1em;
+}
+
+.dashKicker {
+  color: var(--gold);
+  font-weight: 700;
+  font-size: 0.85em;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  font-variant-numeric: tabular-nums;
+}
+
+.dashTitle {
+  font-family: var(--font-display), Impact, sans-serif;
+  font-weight: 400;
+  text-transform: uppercase;
+  line-height: 1;
+  font-size: 2.4em;
+  margin-top: 0.15em;
+}
+
+.dashLinks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5em;
+}
+
+.dashLinks .resultButton {
+  padding: 0.5em 0.9em;
+  font-size: 0.85em;
+  border-radius: 0.6em;
+}
+
+.raceFlow {
+  column-width: 17em;
+  column-gap: 0.9em;
+}
+
+.keepTogether,
+.raceCard {
+  break-inside: avoid;
+}
+
+.groupTitle {
+  font-weight: 800;
+  font-size: 0.8em;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin: 0.2em 0 0.6em;
+}
+
+.raceCard {
+  margin-bottom: 0.9em;
+  padding: 0.75em 0.9em;
+  border-radius: 0.75em;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.raceTitle {
+  font-size: 0.85em;
+  font-weight: 800;
+  line-height: 1.25;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.raceMeta {
+  color: var(--muted);
+  font-size: 0.75em;
+  margin: 0.2em 0 0.6em;
+}
+
+.raceError {
+  color: var(--gold);
+  font-size: 0.85em;
+}
+
+.candidates {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45em;
+}
+
+.candidate {
+  font-size: 0.95em;
+}
+
+.candidateRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.75em;
+}
+
+.candidateName {
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.candidateVotes {
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.candidatePct {
+  color: var(--muted);
+  font-weight: 600;
+  font-size: 0.85em;
+  margin-left: 0.3em;
+}
+
+.party {
+  display: inline-block;
+  margin-right: 0.4em;
+  padding: 0.05em 0.35em;
+  border-radius: 0.3em;
+  background: rgba(255, 255, 255, 0.12);
+  font-size: 0.7em;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  vertical-align: 0.1em;
+}
+
+.bar {
+  height: 0.35em;
+  margin-top: 0.25em;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--blue);
+  transition: width 0.6s ease;
+}
+
+.leading .bar span {
+  background: var(--gold);
+}
+
+.leading .candidateName::after {
+  content: ' ✓';
+  color: var(--gold);
+}
+
+.writeIn {
+  color: var(--muted);
+  font-size: 0.85em;
+}
+
+.writeIn .candidateVotes {
+  font-weight: 600;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .revealNum,
+  .bar span {
+    animation: none;
+    transition: none;
+  }
 }

@@ -5,25 +5,33 @@
 //                   when a report first changed from its first-seen version.
 // GET /?pdf=<url> → our cached copy of one of those report PDFs, so the page can
 //                   OCR it for vote totals without hitting the county site itself.
-// Add ?demo to either to use the 2026 primary results, which are already posted.
 //
 // Every request goes through a single Durable Object that fetches the clerk page
 // and each PDF at most once per 2 minutes, no matter how many people have
-// /results open.
+// /results open. The county only posts results once they're all counted, so once
+// a report shows ballots cast for the 2026 general, the worker keeps that copy and
+// stops contacting the county entirely.
 //
-// Deploy (from this directory): npx wrangler login && npx wrangler deploy
+// Deploy (from this directory): npm install && npx wrangler login && npx wrangler deploy
 // Then copy the *.workers.dev URL into PROXY_URL in src/app/results/page.js.
 
 import { DurableObject } from 'cloudflare:workers';
+import { getDocumentProxy } from 'unpdf';
+import { parseReport } from '../../src/app/results/parseReport.js';
 
 const CLERK_URL = 'https://www.albanycountywy.gov/176/Results-of-Election';
 const MAX_AGE = 2 * 60 * 1000;
 const MAX_REPORTS = 4;
 const HEADERS = { 'User-Agent': 'Mozilla/5.0 (election-night results checker)' };
+const FINAL_ELECTION = /2026 General/i;
+// Durable Object storage values are capped at 2 MB; the text reports are ~100 KB.
+const MAX_STORED_PDF = 1.5 * 1024 * 1024;
 
-// Link text we're waiting for, e.g. "2026 General Election Preliminary Results".
-const isResultsLink = (text) => /2026/.test(text) && /general/i.test(text) && /prelim|unofficial/i.test(text);
-const isDemoLink = (text) => /2026/.test(text) && /primary/i.test(text);
+// Links that might be the election-night report, e.g. "2026 General Election
+// Preliminary Results" or "UNOFFICIAL Election Summary" (what the primary's was
+// called). The page confirms from the PDF itself that it's the 2026 general.
+const isResultsLink = (text) =>
+  /unofficial|prelim|election summary|summary results/i.test(text) || (/2026/.test(text) && /general/i.test(text));
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -54,18 +62,40 @@ async function fetchOk(url) {
   return res;
 }
 
+// Reads a text report's election name and ballots cast. Returns null for scans,
+// which only the page can read (with OCR).
+async function readText(bytes) {
+  try {
+    const pdf = await getDocumentProxy(new Uint8Array(bytes.slice(0)));
+    try {
+      const pages = [];
+      for (let n = 1; n <= pdf.numPages; n++) {
+        const { items } = await (await pdf.getPage(n)).getTextContent();
+        pages.push(items.map((i) => ({ str: i.str, x: i.transform[4], y: i.transform[5] })));
+      }
+      return parseReport(pages);
+    } finally {
+      await pdf.destroy?.();
+    }
+  } catch {
+    return null;
+  }
+}
+
 async function sha256(buffer) {
   const digest = await crypto.subtle.digest('SHA-256', buffer);
   return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, '0')).join('');
 }
 
 export class ClerkPage extends DurableObject {
-  cached = null; // { at, ok, error?, reports, demoReports, changedAt }
+  cached = null; // { at, ok, error?, reports, changedAt, final }
   inflight = null;
   pdfs = new Map(); // href → { at, bytes } or { promise }
 
   async get() {
     this.cached ??= (await this.ctx.storage.get('state')) ?? null;
+    // Once final results are in there's nothing more to check.
+    if (this.cached?.final) return this.cached;
     if (this.cached && Date.now() - this.cached.at < MAX_AGE) return this.cached;
     // Requests that arrive while a refresh is in progress share it.
     this.inflight ??= this.refresh().finally(() => (this.inflight = null));
@@ -77,10 +107,20 @@ export class ClerkPage extends DurableObject {
     try {
       const html = await (await fetchOk(CLERK_URL)).text();
       const reports = findLinks(html, isResultsLink);
+      let final = false;
       for (const r of reports) {
         const bytes = await (await fetchOk(r.href)).arrayBuffer();
         this.pdfs.set(r.href, { at: Date.now(), bytes });
         r.hash = await sha256(bytes);
+        const report = await readText(bytes);
+        if (report && FINAL_ELECTION.test(report.election ?? '') && report.ballotsCast > 0) final = true;
+      }
+      // Keep the final PDFs so we can keep serving them without the county.
+      if (final) {
+        for (const r of reports) {
+          const { bytes } = this.pdfs.get(r.href);
+          if (bytes.byteLength <= MAX_STORED_PDF) await this.ctx.storage.put(`pdf:${r.href}`, bytes);
+        }
       }
 
       // Fallback for when the page can't OCR a report: the first reports we see
@@ -101,8 +141,8 @@ export class ClerkPage extends DurableObject {
         at: Date.now(),
         ok: true,
         reports,
-        demoReports: findLinks(html, isDemoLink),
         changedAt: changedAt ?? null,
+        final,
       };
     } catch (err) {
       // Cache failures too, so an outage doesn't turn into a retry storm.
@@ -116,10 +156,15 @@ export class ClerkPage extends DurableObject {
   // Serve a report PDF, but only one currently linked from the clerk page.
   async pdf(href) {
     const state = await this.get();
-    const known = [...(state.reports ?? []), ...(state.demoReports ?? [])].some((r) => r.href === href);
+    const known = (state.reports ?? []).some((r) => r.href === href);
     if (!known) return null;
     let entry = this.pdfs.get(href);
-    if (!entry || (entry.at && Date.now() - entry.at >= MAX_AGE)) {
+    if (!entry && state.final) {
+      const stored = await this.ctx.storage.get(`pdf:${href}`);
+      if (stored) this.pdfs.set(href, (entry = { at: Date.now(), bytes: stored }));
+    }
+    // Final reports never change, so only refresh PDFs while still waiting.
+    if (!entry || (!state.final && entry.at && Date.now() - entry.at >= MAX_AGE)) {
       const promise = fetchOk(href)
         .then((res) => res.arrayBuffer())
         .then((bytes) => {
@@ -168,13 +213,12 @@ export default {
     }
 
     const state = await (await stub.fetch('https://clerk-page/')).json();
-    const demo = url.searchParams.has('demo');
     const body = {
       ok: state.ok,
       error: state.error ?? null,
       ageMs: Date.now() - state.at,
-      reports: (demo ? state.demoReports : state.reports) ?? [],
-      changedAt: demo ? null : (state.changedAt ?? null),
+      reports: state.reports ?? [],
+      changedAt: state.changedAt ?? null,
     };
     return Response.json(body, { headers: { ...CORS, 'Cache-Control': 'no-store' } });
   },
