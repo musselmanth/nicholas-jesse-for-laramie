@@ -13,8 +13,10 @@
     "next": "^16.2.6",
     "ol": "^10.9.0",
     "papaparse": "^5.5.3",
+    "pdfjs-dist": "^5.7.284",
     "react": "^19.2.6",
-    "react-dom": "^19.2.6"
+    "react-dom": "^19.2.6",
+    "tesseract.js": "^7.0.0"
   },
   "devDependencies": {
     "babel-plugin-react-compiler": "1.0.0",
