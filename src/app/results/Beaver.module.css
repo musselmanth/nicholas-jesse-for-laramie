@@ -1,0 +1,539 @@
+.beaver {
+  --outline: #3a2216;
+
+  width: clamp(12rem, min(55vw, 34vh), 24rem);
+  height: auto;
+  overflow: visible;
+}
+
+/* Let transform-origin use SVG coordinates. */
+.beaver g {
+  transform-box: view-box;
+}
+
+.shadow {
+  fill: rgba(0, 0, 0, 0.28);
+}
+
+.fur,
+.furDark,
+.tail {
+  stroke: var(--outline);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+.fur {
+  fill: url(#beaver-fur);
+}
+
+.furDark {
+  fill: #6a3f26;
+}
+
+.belly {
+  fill: url(#beaver-belly);
+}
+
+.tail {
+  fill: url(#beaver-tail);
+}
+
+.headOutline {
+  fill: var(--outline);
+  stroke: var(--outline);
+  stroke-width: 3;
+}
+
+.headFill {
+  fill: url(#beaver-fur);
+}
+
+.earInner {
+  fill: #c4876a;
+}
+
+.fluff {
+  fill: none;
+  stroke: var(--outline);
+  stroke-width: 1.2;
+  stroke-linejoin: round;
+}
+
+.blush {
+  fill: #f2857a;
+  opacity: 0.45;
+}
+
+.detail,
+.whiskers {
+  fill: none;
+  stroke: var(--outline);
+  stroke-width: 1;
+  stroke-linecap: round;
+}
+
+.whiskers {
+  stroke: #f6e6cf;
+  stroke-width: 0.7;
+  opacity: 0.7;
+}
+
+.teeth {
+  fill: #fffaf0;
+  stroke: var(--outline);
+  stroke-width: 1.2;
+}
+
+.nose,
+.eye {
+  fill: #23140c;
+}
+
+.noseShine {
+  fill: #fff;
+  opacity: 0.5;
+}
+
+.shine {
+  fill: #fff;
+}
+
+.brows {
+  fill: none;
+  stroke: var(--outline);
+  stroke-width: 1.3;
+  stroke-linecap: round;
+  opacity: 0.7;
+}
+
+.eyesClosed {
+  fill: none;
+  stroke: #23140c;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+/* Laptop */
+.deck {
+  fill: #c3ccc8;
+}
+
+.edge {
+  fill: #8f9a95;
+}
+
+.edgeDark {
+  fill: #75807b;
+}
+
+.keys {
+  fill: none;
+  stroke: #8f9a95;
+  stroke-width: 1.4;
+  stroke-linecap: round;
+}
+
+.lid {
+  fill: #a9b3ae;
+  stroke: #75807b;
+  stroke-width: 0.8;
+  stroke-linejoin: round;
+}
+
+.screen {
+  fill: #12231f;
+  transition: fill 0.4s;
+}
+
+.screenLines {
+  fill: none;
+  stroke: #0f5c4b;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  opacity: 0;
+  transition: opacity 0.4s;
+}
+
+.led {
+  fill: var(--accent, #f4b942);
+  animation: ledPulse 3s ease-in-out infinite;
+}
+
+.glow {
+  opacity: 0;
+  mix-blend-mode: screen;
+  pointer-events: none;
+  transition: opacity 0.4s;
+}
+
+/* Curled up asleep, before checking starts */
+.curl {
+  display: none;
+  transform-origin: 100px 148px;
+}
+
+.curlEyes {
+  fill: none;
+  stroke: #23140c;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.curled .curl {
+  display: inline;
+  animation: breathe 3.6s ease-in-out infinite;
+}
+
+.curled .body,
+.curled .laptop {
+  display: none;
+}
+
+.curled .zzz {
+  transform: translate(32px, 40px);
+}
+
+/* Napping */
+.body {
+  transform-origin: 90px 148px;
+}
+
+.asleep .body {
+  animation: breathe 3.2s ease-in-out infinite;
+}
+
+.head {
+  transform-origin: 104px 94px;
+  transition: transform 0.6s cubic-bezier(0.34, 1.4, 0.64, 1);
+}
+
+.asleep .head {
+  transform: rotate(14deg) translateY(3px);
+}
+
+.eyesOpen,
+.typing,
+.sadFace,
+.happyFace,
+.cheer,
+.notes {
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.zzz {
+  font-family: var(--font-display), Impact, sans-serif;
+  fill: var(--text, #f6f1e4);
+  transition: opacity 0.3s;
+}
+
+.zzz text {
+  opacity: 0;
+  animation: float 2.4s ease-out infinite;
+}
+
+.zzz text:nth-child(2) {
+  animation-delay: 0.8s;
+}
+
+.zzz text:nth-child(3) {
+  animation-delay: 1.6s;
+}
+
+/* Checking, and sad when there's nothing yet */
+.checking .eyesOpen,
+.checking .typing,
+.sad .eyesOpen,
+.sad .sadFace {
+  opacity: 1;
+}
+
+.checking .eyesClosed,
+.checking .restingPaws,
+.checking .zzz,
+.sad .eyesClosed,
+.sad .zzz,
+.sad .eyesOpen .brows,
+.sad .smile {
+  opacity: 0;
+}
+
+.checking .head {
+  transform: rotate(-3deg);
+}
+
+.sad .head {
+  transform: rotate(8deg) translateY(1.5px);
+}
+
+.checking .screen,
+.sad .screen {
+  fill: url(#beaver-screen);
+}
+
+.checking .screenLines {
+  opacity: 0.8;
+  animation: flicker 0.9s steps(3) infinite;
+}
+
+.checking .glow {
+  opacity: 0.6;
+}
+
+.sad .glow {
+  opacity: 0.3;
+}
+
+.checking .led,
+.sad .led {
+  fill: var(--sage, #3cc3a0);
+  animation: none;
+}
+
+.lids {
+  fill: #93603f;
+}
+
+.tear {
+  fill: #c9eef7;
+  stroke: #7fb9c8;
+  stroke-width: 0.5;
+}
+
+.sad .tear {
+  animation: drip 1.6s ease-in infinite;
+}
+
+.armNear {
+  transform-origin: 102px 106px;
+}
+
+.armFar {
+  transform-origin: 110px 100px;
+}
+
+.checking .armNear {
+  animation: tap 0.22s ease-in-out infinite alternate;
+}
+
+.checking .armFar {
+  animation: tap 0.22s ease-in-out 0.11s infinite alternate;
+}
+
+/* Dancing: three poses on a loop, flipbook style */
+.limbOutline,
+.limb {
+  fill: none;
+  stroke-linecap: round;
+}
+
+.limbOutline {
+  stroke: var(--outline);
+  stroke-width: 11;
+}
+
+.limb {
+  stroke: #94603e;
+  stroke-width: 8;
+}
+
+.limbDark {
+  stroke: #6a3f26;
+}
+
+.grin {
+  fill: none;
+  stroke: var(--outline);
+  stroke-width: 1.8;
+  stroke-linecap: round;
+}
+
+.notes {
+  font-family: system-ui, sans-serif;
+  fill: var(--accent, #f4b942);
+}
+
+.dancing .happyFace,
+.dancing .cheer,
+.dancing .notes {
+  opacity: 1;
+}
+
+.dancing .eyesClosed,
+.dancing .restingPaws,
+.dancing .zzz,
+.dancing .smile {
+  opacity: 0;
+}
+
+/* The happy squint uses the closed-eye style, so bring it back inside the happy face. */
+.dancing .happyFace .eyesClosed {
+  opacity: 1;
+}
+
+.dancing .screen {
+  fill: url(#beaver-screen);
+}
+
+.dancing .glow {
+  opacity: 0.5;
+}
+
+.dancing .led {
+  fill: var(--sage, #3cc3a0);
+  animation: none;
+}
+
+.dancing .body {
+  animation: danceBody 0.9s steps(1, end) infinite;
+}
+
+.dancing .head {
+  transition: none;
+  animation: danceHead 0.9s steps(1, end) infinite;
+}
+
+.cheerNear {
+  transform-origin: 106px 105px;
+}
+
+.cheerFar {
+  transform-origin: 86px 98px;
+}
+
+.dancing .cheerNear {
+  animation: danceNear 0.9s steps(1, end) infinite;
+}
+
+.dancing .cheerFar {
+  animation: danceFar 0.9s steps(1, end) infinite;
+}
+
+.notes text {
+  animation: float 1.8s ease-out infinite;
+}
+
+.notes text:nth-child(2) {
+  animation-delay: 0.45s;
+}
+
+.notes text:nth-child(3) {
+  animation-delay: 0.9s;
+}
+
+.notes text:nth-child(4) {
+  animation-delay: 1.35s;
+}
+
+@keyframes danceBody {
+  0% {
+    transform: rotate(-7deg);
+  }
+  33.33% {
+    transform: translateY(-6px);
+  }
+  66.67% {
+    transform: rotate(7deg);
+  }
+}
+
+@keyframes danceHead {
+  0% {
+    transform: rotate(8deg);
+  }
+  33.33% {
+    transform: rotate(-2deg);
+  }
+  66.67% {
+    transform: rotate(-10deg);
+  }
+}
+
+@keyframes danceNear {
+  0% {
+    transform: rotate(18deg);
+  }
+  33.33% {
+    transform: rotate(-3deg);
+  }
+  66.67% {
+    transform: rotate(4deg);
+  }
+}
+
+@keyframes danceFar {
+  0% {
+    transform: rotate(-15deg);
+  }
+  33.33% {
+    transform: rotate(5deg);
+  }
+  66.67% {
+    transform: rotate(15deg);
+  }
+}
+
+@keyframes breathe {
+  50% {
+    transform: scale(1.02, 1.035);
+  }
+}
+
+@keyframes float {
+  0% {
+    opacity: 0;
+    transform: translate(0, 4px);
+  }
+  30% {
+    opacity: 0.9;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(8px, -12px);
+  }
+}
+
+@keyframes tap {
+  to {
+    transform: rotate(-2.5deg);
+  }
+}
+
+@keyframes drip {
+  0% {
+    opacity: 0;
+    transform: translateY(-2px);
+  }
+  25% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(9px);
+  }
+}
+
+@keyframes flicker {
+  50% {
+    opacity: 0.45;
+  }
+}
+
+@keyframes ledPulse {
+  50% {
+    opacity: 0.2;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .beaver *,
+  .beaver g {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .zzz text {
+    opacity: 0.8;
+  }
+}

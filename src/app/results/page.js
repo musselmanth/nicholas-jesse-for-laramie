@@ -1,6 +1,7 @@
 'use client';
 
 import { Fragment, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import Beaver from './Beaver';
 import styles from './page.module.css';
 import { readReport } from './readReport';
 
@@ -14,6 +15,10 @@ const FIRST_PING = Date.parse('2026-11-03T20:30:00-07:00');
 const PING_INTERVAL = 2 * 60 * 1000;
 const FETCH_TIMEOUT = 25 * 1000;
 const CELEBRATE_MS = 10 * 1000;
+// The beaver sits up a few seconds before each check, and stays sad for a bit
+// after one comes back empty before going back to sleep.
+const BEAVER_WAKE_EARLY_MS = 3 * 1000;
+const BEAVER_SAD_MS = 3 * 1000;
 
 // ?demo=sample shows the races from the county's 2024 general election-night report.
 const SAMPLE_REPORT = { href: '/results-sample.pdf', text: '2024 General Election Results UNOFFICIAL (sample)' };
@@ -29,6 +34,8 @@ const RACE_GROUPS = [
   ['State Legislature', /STATE SENATOR|STATE REPRESENTATIVE/i],
   ['Other Local Races', /./],
 ];
+// A color per group, cycled in order.
+const GROUP_COLORS = ['#f4b942', '#3cc3a0', '#ff7a59', '#c792ea', '#9fd356'];
 
 function groupRaces(races) {
   const groups = RACE_GROUPS.map(([name]) => ({ name, races: [] }));
@@ -36,7 +43,7 @@ function groupRaces(races) {
     if (HIDDEN_RACES.test(race.title)) continue;
     groups[RACE_GROUPS.findIndex(([, re]) => re.test(race.title))].races.push(race);
   }
-  return groups.filter((g) => g.races.length);
+  return groups.filter((g) => g.races.length).map((g, i) => ({ ...g, color: GROUP_COLORS[i % GROUP_COLORS.length] }));
 }
 
 // "08/18/2026 09:57PM" → "9:57 PM"
@@ -111,13 +118,13 @@ function PingRing({ remaining, checking }) {
 // General election reports prefix some names with a party, e.g. "DEM KAMALA D. HARRIS".
 const party = (name) => name.match(/^(DEM|REP|LIB|CON|CST|IND|GRN|LBT)\s+(.+)$/);
 
-function RaceCard({ race }) {
+function RaceCard({ race, color }) {
   const fmt = (n) => n.toLocaleString('en-US');
   const ranked = [...race.candidates].sort((a, b) => b.votes - a.votes);
   const max = Math.max(1, ...ranked.map((c) => c.votes));
   const pct = (votes) => (race.totalVotes ? `${((votes / race.totalVotes) * 100).toFixed(1)}%` : '—');
   return (
-    <article className={styles.raceCard}>
+    <article className={styles.raceCard} style={{ '--group': color }}>
       <h3 className={styles.raceTitle}>{race.title}</h3>
       <p className={styles.raceMeta}>
         Vote for {race.voteFor}
@@ -217,12 +224,12 @@ function RaceBoard({ results, groups, asOf, pdfLinks }) {
           // Keyed by position: some races share a title (e.g. a full and an unexpired term).
           g.races.map((r, i) =>
             i === 0 ? (
-              <div key={`${g.name}-${i}`} className={styles.keepTogether}>
+              <div key={`${g.name}-${i}`} className={styles.keepTogether} style={{ '--group': g.color }}>
                 <h2 className={styles.groupTitle}>{g.name}</h2>
-                <RaceCard race={r} />
+                <RaceCard race={r} color={g.color} />
               </div>
             ) : (
-              <RaceCard key={`${g.name}-${i}`} race={r} />
+              <RaceCard key={`${g.name}-${i}`} race={r} color={g.color} />
             ),
           ),
         )}
@@ -248,12 +255,107 @@ function CountyBadge({ title = 'Albany County', subtitle = 'Wyoming · General E
   );
 }
 
+// The results sound is synthesized so there's no sound file to host.
+
+// Sets up a master volume and returns a function that plays one decaying sine note.
+function synth(ctx, volume) {
+  const t0 = ctx.currentTime + 0.05;
+  const master = ctx.createGain();
+  master.gain.value = volume;
+  // Limit loud stacked chords so they don't distort.
+  const limiter = ctx.createDynamicsCompressor();
+  limiter.threshold.value = -6;
+  limiter.ratio.value = 12;
+  master.connect(limiter).connect(ctx.destination);
+  return ({ freq, start, length, peak = 1, attack = 0.01 }) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0, t0 + start);
+    gain.gain.linearRampToValueAtTime(peak, t0 + start + attack);
+    gain.gain.exponentialRampToValueAtTime(0.001, t0 + start + length);
+    osc.connect(gain).connect(master);
+    osc.start(t0 + start);
+    osc.stop(t0 + start + length + 0.05);
+  };
+}
+
+// MIDI note number → Hz (60 = middle C).
+const midi = (n) => 440 * 2 ** ((n - 69) / 12);
+
+// A marimba-like voice: a sine that decays faster the higher it is, a quiet
+// 4th harmonic (marimba bars are tuned to it), and a short mallet click.
+function marimba(note) {
+  return (n, start, peak = 0.6) => {
+    const freq = midi(n);
+    const length = Math.min(1.6, 120 / freq);
+    note({ freq, start, length, peak, attack: 0.004 });
+    note({ freq: freq * 4, start, length: length / 5, peak: peak * 0.15, attack: 0.002 });
+    note({ freq: freq * 10, start, length: 0.03, peak: peak * 0.05, attack: 0.001 });
+  };
+}
+
+// Plays a short marimba tune: a melody over a bass line, a rolled C major
+// chord to finish, and glockenspiel sparkles on top. Times are in 16th notes;
+// notes are MIDI numbers.
+function playTune(ctx, { step, melody, bass, sparkles }) {
+  const note = synth(ctx, 0.4);
+  const mallet = marimba(note);
+  melody.forEach(([t, n, v = 0.6]) => mallet(n, t * step, v));
+  bass.forEach(([t, n]) => mallet(n, t * step, 0.9));
+  sparkles.forEach(([t, n]) => note({ freq: midi(n), start: t * step, length: 0.6, peak: 0.12 }));
+
+  // Roll the final chord: alternate mallets fast, swelling, then one last hit.
+  const rollStart = Math.max(...melody.map(([t]) => t)) + 2;
+  const roll = [72, 79, 76, 84];
+  for (let i = 0; i < 12; i++) {
+    const swell = 0.25 + 0.35 * Math.sin((i / 12) * Math.PI);
+    mallet(roll[i % roll.length], (rollStart + i * 0.5) * step, swell);
+  }
+  const end = (rollStart + 6) * step;
+  [36, 48, 72, 76, 79, 84].forEach((n) => mallet(n, end, n < 60 ? 1 : 0.7));
+  // Shimmer over the last chord.
+  [96, 100, 103, 108].forEach((n, i) => note({ freq: midi(n), start: end + i * 0.06, length: 1.8, peak: 0.1 }));
+}
+
+// The tune that plays when results come in: a syncopated 3-3-2 island groove.
+// It runs about 10 seconds, the length of the celebration, so the beaver has
+// something to dance to. Each line below is one bar (8 sixteenth notes).
+const RESULT_TUNE = {
+  step: 0.085,
+  melody: [
+    [0, 72], [3, 76], [6, 79, 0.75], // C
+    [8, 77], [11, 76], [14, 74], // F, G
+    [16, 72], [19, 76], [22, 79, 0.75], // C
+    [24, 84, 0.9], [27, 83], [30, 79], // G
+    [32, 76], [34, 79], [35, 81], [38, 79], // C
+    [40, 77], [43, 81], [46, 84, 0.8], // F
+    [48, 83], [50, 81], [51, 79], [54, 74], // G
+    [56, 76], [59, 72], [62, 79, 0.75], // C
+    [64, 81], [67, 84], [70, 88, 0.85], // Am
+    [72, 86], [75, 84], [78, 81], // F
+    [80, 83], [82, 86], [83, 83], [86, 79], // G
+    [88, 74], [90, 77], [91, 79], [94, 83], // G, walking up
+    [96, 84, 0.9], // C, then the rolled final chord
+  ],
+  bass: [
+    [0, 48], [3, 55], [6, 48],
+    [8, 41], [11, 48], [14, 43],
+    [16, 48], [19, 55], [22, 43],
+    ...[[24, 43], [32, 48], [40, 41], [48, 43], [56, 48], [64, 45], [72, 41], [80, 43]].flatMap(([t, n]) => [
+      [t, n], [t + 3, n + 7], [t + 6, n],
+    ]),
+    [88, 43], [91, 47], [94, 50],
+  ],
+  sparkles: [[6, 91], [14, 98], [22, 103], [46, 96], [62, 98], [70, 100], [86, 103], [94, 98], [94.5, 103]],
+};
+
 // Deterministic confetti so render stays pure.
 const CONFETTI = Array.from({ length: 60 }, (_, i) => ({
   left: (i * 37) % 100,
   delay: ((i * 53) % 40) / 10,
   duration: 3 + ((i * 29) % 30) / 10,
-  color: ['#ffd23f', '#ff3b5c', '#3bceff', '#ffffff', '#7cff6b'][i % 5],
+  color: ['#f4b942', '#ff7a59', '#3cc3a0', '#f6f1e4', '#c792ea', '#9fd356'][i % 6],
   rotate: (i * 71) % 360,
 }));
 
@@ -261,12 +363,14 @@ export default function ResultsPage() {
   const [now, setNow] = useState(null);
   const [demo, setDemo] = useState(false);
   const [checking, setChecking] = useState(false);
+  const [checkEndedAt, setCheckEndedAt] = useState(null);
   const [nextPingAt, setNextPingAt] = useState(null);
   const [lastCheck, setLastCheck] = useState(null); // { at, ok, error }
   const [checkCount, setCheckCount] = useState(0);
   const [results, setResults] = useState(null);
   const [celebrateUntil, setCelebrateUntil] = useState(0);
   const [canFullscreen, setCanFullscreen] = useState(false);
+  const audioRef = useRef(null);
   const [fullscreen, setFullscreen] = useState(false);
 
   const offsetRef = useRef(0);
@@ -373,6 +477,7 @@ export default function ResultsPage() {
         setNextPingAt(nextPingRef.current);
         checkingRef.current = false;
         setChecking(false);
+        setCheckEndedAt(clock());
       }
     }
 
@@ -446,6 +551,38 @@ export default function ResultsPage() {
     };
   }, []);
 
+  // Browsers only allow audio after someone interacts with the page, so unlock it
+  // on the first tap or key press (e.g. hitting full screen on the party TV).
+  const unlockAudio = () => {
+    const AudioContext = window.AudioContext || window.webkitAudioContext;
+    if (!AudioContext) return null;
+    audioRef.current ??= new AudioContext();
+    audioRef.current.resume().catch(() => {});
+    return audioRef.current;
+  };
+
+  useEffect(() => {
+    const unlock = () => unlockAudio();
+    window.addEventListener('pointerdown', unlock, { once: true });
+    window.addEventListener('keydown', unlock, { once: true });
+    return () => {
+      window.removeEventListener('pointerdown', unlock);
+      window.removeEventListener('keydown', unlock);
+    };
+  }, []);
+
+  // Play the fanfare when the celebration starts.
+  useEffect(() => {
+    const ctx = audioRef.current;
+    if (celebrateUntil && ctx?.state === 'running') playTune(ctx, RESULT_TUNE);
+  }, [celebrateUntil]);
+
+  // Demo only: let people hear the fanfare.
+  const sampleSound = () => {
+    const ctx = unlockAudio();
+    ctx?.resume().then(() => playTune(ctx, RESULT_TUNE), () => {});
+  };
+
   const toggleFullscreen = () => {
     if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
     else document.documentElement.requestFullscreen().catch(() => {});
@@ -461,7 +598,14 @@ export default function ResultsPage() {
         <span className={styles.liveDot} />
         Election Night 2026
       </span>
-      {demo && <span className={styles.demoBadge}>Demo mode</span>}
+      {demo && (
+        <span className={styles.demoTools}>
+          <span className={styles.demoBadge}>Demo mode</span>
+          <button type="button" className={styles.sampleButton} onClick={sampleSound}>
+            ♪ Play sound
+          </button>
+        </span>
+      )}
       <span className={styles.topRight}>
         <span className={styles.clock}>{mtTime(now)} MT</span>
         {canFullscreen && (
@@ -534,6 +678,9 @@ export default function ResultsPage() {
             ) : (
               <div className={styles.foundLinks}>{pdfLinks}</div>
             )}
+            <div className={styles.beaverSpot}>
+              <Beaver mood="dancing" />
+            </div>
           </div>
         </main>
       );
@@ -554,6 +701,13 @@ export default function ResultsPage() {
     kicker = 'Polls are closed · Watching for results';
     heading = null;
     const nextIn = Math.max(0, Math.ceil(((nextPingAt ?? now) - now) / 1000));
+    // We only get here while there are no results, so every finished check is a sad one.
+    const beaverMood =
+      checking || (nextPingAt !== null && now >= nextPingAt - BEAVER_WAKE_EARLY_MS)
+        ? 'checking'
+        : checkEndedAt !== null && now - checkEndedAt < BEAVER_SAD_MS
+          ? 'sad'
+          : 'asleep';
     let statusMain = 'Starting first check…';
     let statusSub = null;
     if (lastCheck?.ok) {
@@ -569,6 +723,9 @@ export default function ResultsPage() {
     }
     body = (
       <>
+        <div className={styles.beaverSpot}>
+          <Beaver mood={beaverMood} />
+        </div>
         <div className={styles.statusBlock} aria-live="polite">
           <p className={styles.statusMain}>{statusMain}</p>
           {statusSub && <p className={styles.statusSub}>{statusSub}</p>}
@@ -587,6 +744,9 @@ export default function ResultsPage() {
       <>
         <Countdown ms={POLLS_CLOSE - now} />
         <p className={styles.status}>Polls close at 7:00 PM MT across Albany County</p>
+        <div className={styles.beaverSpot}>
+          <Beaver mood="curled" />
+        </div>
       </>
     );
   } else {
@@ -595,7 +755,10 @@ export default function ResultsPage() {
     body = (
       <>
         <Countdown ms={FIRST_PING - now} />
-        <p className={styles.status}>We&apos;ll start checking the Albany County Clerk&apos;s site every 2 minutes at 8:30 PM MT</p>
+        <p className={styles.status}>We&apos;ll start checking the Albany County Clerk&apos;s site at 8:30 PM MT</p>
+        <div className={styles.beaverSpot}>
+          <Beaver mood="curled" />
+        </div>
       </>
     );
   }

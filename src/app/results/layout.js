@@ -22,7 +22,7 @@ export const metadata = {
 export default function ResultsLayout({ children }) {
   return (
     <html lang="en" className={`${anton.variable} ${inter.variable}`}>
-      <body style={{ margin: 0, background: '#07091a' }}>
+      <body style={{ margin: 0, background: '#0b1614' }}>
         {children}
       </body>
     </html>

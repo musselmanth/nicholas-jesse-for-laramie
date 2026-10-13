@@ -1,17 +1,18 @@
 .page {
-  --bg: #07091a;
-  --gold: #ffd23f;
-  --red: #ff3b5c;
-  --blue: #3bceff;
-  --text: #f4f6ff;
-  --muted: #9aa3c7;
+  /* Deliberately not red/blue: these are local, nonpartisan races. */
+  --bg: #0b1614;
+  --accent: #f4b942; /* marigold */
+  --clay: #ff7a59; /* coral */
+  --sage: #3cc3a0; /* jade */
+  --text: #f6f1e4;
+  --muted: #9fb3ab;
 
   position: relative;
   min-height: 100vh;
   min-height: 100dvh;
   display: flex;
   flex-direction: column;
-  background: radial-gradient(ellipse at top, #141a3d 0%, var(--bg) 60%);
+  background: radial-gradient(ellipse at top, #173a32 0%, var(--bg) 60%);
   color: var(--text);
   font-family: var(--font-body), system-ui, sans-serif;
 }
@@ -31,20 +32,20 @@
   width: 60vmax;
   height: 60vmax;
   border-radius: 50%;
-  filter: blur(100px);
-  opacity: 0.35;
+  filter: blur(110px);
+  opacity: 0.3;
   pointer-events: none;
 }
 
 .glowA {
-  background: var(--red);
+  background: var(--clay);
   top: -30vmax;
   left: -20vmax;
   animation: drift 18s ease-in-out infinite alternate;
 }
 
 .glowB {
-  background: var(--blue);
+  background: var(--sage);
   bottom: -30vmax;
   right: -20vmax;
   animation: drift 22s ease-in-out infinite alternate-reverse;
@@ -80,8 +81,8 @@
   width: 0.7em;
   height: 0.7em;
   border-radius: 50%;
-  background: var(--red);
-  box-shadow: 0 0 0 0 var(--red);
+  background: var(--clay);
+  box-shadow: 0 0 0 0 var(--clay);
   animation: pulse 1.6s infinite;
 }
 
@@ -97,8 +98,31 @@
 .demoBadge {
   padding: 0.25rem 0.75rem;
   border-radius: 999px;
-  background: var(--gold);
+  background: var(--accent);
   color: var(--bg);
+}
+
+.demoTools {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sampleButton {
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--accent);
+  background: transparent;
+  color: var(--accent);
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+
+.sampleButton:hover {
+  background: rgba(244, 185, 66, 0.15);
 }
 
 .topRight {
@@ -169,7 +193,7 @@
   text-transform: uppercase;
   letter-spacing: 0.04em;
   font-size: clamp(1.5rem, min(4.5vw, 6vh), 3rem);
-  color: #fff;
+  color: var(--text);
 }
 
 .nowrap {
@@ -202,7 +226,7 @@
 
 .kicker {
   text-wrap: balance;
-  color: var(--gold);
+  color: var(--accent);
   font-weight: 700;
   letter-spacing: 0.2em;
   text-transform: uppercase;
@@ -243,25 +267,21 @@
   font-family: var(--font-display), Impact, sans-serif;
   line-height: 1;
   font-variant-numeric: tabular-nums;
-  background: linear-gradient(180deg, #fff 30%, var(--gold));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  filter: drop-shadow(0 0 0.15em rgba(255, 210, 63, 0.35));
+  color: var(--text);
 }
 
 .colon {
   font-family: var(--font-display), Impact, sans-serif;
   font-size: clamp(3rem, min(15vw, 18vh), 12rem);
   line-height: 1;
-  color: var(--red);
+  color: var(--clay);
   padding: 0 0.1em;
   animation: blink 1s steps(2, start) infinite;
 }
 
 @keyframes blink {
   to {
-    opacity: 0.25;
+    opacity: 0.15;
   }
 }
 
@@ -281,6 +301,21 @@
   max-width: 40rem;
 }
 
+/* The napping beaver: inline on phones, tucked in the bottom-right corner on desktop. */
+@media (min-width: 900px) {
+  .beaverSpot {
+    position: fixed;
+    right: clamp(1rem, 2.5vw, 2.5rem);
+    bottom: 0.75rem;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .beaverSpot svg {
+    width: min(27vw, 40vh, 28rem);
+  }
+}
+
 /* Checking status */
 .statusBlock {
   display: flex;
@@ -297,10 +332,7 @@
   line-height: 1;
   font-size: clamp(2.25rem, min(7vw, 9vh), 5.5rem);
   text-wrap: balance;
-  background: linear-gradient(180deg, #fff 30%, var(--gold));
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--text);
 }
 
 .statusSub {
@@ -338,14 +370,14 @@
 
 .ringBar {
   fill: none;
-  stroke: var(--blue);
+  stroke: var(--sage);
   stroke-width: 3;
   stroke-linecap: round;
   transition: stroke-dashoffset 0.25s linear;
 }
 
 .ringChecking .ringBar {
-  stroke: var(--gold);
+  stroke: var(--accent);
 }
 
 .ringChecking {
@@ -399,10 +431,10 @@
 
 @keyframes flash {
   0% {
-    background: #b0102e;
+    background: #e2603b;
   }
   50% {
-    background: #0b1a6b;
+    background: #0f7a62;
   }
 }
 
@@ -411,7 +443,7 @@
 }
 
 .found .liveDot {
-  background: #fff;
+  background: var(--text);
 }
 
 .found .badgeState {
@@ -437,8 +469,8 @@
   text-transform: uppercase;
   line-height: 0.95;
   font-size: clamp(3rem, min(15vw, 15vh), 13rem);
-  color: #fff;
-  text-shadow: 0 0 0.3em rgba(255, 210, 63, 0.8), 0.05em 0.05em 0 var(--red);
+  color: var(--text);
+  text-shadow: 0 0.04em 0.12em rgba(0, 0, 0, 0.35);
   animation: throb 0.8s ease-in-out infinite alternate;
 }
 
@@ -462,7 +494,7 @@
   cursor: pointer;
   padding: clamp(1rem, 2.5vw, 1.5rem) 2rem;
   border-radius: 1rem;
-  background: var(--gold);
+  background: var(--accent);
   color: var(--bg);
   font-weight: 800;
   font-size: clamp(1.1rem, 3vw, 1.8rem);
@@ -516,7 +548,7 @@
 
   .found {
     animation: none;
-    background: #0b1a6b;
+    background: #0f7a62;
   }
 }
 
@@ -524,7 +556,7 @@
   font-weight: 800;
   font-size: clamp(1.25rem, 3.5vw, 2.25rem);
   letter-spacing: 0.05em;
-  color: #fff;
+  color: var(--text);
 }
 
 .reveal {
@@ -547,7 +579,7 @@
   width: 2.2em;
   height: 2.2em;
   border-radius: 50%;
-  background: var(--gold);
+  background: var(--accent);
   color: var(--bg);
   font-family: var(--font-display), Impact, sans-serif;
   font-weight: 400;
@@ -589,7 +621,7 @@
 }
 
 .dashKicker {
-  color: var(--gold);
+  color: var(--accent);
   font-weight: 700;
   font-size: 0.85em;
   letter-spacing: 0.15em;
@@ -633,7 +665,7 @@
   font-size: 0.8em;
   letter-spacing: 0.2em;
   text-transform: uppercase;
-  color: var(--gold);
+  color: var(--group, var(--accent));
   margin: 0.2em 0 0.6em;
 }
 
@@ -641,7 +673,8 @@
   margin-bottom: 0.9em;
   padding: 0.75em 0.9em;
   border-radius: 0.75em;
-  border: 1px solid rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 0.2em solid var(--group, var(--sage));
   background: rgba(255, 255, 255, 0.05);
 }
 
@@ -660,7 +693,7 @@
 }
 
 .raceError {
-  color: var(--gold);
+  color: var(--accent);
   font-size: 0.85em;
 }
 
@@ -725,17 +758,17 @@
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: var(--blue);
+  background: var(--sage);
   transition: width 0.6s ease;
 }
 
 .leading .bar span {
-  background: var(--gold);
+  background: var(--accent);
 }
 
 .leading .candidateName::after {
   content: ' ✓';
-  color: var(--gold);
+  color: var(--accent);
 }
 
 .writeIn {
