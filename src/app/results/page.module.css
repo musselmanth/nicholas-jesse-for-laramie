@@ -64,7 +64,7 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 1.25rem clamp(1rem, 4vw, 2.5rem);
+  padding: clamp(0.75rem, 2.2vh, 1.25rem) clamp(1rem, 4vw, 2.5rem);
   font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -171,7 +171,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: clamp(0.5rem, 2.5vh, 2rem);
+  gap: clamp(0.5rem, 2.6vh, 2.5rem);
   padding: 1rem;
   text-align: center;
 }
@@ -201,12 +201,12 @@
 }
 
 .badgeLarge {
-  padding: clamp(0.75rem, 2vw, 1.25rem) clamp(1.25rem, 4vw, 2.75rem);
+  padding: clamp(0.6rem, min(2vw, 2vh), 1.25rem) clamp(1.25rem, 4vw, 2.75rem);
   text-align: center;
 }
 
 .badgeLarge .badgeCounty {
-  font-size: clamp(2rem, min(7vw, 7.5vh), 5rem);
+  font-size: clamp(2rem, min(7vw, 6.5vh), 5rem);
   text-wrap: balance;
 }
 
@@ -239,7 +239,7 @@
   text-transform: uppercase;
   letter-spacing: 0.02em;
   line-height: 1;
-  font-size: clamp(2rem, min(8vw, 8vh), 6rem);
+  font-size: clamp(1.75rem, min(8vw, 6.5vh), 6rem);
 }
 
 /* Countdown */
@@ -260,7 +260,7 @@
   flex-direction: column;
   align-items: center;
   min-width: 1.15em;
-  font-size: clamp(3rem, min(15vw, 18vh), 12rem);
+  font-size: clamp(3rem, min(15vw, 15vh), 12rem);
 }
 
 .digits {
@@ -272,7 +272,7 @@
 
 .colon {
   font-family: var(--font-display), Impact, sans-serif;
-  font-size: clamp(3rem, min(15vw, 18vh), 12rem);
+  font-size: clamp(3rem, min(15vw, 15vh), 12rem);
   line-height: 1;
   color: var(--clay);
   padding: 0 0.1em;
@@ -291,7 +291,7 @@
   letter-spacing: 0.25em;
   text-transform: uppercase;
   color: var(--muted);
-  margin-top: 0.5rem;
+  margin-top: 0.3rem;
 }
 
 .status {
@@ -314,6 +314,70 @@
   .beaverSpot svg {
     width: min(27vw, 40vh, 28rem);
   }
+
+  /* The sleeping beaver can be poked. */
+  .beaverSpot button {
+    pointer-events: auto;
+  }
+}
+
+/* "Did you know?" facts, in the center column under the status. */
+.trivia {
+  width: min(100%, 42rem);
+  margin-top: clamp(0.5rem, 3vh, 2.5rem);
+}
+
+.triviaKicker {
+  color: var(--accent);
+  font-weight: 700;
+  font-size: clamp(0.7rem, 1.6vh, 0.85rem);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+}
+
+.triviaFact {
+  /* Room for three lines, so the layout doesn't jump between short and long facts. */
+  min-height: calc(3 * 1.4em);
+  margin-top: 0.35rem;
+  font-size: clamp(0.9rem, min(1.5vw, 2.3vh), 1.15rem);
+  line-height: 1.4;
+  text-wrap: balance;
+  animation: factIn 0.6s ease-out;
+}
+
+/* Under the label; shrinks until the next fact. */
+.triviaTimer {
+  display: block;
+  width: 5rem;
+  height: 2px;
+  margin: 0.3rem auto 0;
+  border-radius: 1px;
+  background: var(--sage);
+  opacity: 0.7;
+  animation: factTimer linear forwards;
+}
+
+@keyframes factIn {
+  from {
+    opacity: 0;
+    transform: translateY(0.4rem);
+  }
+}
+
+@keyframes factTimer {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .triviaFact,
+  .triviaTimer {
+    animation: none;
+  }
 }
 
 /* Checking status */
@@ -321,8 +385,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.6rem;
-  margin-top: clamp(0.5rem, 3vh, 2rem);
+  gap: clamp(0.4rem, 1.2vh, 0.9rem);
+  margin-top: clamp(0.25rem, 2.5vh, 2.5rem);
 }
 
 .statusMain {
@@ -330,7 +394,7 @@
   text-transform: uppercase;
   letter-spacing: 0.02em;
   line-height: 1;
-  font-size: clamp(2.25rem, min(7vw, 9vh), 5.5rem);
+  font-size: clamp(2.25rem, min(7vw, 8vh), 5.5rem);
   text-wrap: balance;
   color: var(--text);
 }
@@ -346,7 +410,7 @@
   display: inline-flex;
   align-items: center;
   gap: 0.6rem;
-  margin-top: clamp(0.5rem, 3vh, 2rem);
+  margin-top: clamp(0.25rem, 2.5vh, 2.5rem);
   color: var(--muted);
   font-size: clamp(0.85rem, 1.6vw, 1rem);
   font-variant-numeric: tabular-nums;
@@ -393,23 +457,18 @@
   }
 }
 
+/* Pinned to the bottom of the screen, explaining where results come from. */
 .footer {
   position: relative;
-  padding: 0.5rem 1.25rem 1rem;
+  padding: 0.25rem 1rem clamp(0.5rem, 1.5vh, 1rem);
   text-align: center;
-  font-size: 0.85rem;
-}
-
-.footer a {
-  color: var(--muted);
-  text-decoration: none;
 }
 
 .footerNote {
-  max-width: 44rem;
+  max-width: 60rem;
   margin: 0 auto;
   color: var(--muted);
-  font-size: clamp(0.85rem, 1.6vw, 1.05rem);
+  font-size: clamp(0.72rem, 0.9vw, 0.82rem);
   line-height: 1.5;
   text-wrap: balance;
 }
@@ -418,10 +477,6 @@
   color: var(--text);
   text-decoration: underline;
   text-underline-offset: 0.2em;
-}
-
-.footer a:hover {
-  color: var(--text);
 }
 
 /* Results found */
@@ -641,32 +696,145 @@
 .dashLinks {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 0.5em;
 }
 
+.buttonArrow {
+  margin-left: 0.4em;
+}
+
+/* Line icons inside buttons, sized to the button text. */
+.buttonIcon {
+  width: 1.15em;
+  height: 1.15em;
+  margin-right: 0.45em;
+  vertical-align: -0.2em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Switches the board between fitting on one screen and larger, scrolling text.
+   Sized in rem, not em, so it stays big and high-contrast even when the board
+   shrinks to fit: it's the button people with low vision need to find. */
+.sizeToggle {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0.55rem 1.1rem;
+  border-radius: 0.7rem;
+  border: 2px solid var(--text);
+  background: var(--text);
+  color: #10201b;
+  font: inherit;
+  font-weight: 800;
+  font-size: clamp(1.05rem, 1.25vw, 1.35rem);
+  line-height: 1.1;
+  cursor: pointer;
+  box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.35);
+  transition:
+    transform 0.15s,
+    background 0.2s;
+}
+
+.sizeToggle .buttonIcon {
+  width: 1.35em;
+  height: 1.35em;
+  stroke-width: 2.4;
+}
+
+.sizeToggle:hover {
+  background: #ffffff;
+  transform: translateY(-3px) scale(1.02);
+}
+
+/* Square zoom out / in buttons, shown next to "Fit to screen". */
+.zoomButton {
+  justify-content: center;
+  min-width: 2.75rem;
+  padding-inline: 0.6rem;
+}
+
+.zoomButton .buttonIcon {
+  margin-right: 0;
+}
+
+.sizeToggle:disabled {
+  background: var(--text);
+  opacity: 0.4;
+  cursor: default;
+  transform: none;
+}
+
+.sizeToggle:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* The board's buttons share one large size (see .sizeToggle). */
 .dashLinks .resultButton {
-  padding: 0.5em 0.9em;
-  font-size: 0.85em;
-  border-radius: 0.6em;
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+  padding: 0.55rem 1.1rem;
+  border: 2px solid var(--accent);
+  border-radius: 0.7rem;
+  font-size: clamp(1.05rem, 1.25vw, 1.35rem);
+  line-height: 1.1;
+  box-shadow: 0 0.3rem 1rem rgba(0, 0, 0, 0.35);
+}
+
+.dashLinks .resultButton .buttonIcon {
+  width: 1.35em;
+  height: 1.35em;
+  stroke-width: 2.4;
 }
 
 .raceFlow {
+  /* Room for a group title above a card. */
+  --title-h: 1.75em;
   column-width: 17em;
   column-gap: 0.9em;
+  /* Every column starts below a title-high strip, whether or not a title
+     lands at the top of it, so the first cards in each column line up. */
+  padding-top: var(--title-h);
 }
 
-.keepTogether,
 .raceCard {
+  position: relative;
   break-inside: avoid;
 }
 
+/* A group's first card, with its title drawn in the gap above it. The gap is a
+   margin, which browsers drop when the card starts a new column, so there the
+   title sits in the strip at the top instead. The title lives inside the card
+   (so they always land in the same column) and is shifted up with a transform,
+   which column layout doesn't split. */
+.groupStart {
+  /* The title, plus extra room to separate it from the card above. */
+  margin-top: calc(var(--title-h) + 0.8em);
+}
+
+.raceFlow > .groupStart:first-child {
+  margin-top: 0;
+}
+
 .groupTitle {
+  /* Takes no room in the card; moved up past the card's padding and border.
+     In the title's own em (0.8 of the card's): padding 0.75/0.8, border 0.2/0.8,
+     gap 0.45/0.8, plus one line. */
+  height: 0;
+  transform: translate(calc(-0.9em / 0.8 - 1px), calc(-1 * ((0.75em + 0.2em + 0.45em) / 0.8 + 1.2em)));
   font-weight: 800;
   font-size: 0.8em;
+  line-height: 1.2;
   letter-spacing: 0.2em;
   text-transform: uppercase;
+  white-space: nowrap;
   color: var(--group, var(--accent));
-  margin: 0.2em 0 0.6em;
 }
 
 .raceCard {
@@ -767,7 +935,8 @@
 }
 
 .leading .candidateName::after {
-  content: ' ✓';
+  /* A non-breaking space keeps the check on the same line as the last word. */
+  content: '\00a0✓';
   color: var(--accent);
 }
 

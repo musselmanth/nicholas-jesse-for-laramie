@@ -167,10 +167,15 @@
   transition: opacity 0.4s;
 }
 
-/* Curled up asleep, before checking starts */
+/* Curled up asleep, before checking starts. The curled and sitting beavers
+   cross-fade, and the laptop slides in, when it wakes for the first check. */
 .curl {
-  display: none;
+  opacity: 0;
+  transform: translateY(6px);
   transform-origin: 100px 148px;
+  transition:
+    opacity 0.5s ease,
+    transform 0.5s ease;
 }
 
 .curlEyes {
@@ -180,18 +185,162 @@
   stroke-linecap: round;
 }
 
+.curled .curl,
+.waking .curl {
+  opacity: 1;
+  transform: none;
+}
+
 .curled .curl {
-  display: inline;
   animation: breathe 3.6s ease-in-out infinite;
 }
 
+.body {
+  transition:
+    opacity 0.45s ease 0.25s,
+    transform 0.5s cubic-bezier(0.34, 1.4, 0.64, 1) 0.25s;
+}
+
+.laptop {
+  transition:
+    opacity 0.5s ease 0.45s,
+    transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1) 0.45s;
+}
+
 .curled .body,
-.curled .laptop {
-  display: none;
+.waking .body {
+  opacity: 0;
+  transform: translateY(10px) scale(0.96);
+}
+
+.curled .laptop,
+.waking .laptop {
+  opacity: 0;
+  transform: translateX(24px);
 }
 
 .curled .zzz {
   transform: translate(32px, 40px);
+}
+
+/* Stirring awake: one eye open, a stretch and a yawn */
+.waking .zzz {
+  opacity: 0;
+}
+
+.waking .peekEye {
+  display: inline;
+}
+
+.beaver.waking {
+  animation: stir 0.9s ease-in-out 2;
+}
+
+/* Poking a sleeping beaver */
+.pokeButton {
+  display: block;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pokeButton:disabled {
+  cursor: default;
+}
+
+.pokeButton:focus-visible {
+  outline: 2px solid var(--accent, #f4b942);
+  outline-offset: 4px;
+  border-radius: 1rem;
+}
+
+.peekEye,
+.grumpyFace {
+  display: none;
+}
+
+.peek .peekEye,
+.grumpy .peekEye,
+.grumpy .grumpyFace {
+  display: inline;
+}
+
+.scowl {
+  fill: none;
+  stroke: var(--outline);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+}
+
+.stir .zzz,
+.peek .zzz,
+.grumpy .zzz {
+  opacity: 0;
+}
+
+.beaver.stir {
+  animation: stir 0.5s ease-in-out;
+}
+
+.beaver.grumpy {
+  animation: shake 0.4s ease-in-out;
+}
+
+.bubble {
+  transform-origin: 90px 30px;
+  animation: pop 0.25s ease-out;
+}
+
+.bubble rect,
+.bubble path {
+  fill: var(--text, #f6f1e4);
+}
+
+.bubble text {
+  font-family: var(--font-body), system-ui, sans-serif;
+  font-size: 9px;
+  font-weight: 700;
+  fill: #1c2a25;
+}
+
+.curled .bubbleSpot,
+.waking .bubbleSpot {
+  transform: translate(40px, 48px);
+}
+
+@keyframes stir {
+  30% {
+    transform: rotate(-2deg);
+  }
+  65% {
+    transform: rotate(1.5deg);
+  }
+}
+
+@keyframes hop {
+  40% {
+    transform: translateY(-6%);
+  }
+}
+
+@keyframes shake {
+  20%,
+  60% {
+    transform: translateX(-4px);
+  }
+  40%,
+  80% {
+    transform: translateX(4px);
+  }
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
 }
 
 /* Napping */
@@ -245,7 +394,10 @@
 .checking .eyesOpen,
 .checking .typing,
 .sad .eyesOpen,
-.sad .sadFace {
+.sad .sadFace,
+.excited .eyesOpen,
+.letdown .eyesOpen,
+.letdown .sadFace {
   opacity: 1;
 }
 
@@ -255,8 +407,44 @@
 .sad .eyesClosed,
 .sad .zzz,
 .sad .eyesOpen .brows,
-.sad .smile {
+.sad .smile,
+.excited .eyesClosed,
+.excited .zzz,
+.letdown .eyesClosed,
+.letdown .zzz,
+.letdown .eyesOpen .brows,
+.letdown .smile {
   opacity: 0;
+}
+
+/* Poked while napping at the laptop: hopeful, then let down */
+.asleep.excited .head {
+  transform: rotate(-6deg) translateY(-3px);
+}
+
+.asleep.letdown .head {
+  transform: rotate(8deg) translateY(1.5px);
+}
+
+.beaver.excited {
+  animation: hop 0.45s ease-out;
+}
+
+.excited .screen,
+.letdown .screen {
+  fill: url(#beaver-screen);
+}
+
+.excited .glow {
+  opacity: 0.6;
+}
+
+.letdown .glow {
+  opacity: 0.3;
+}
+
+.letdown .tear {
+  animation: drip 1.6s ease-in infinite;
 }
 
 .checking .head {
@@ -291,6 +479,20 @@
   animation: none;
 }
 
+/* Dozed off with the laptop still on; it goes dark a few seconds later. */
+.screenOn .screen {
+  fill: url(#beaver-screen);
+}
+
+.screenOn .glow {
+  opacity: 0.3;
+}
+
+.screenOn .led {
+  fill: var(--sage, #3cc3a0);
+  animation: none;
+}
+
 .lids {
   fill: #93603f;
 }
@@ -306,11 +508,11 @@
 }
 
 .armNear {
-  transform-origin: 102px 106px;
+  transform-origin: 110px 110px;
 }
 
 .armFar {
-  transform-origin: 110px 100px;
+  transform-origin: 114px 104px;
 }
 
 .checking .armNear {

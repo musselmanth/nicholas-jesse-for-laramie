@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react';
 import styles from './Beaver.module.css';
 
 const LABELS = {
@@ -6,15 +7,180 @@ const LABELS = {
   sad: 'A sad beaver: no results yet',
   dancing: 'A happy beaver dancing because the results are in',
   curled: 'A beaver curled up asleep, waiting for the polls to close',
+  waking: 'A beaver yawning awake, about to start checking for results',
 };
+
+// Poking the curled-up beaver (before checking starts) gets a grumpier
+// reaction each time, then it settles back down.
+const POKE_SETTLE_MS = 2500;
+const POKES = [
+  null,
+  { level: 'stir', says: 'Mmm?' },
+  { level: 'stir', says: 'Zzz… huh?' },
+  { level: 'peek', says: 'Five more minutes…' },
+  { level: 'peek', says: 'Still counting votes?' },
+  { level: 'grumpy', says: "I'm napping!!" },
+];
+
+// Before Election Day, it would rather you went and voted early.
+const POKES_EARLY_VOTING = [
+  null,
+  { level: 'stir', says: 'Mmm?' },
+  { level: 'stir', says: 'It’s not even Election Day…' },
+  { level: 'peek', says: 'You can vote early at the Election Building!' },
+  { level: 'peek', says: 'It’s on Grand Avenue. Go!' },
+  { level: 'grumpy', says: 'Go vote early and stop bugging me!!' },
+];
+
+// While the polls are still open, it would rather you went and voted.
+const POKES_POLLS_OPEN = [
+  null,
+  { level: 'stir', says: 'Mmm?' },
+  { level: 'stir', says: 'Shouldn’t you be voting?' },
+  { level: 'peek', says: 'Polls close at 7. Go vote!' },
+  { level: 'peek', says: 'Go vote and let me sleep…' },
+  { level: 'grumpy', says: 'Go vote and stop bugging me!!' },
+];
+
+// Poking the beaver napping at the laptop wakes it up hoping the results are
+// in, then it remembers they aren't and slumps back down.
+const EXCITED_MS = 1300;
+const LETDOWN_MS = 2000;
+const EXCITED = ['Are they in?!', 'Results?!', 'Is it time?!'];
+const LETDOWN = ['…oh. Not yet.', 'Nope. Still waiting.', 'Back to my nap…'];
+
+// What the beaver says while checking, a different line each time.
+const CHECKING = [
+  'Anything yet?!',
+  'Is it posted?!',
+  'Come on, come on…',
+  'Ooh, maybe this time!',
+  'Refresh! Refresh!',
+  'Results? Results?',
+  'Let’s see…',
+  'This could be it!',
+];
+
+// What the beaver says after each check comes back empty, a different line each time.
+const NO_RESULTS = [
+  'Nothing yet…',
+  'Still counting, I guess.',
+  'Empty again. Wake me in two minutes.',
+  'Not yet! Counting takes time.',
+  'No results. Back to my nap…',
+  'The clerk’s still working on it.',
+  'Patience is a beaver virtue.',
+  'Any minute now… maybe.',
+];
+
+// A speech bubble sized to its text, pointing down at the beaver's head.
+// Long lines wrap onto two rows, growing upward.
+function Bubble({ text }) {
+  const words = text.split(' ');
+  const rows = [text];
+  if (text.length > 20) {
+    // Break at the space closest to the middle.
+    let best = 1;
+    for (let i = 1; i < words.length; i++) {
+      const left = words.slice(0, i).join(' ').length;
+      const bestLeft = words.slice(0, best).join(' ').length;
+      if (Math.abs(left - text.length / 2) < Math.abs(bestLeft - text.length / 2)) best = i;
+    }
+    rows.splice(0, 1, words.slice(0, best).join(' '), words.slice(best).join(' '));
+  }
+  const width = Math.max(60, Math.max(...rows.map((r) => r.length)) * 5.1 + 18);
+  const height = 10 + rows.length * 11;
+  const bottom = 23;
+  return (
+    <g className={styles.bubbleSpot}>
+      <g className={styles.bubble}>
+        <rect x={67 - width / 2} y={bottom - height} width={width} height={height} rx={10.5} />
+        <path d="M84 22 L94 31 L92 22 Z" />
+        <text textAnchor="middle">
+          {rows.map((row, i) => (
+            <tspan key={i} x="67" y={bottom - height + 13.8 + i * 11}>
+              {row}
+            </tspan>
+          ))}
+        </text>
+      </g>
+    </g>
+  );
+}
+
+// Half-open eyes and a scowl for a poked beaver, in the head's coordinates.
+function PokedFace() {
+  return (
+    <>
+      <g className={styles.peekEye}>
+        <path d="M111 60.5 a3 3 0 0 0 6 0 Z" className={styles.eye} />
+        <path d="M109.5 60.5 h9" className={styles.eyesClosed} />
+      </g>
+      <g className={styles.grumpyFace}>
+        <path d="M126 58.5 a2.5 2.5 0 0 0 5 0 Z" className={styles.eye} />
+        <path d="M124.5 58.5 h7.5" className={styles.eyesClosed} />
+        <path d="M109 51.5 l9 3.5 M124 54 l7.5 -3" className={styles.scowl} />
+      </g>
+    </>
+  );
+}
 
 // A beaver who naps next to a laptop between checks, sits up to check the
 // clerk's site, and looks sad when there's nothing there yet.
-// `mood` is 'asleep', 'checking', 'sad', 'dancing' (results are in!) or 'curled'
-// (fast asleep, no laptop, before checking starts). The laptop is turned toward the beaver.
-export default function Beaver({ mood }) {
-  return (
-    <svg viewBox="0 0 220 160" className={`${styles.beaver} ${styles[mood]}`} role="img" aria-label={LABELS[mood]}>
+// `mood` is 'asleep', 'checking', 'sad', 'dancing' (results are in!), 'curled'
+// (fast asleep, no laptop, before checking starts) or 'waking' (stirring from
+// the curl just before the first check). The laptop is turned toward the beaver.
+// While it's asleep or curled up, it can be poked.
+// `checks` counts completed checks, so each sad moment gets the next line.
+// `screenOn` keeps the laptop lit for a bit after the beaver dozes off.
+// `pollsOpen` and `earlyVoting` change what it grumbles when poked before the polls close.
+export default function Beaver({ mood, checks = 0, screenOn = false, pollsOpen = false, earlyVoting = false }) {
+  const [reaction, setReaction] = useState(null); // { level, says }
+  const pokes = useRef(0);
+  const timers = useRef([]);
+  const clearTimers = () => {
+    timers.current.forEach(clearTimeout);
+    timers.current = [];
+  };
+  const later = (ms, fn) => timers.current.push(setTimeout(fn, ms));
+  useEffect(() => clearTimers, []);
+
+  const pokeable = mood === 'asleep' || mood === 'curled';
+  const poke = pokeable ? reaction : null;
+  const says =
+    poke?.says ??
+    (mood === 'waking'
+      ? '*Yawn*… is it 8:00?'
+      : mood === 'checking'
+        ? CHECKING[checks % CHECKING.length]
+        : mood === 'sad'
+          ? NO_RESULTS[(checks - 1 + NO_RESULTS.length) % NO_RESULTS.length]
+          : null);
+  const onPoke = () => {
+    clearTimers();
+    const n = pokes.current++;
+    const settle = () => {
+      setReaction(null);
+      pokes.current = 0;
+    };
+    if (mood === 'asleep') {
+      setReaction({ level: 'excited', says: EXCITED[n % EXCITED.length] });
+      later(EXCITED_MS, () => setReaction({ level: 'letdown', says: LETDOWN[n % LETDOWN.length] }));
+      later(EXCITED_MS + LETDOWN_MS, settle);
+    } else {
+      const lines = earlyVoting ? POKES_EARLY_VOTING : pollsOpen ? POKES_POLLS_OPEN : POKES;
+      setReaction(lines[Math.min(n + 1, lines.length - 1)]);
+      later(POKE_SETTLE_MS, settle);
+    }
+  };
+
+  const svg = (
+    <svg
+      viewBox="0 0 220 160"
+      className={`${styles.beaver} ${styles[mood]} ${poke ? styles[poke.level] : ''} ${screenOn ? styles.screenOn : ''}`}
+      role="img"
+      aria-label={LABELS[mood]}
+    >
       <defs>
         <radialGradient id="beaver-fur" cx="0.35" cy="0.3" r="0.8">
           <stop offset="0" stopColor="#a46d48" />
@@ -71,6 +237,7 @@ export default function Beaver({ mood }) {
           <ellipse cx="136" cy="70" rx="6.5" ry="4.6" className={styles.nose} />
           <ellipse cx="134.2" cy="68.4" rx="2" ry="1.1" className={styles.noseShine} />
           <path d="M109.5 61 q4.5 3.8 9 0 M124.5 59 q3.5 3.2 7 0" className={styles.curlEyes} />
+          <PokedFace />
         </g>
         {/* Front paws tucked under the cheek, behind the teeth */}
         <ellipse cx="126" cy="146" rx="9" ry="4.5" className={styles.furDark} />
@@ -100,8 +267,9 @@ export default function Beaver({ mood }) {
 
         {/* Far arm, behind the body */}
         <g className={`${styles.typing} ${styles.armFar}`}>
-          <path d="M110 98 C114 94 120 95 123 99 L141 119 C145 123 151 125 157 126 L160 135 C149 135 138 135 131 131 L109 108 C106 105 107 100 110 98 Z" className={styles.furDark} />
-          <ellipse cx="160" cy="132" rx="6.5" ry="4" transform="rotate(14 160 132)" className={styles.furDark} />
+          <path d="M114 104 Q133 113 148 127" className={styles.limbOutline} />
+          <path d="M114 104 Q133 113 148 127" className={`${styles.limb} ${styles.limbDark}`} />
+          <ellipse cx="150" cy="129" rx="6" ry="4" transform="rotate(14 150 129)" className={styles.furDark} />
         </g>
 
         <ellipse cx="90" cy="115" rx="36" ry="33" className={styles.fur} />
@@ -130,9 +298,10 @@ export default function Beaver({ mood }) {
 
         {/* Near arm, reaching for the keyboard */}
         <g className={`${styles.typing} ${styles.armNear}`}>
-          <path d="M100 101 C104 97 110 98 113 102 L131 122 C135 126 140 128 146 129 L149 138 C138 139 127 139 121 135 L99 112 C96 109 97 104 100 101 Z" className={styles.fur} />
-          <ellipse cx="149" cy="134" rx="7.5" ry="4.5" transform="rotate(14 149 134)" className={styles.fur} />
-          <path d="M152 131.5 l1.2 3 M155 132.5 l1 2.6" className={styles.detail} />
+          <path d="M110 110 Q124 119 136 130" className={styles.limbOutline} />
+          <path d="M110 110 Q124 119 136 130" className={styles.limb} />
+          <ellipse cx="139" cy="132" rx="6.5" ry="4.2" transform="rotate(14 139 132)" className={styles.fur} />
+          <path d="M141.5 129.8 l1 2.6 M144.2 130.8 l0.9 2.3" className={styles.detail} />
         </g>
 
         <g className={styles.head}>
@@ -160,6 +329,7 @@ export default function Beaver({ mood }) {
             <circle cx="129.3" cy="57.6" r="1.3" className={styles.shine} />
           </g>
           <path d="M109.5 61 q4.5 3.8 9 0 M124.5 59 q3.5 3.2 7 0" className={styles.eyesClosed} />
+          <PokedFace />
 
           <g className={styles.happyFace}>
             {/* Squinty smiling eyes and a big grin */}
@@ -201,6 +371,21 @@ export default function Beaver({ mood }) {
         <text x="28" y="40" fontSize="13">♫</text>
         <text x="182" y="28" fontSize="14">♪</text>
       </g>
+
+      {says && <Bubble key={says} text={says} />}
     </svg>
+  );
+
+  // Always the same wrapper, so the drawing stays mounted and can animate between moods.
+  return (
+    <button
+      type="button"
+      className={styles.pokeButton}
+      onClick={pokeable ? onPoke : undefined}
+      disabled={!pokeable}
+      title={pokeable ? 'Poke the beaver' : undefined}
+    >
+      {svg}
+    </button>
   );
 }

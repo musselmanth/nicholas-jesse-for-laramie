@@ -2,6 +2,7 @@
 
 import { Fragment, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import Beaver from './Beaver';
+import Trivia from './Trivia';
 import styles from './page.module.css';
 import { readReport } from './readReport';
 
@@ -10,15 +11,20 @@ import { readReport } from './readReport';
 const PROXY_URL = 'https://albany-results-proxy.nicojesse93.workers.dev';
 
 const CLERK_URL = 'https://www.albanycountywy.gov/176/Results-of-Election';
+const ELECTION_DAY = Date.parse('2026-11-03T00:00:00-07:00');
 const POLLS_CLOSE = Date.parse('2026-11-03T19:00:00-07:00');
-const FIRST_PING = Date.parse('2026-11-03T20:30:00-07:00');
+const FIRST_PING = Date.parse('2026-11-03T20:00:00-07:00'); // an hour after polls close
 const PING_INTERVAL = 2 * 60 * 1000;
 const FETCH_TIMEOUT = 25 * 1000;
 const CELEBRATE_MS = 10 * 1000;
 // The beaver sits up a few seconds before each check, and stays sad for a bit
 // after one comes back empty before going back to sleep.
-const BEAVER_WAKE_EARLY_MS = 3 * 1000;
-const BEAVER_SAD_MS = 3 * 1000;
+const BEAVER_WAKE_EARLY_MS = 5 * 1000;
+const BEAVER_SAD_MS = 4 * 1000;
+// After it dozes off, the laptop screen stays on a few seconds before going dark.
+const BEAVER_SCREEN_MS = 5 * 1000;
+// Before the very first check it stirs awake a few seconds before sitting up.
+const BEAVER_YAWN_MS = 3 * 1000;
 
 // ?demo=sample shows the races from the county's 2024 general election-night report.
 const SAMPLE_REPORT = { href: '/results-sample.pdf', text: '2024 General Election Results UNOFFICIAL (sample)' };
@@ -118,13 +124,15 @@ function PingRing({ remaining, checking }) {
 // General election reports prefix some names with a party, e.g. "DEM KAMALA D. HARRIS".
 const party = (name) => name.match(/^(DEM|REP|LIB|CON|CST|IND|GRN|LBT)\s+(.+)$/);
 
-function RaceCard({ race, color }) {
+// `title` is the group's name, shown above the group's first card.
+function RaceCard({ race, color, title }) {
   const fmt = (n) => n.toLocaleString('en-US');
   const ranked = [...race.candidates].sort((a, b) => b.votes - a.votes);
   const max = Math.max(1, ...ranked.map((c) => c.votes));
   const pct = (votes) => (race.totalVotes ? `${((votes / race.totalVotes) * 100).toFixed(1)}%` : '—');
   return (
-    <article className={styles.raceCard} style={{ '--group': color }}>
+    <article className={`${styles.raceCard} ${title ? styles.groupStart : ''}`} style={{ '--group': color }}>
+      {title && <h2 className={styles.groupTitle}>{title}</h2>}
       <h3 className={styles.raceTitle}>{race.title}</h3>
       <p className={styles.raceMeta}>
         Vote for {race.voteFor}
@@ -172,11 +180,76 @@ function RaceCard({ race, color }) {
 // The race results. On big screens (e.g. projected at the party) the text is
 // scaled to the largest size where every race fits without scrolling; on
 // phones it's a normal scrolling page.
+// Small line icons for the board's buttons.
+const ICONS = {
+  // A big and a small "A": larger text
+  textSize: 'M3 19 8 6l5 13M4.8 15h6.4M15 19l3-7 3 7M15.9 17h4.2',
+  // Arrows pointing in: shrink to fit the screen
+  fit: 'M15 15l6 6M15 15v4.8M15 15h4.8M9 19.8V15m0 0H4.2M9 15l-6 6M15 4.2V9m0 0h4.8M15 9l6-6M9 4.2V9m0 0H4.2M9 9 3 3',
+  // Magnifying glass with a plus / minus: zoom the text in or out
+  zoomIn: 'M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4.2-4.2M8 11h6M11 8v6',
+  zoomOut: 'M11 18a7 7 0 1 0 0-14 7 7 0 0 0 0 14zM20 20l-4.2-4.2M8 11h6',
+  // A page of text: the county's PDF report
+  document: 'M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8',
+};
+
+function Icon({ name }) {
+  return (
+    <svg viewBox="0 0 24 24" className={styles.buttonIcon} aria-hidden="true">
+      <path d={ICONS[name]} />
+    </svg>
+  );
+}
+
 const FIT_MIN_WIDTH = 900;
 const FIT_FONT_SIZES = [9, 30]; // px, the range to search
+// "Larger text" mode: a comfortable reading size that scrolls instead of fitting.
+const largeFontSize = () => Math.min(24, Math.max(17, window.innerWidth * 0.0135));
+const FIT_PREF_KEY = 'results-board-fit';
+// In larger-text mode, zoom steps multiply the size by ZOOM_STEP, within ZOOM_RANGE:
+// one step smaller than the larger-text size, up to about double it.
+const ZOOM_STEP = 1.15;
+const ZOOM_RANGE = [-1, 5];
+const ZOOM_PREF_KEY = 'results-board-zoom';
 
 function RaceBoard({ results, groups, asOf, pdfLinks }) {
   const ref = useRef(null);
+  // Remember each viewer's choice; storage can be unavailable, so fall back to fitting.
+  const [fitAll, setFitAll] = useState(() => {
+    try {
+      return localStorage.getItem(FIT_PREF_KEY) !== 'large';
+    } catch {
+      return true;
+    }
+  });
+  const [zoom, setZoom] = useState(() => {
+    try {
+      const saved = Number(localStorage.getItem(ZOOM_PREF_KEY));
+      return Number.isInteger(saved) ? Math.min(ZOOM_RANGE[1], Math.max(ZOOM_RANGE[0], saved)) : 0;
+    } catch {
+      return 0;
+    }
+  });
+  const changeZoom = (delta) => {
+    setZoom((z) => {
+      const next = Math.min(ZOOM_RANGE[1], Math.max(ZOOM_RANGE[0], z + delta));
+      try {
+        localStorage.setItem(ZOOM_PREF_KEY, String(next));
+      } catch {}
+      return next;
+    });
+  };
+  // Only offer larger text when fitting actually shrinks it below the large size.
+  const [canEnlarge, setCanEnlarge] = useState(false);
+
+  const toggleFit = () => {
+    setFitAll((on) => {
+      try {
+        localStorage.setItem(FIT_PREF_KEY, on ? 'large' : 'fit');
+      } catch {}
+      return !on;
+    });
+  };
 
   useLayoutEffect(() => {
     const el = ref.current;
@@ -184,6 +257,7 @@ function RaceBoard({ results, groups, asOf, pdfLinks }) {
     const fit = () => {
       if (window.innerWidth < FIT_MIN_WIDTH) {
         el.style.fontSize = '';
+        setCanEnlarge(false);
         return;
       }
       let [lo, hi] = FIT_FONT_SIZES;
@@ -193,14 +267,16 @@ function RaceBoard({ results, groups, asOf, pdfLinks }) {
         if (fits()) lo = mid;
         else hi = mid;
       }
-      el.style.fontSize = `${lo}px`;
+      const large = largeFontSize();
+      setCanEnlarge(lo < large);
+      el.style.fontSize = `${fitAll ? lo : large * ZOOM_STEP ** zoom}px`;
     };
     fit();
     // Refit once the display font has loaded, and whenever the window changes size.
     document.fonts?.ready.then(fit);
     window.addEventListener('resize', fit);
     return () => window.removeEventListener('resize', fit);
-  }, [results]);
+  }, [results, fitAll, zoom]);
 
   return (
     <div ref={ref} className={styles.board}>
@@ -216,22 +292,47 @@ function RaceBoard({ results, groups, asOf, pdfLinks }) {
             <span className={styles.nowrap}>Albany County</span>
           </h1>
         </div>
-        <div className={styles.dashLinks}>{pdfLinks}</div>
+        <div className={styles.dashLinks}>
+          {(canEnlarge || !fitAll) && (
+            <button type="button" className={styles.sizeToggle} onClick={toggleFit} aria-pressed={!fitAll}>
+              <Icon name={fitAll ? 'textSize' : 'fit'} />
+              {fitAll ? 'Larger text' : 'Fit to screen'}
+            </button>
+          )}
+          {!fitAll && (
+            <>
+              <button
+                type="button"
+                className={`${styles.sizeToggle} ${styles.zoomButton}`}
+                onClick={() => changeZoom(-1)}
+                disabled={zoom <= ZOOM_RANGE[0]}
+                aria-label="Smaller text"
+                title="Smaller text"
+              >
+                <Icon name="zoomOut" />
+              </button>
+              <button
+                type="button"
+                className={`${styles.sizeToggle} ${styles.zoomButton}`}
+                onClick={() => changeZoom(1)}
+                disabled={zoom >= ZOOM_RANGE[1]}
+                aria-label="Bigger text"
+                title="Bigger text"
+              >
+                <Icon name="zoomIn" />
+              </button>
+            </>
+          )}
+          {pdfLinks}
+        </div>
       </section>
       {/* Cards flow through newspaper-style columns so short and tall races pack together. */}
       <div className={styles.raceFlow}>
         {groups.map((g) =>
           // Keyed by position: some races share a title (e.g. a full and an unexpired term).
-          g.races.map((r, i) =>
-            i === 0 ? (
-              <div key={`${g.name}-${i}`} className={styles.keepTogether} style={{ '--group': g.color }}>
-                <h2 className={styles.groupTitle}>{g.name}</h2>
-                <RaceCard race={r} color={g.color} />
-              </div>
-            ) : (
-              <RaceCard key={`${g.name}-${i}`} race={r} color={g.color} />
-            ),
-          ),
+          g.races.map((r, i) => (
+            <RaceCard key={`${g.name}-${i}`} race={r} color={g.color} title={i === 0 ? g.name : null} />
+          )),
         )}
       </div>
     </div>
@@ -637,8 +738,11 @@ export default function ResultsPage() {
     const revealIn = Math.max(1, Math.ceil((celebrateUntil - now) / 1000));
     const pdfLinks = results.links.map((l) => (
       <a key={l.href} href={l.href} target="_blank" rel="noopener noreferrer" className={styles.resultButton}>
+        <Icon name="document" />
         {l.text}
-        <span aria-hidden="true"> →</span>
+        <span aria-hidden="true" className={styles.buttonArrow}>
+          →
+        </span>
       </a>
     ));
 
@@ -696,7 +800,7 @@ export default function ResultsPage() {
     );
   }
 
-  let kicker, heading, body;
+  let kicker, heading, body, beaver;
   if (polling) {
     kicker = 'Polls are closed · Watching for results';
     heading = null;
@@ -721,11 +825,13 @@ export default function ResultsPage() {
       statusMain = "Couldn't reach the clerk's site";
       statusSub = `${lastCheck.error} · will try again`;
     }
+    beaver = {
+      mood: beaverMood,
+      checks: checkCount,
+      screenOn: checkEndedAt !== null && now - checkEndedAt < BEAVER_SAD_MS + BEAVER_SCREEN_MS,
+    };
     body = (
       <>
-        <div className={styles.beaverSpot}>
-          <Beaver mood={beaverMood} />
-        </div>
         <div className={styles.statusBlock} aria-live="polite">
           <p className={styles.statusMain}>{statusMain}</p>
           {statusSub && <p className={styles.statusSub}>{statusSub}</p>}
@@ -744,23 +850,29 @@ export default function ResultsPage() {
       <>
         <Countdown ms={POLLS_CLOSE - now} />
         <p className={styles.status}>Polls close at 7:00 PM MT across Albany County</p>
-        <div className={styles.beaverSpot}>
-          <Beaver mood="curled" />
-        </div>
       </>
     );
+    beaver = { mood: 'curled', pollsOpen: true, earlyVoting: now < ELECTION_DAY };
   } else {
     kicker = 'Polls are closed!';
     heading = 'Checking for results in';
     body = (
       <>
         <Countdown ms={FIRST_PING - now} />
-        <p className={styles.status}>We&apos;ll start checking the Albany County Clerk&apos;s site at 8:30 PM MT</p>
-        <div className={styles.beaverSpot}>
-          <Beaver mood="curled" />
-        </div>
+        <p className={styles.status}>We&apos;ll start checking the Albany County Clerk&apos;s site at 8:00 PM MT</p>
       </>
     );
+    // Wake up gradually for the first check: stir, then sit up at the laptop
+    // (the same early wake-up as every later check), so 8:00 is seamless.
+    const untilFirst = FIRST_PING - now;
+    beaver = {
+      mood:
+        untilFirst <= BEAVER_WAKE_EARLY_MS
+          ? 'checking'
+          : untilFirst <= BEAVER_WAKE_EARLY_MS + BEAVER_YAWN_MS
+            ? 'waking'
+            : 'curled',
+    };
   }
 
   return (
@@ -773,7 +885,14 @@ export default function ResultsPage() {
         <p className={styles.kicker}>{kicker}</p>
         {heading && <h1 className={styles.heading}>{heading}</h1>}
         {body}
+        {/* One beaver across the waiting screens, so it animates between poses instead of being swapped out. */}
+        <div className={styles.beaverSpot}>
+          <Beaver {...beaver} />
+        </div>
+        {/* Trivia starts once the polls close (or in demo mode, which skips ahead to checking). */}
+        {(polling || now >= POLLS_CLOSE) && <Trivia now={now} />}
       </section>
+      {/* Sits at the very bottom; the content above takes up any extra room. */}
       <footer className={styles.footer}>
         <p className={styles.footerNote}>
           This page will display election results for local races as soon as they&apos;re uploaded to the{' '}
