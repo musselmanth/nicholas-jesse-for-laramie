@@ -1,7 +1,8 @@
 'use client';
 
 import { Fragment, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import Beaver from './Beaver';
+import About from './About';
+import Beaver, { FAKEOUT_CHECKS } from './Beaver';
 import Trivia from './Trivia';
 import styles from './page.module.css';
 import { readReport } from './readReport';
@@ -16,7 +17,9 @@ const POLLS_CLOSE = Date.parse('2026-11-03T19:00:00-07:00');
 const FIRST_PING = Date.parse('2026-11-03T20:00:00-07:00'); // an hour after polls close
 const PING_INTERVAL = 2 * 60 * 1000;
 const FETCH_TIMEOUT = 25 * 1000;
-const CELEBRATE_MS = 10 * 1000;
+// Once someone has clicked through to the results, this browser skips the
+// "Results are in!" screen on later visits.
+const VIEWED_KEY = 'results-viewed-2026-general';
 // The beaver sits up a few seconds before each check, and stays sad for a bit
 // after one comes back empty before going back to sleep.
 const BEAVER_WAKE_EARLY_MS = 5 * 1000;
@@ -25,6 +28,14 @@ const BEAVER_SAD_MS = 4 * 1000;
 const BEAVER_SCREEN_MS = 5 * 1000;
 // Before the very first check it stirs awake a few seconds before sitting up.
 const BEAVER_YAWN_MS = 3 * 1000;
+// On a fake-out check it gasps this long before realizing it's nothing.
+const BEAVER_FAKEOUT_MS = 2 * 1000;
+// What the beaver does between checks, taking turns.
+const BEAVER_IDLE = ['asleep', 'reading', 'gnawing', 'knitting', 'twiddling'];
+// Putting away whatever it was holding, before turning to the laptop.
+const BEAVER_STOW = { reading: 'stowing', gnawing: 'stowingBranch', knitting: 'stowingKnit' };
+// Putting the book away takes a moment before it turns to the laptop.
+const BEAVER_STOW_MS = 1300;
 
 // ?demo=sample shows the races from the county's 2024 general election-night report.
 const SAMPLE_REPORT = { href: '/results-sample.pdf', text: '2024 General Election Results UNOFFICIAL (sample)' };
@@ -420,7 +431,7 @@ function playTune(ctx, { step, melody, bass, sparkles }) {
 }
 
 // The tune that plays when results come in: a syncopated 3-3-2 island groove.
-// It runs about 10 seconds, the length of the celebration, so the beaver has
+// It runs about 10 seconds, so the beaver on the "Results are in!" screen has
 // something to dance to. Each line below is one bar (8 sixteenth notes).
 const RESULT_TUNE = {
   step: 0.085,
@@ -469,7 +480,10 @@ export default function ResultsPage() {
   const [lastCheck, setLastCheck] = useState(null); // { at, ok, error }
   const [checkCount, setCheckCount] = useState(0);
   const [results, setResults] = useState(null);
-  const [celebrateUntil, setCelebrateUntil] = useState(0);
+  // When results arrived while the page was open (for the fanfare and title flash).
+  const [arrivedLiveAt, setArrivedLiveAt] = useState(0);
+  // Whether this browser has clicked through to the results.
+  const [viewed, setViewed] = useState(false);
   const [canFullscreen, setCanFullscreen] = useState(false);
   const audioRef = useRef(null);
   const [fullscreen, setFullscreen] = useState(false);
@@ -487,6 +501,11 @@ export default function ResultsPage() {
     // ?at=2026-11-03T18:59:50-07:00 pretends the page was opened at that time.
     const params = new URLSearchParams(window.location.search);
     const sample = params.get('demo') === 'sample';
+    // Skip the "Results are in!" screen if this browser has already seen the results.
+    // The demo always shows it, so it can be tried again and again.
+    try {
+      if (!sample && localStorage.getItem(VIEWED_KEY)) setViewed(true);
+    } catch {}
     demoRef.current = sample;
     const at = Date.parse(params.get('at') || '');
     offsetRef.current = Number.isNaN(at) ? 0 : at - Date.now();
@@ -553,9 +572,8 @@ export default function ResultsPage() {
 
         if (best || changed) {
           foundRef.current = true;
-          // Only celebrate if we were here when the results arrived; someone opening
-          // the page after they're posted goes straight to the races.
-          if (waitedRef.current || sample) setCelebrateUntil(clock() + CELEBRATE_MS);
+          // Only play the fanfare and flash the title if we were here when the results arrived.
+          if (waitedRef.current || sample) setArrivedLiveAt(clock());
           setResults({
             links: reports.map(({ href, text }) => ({ href, text })),
             ballots: best?.ballotsCast ?? null,
@@ -617,8 +635,8 @@ export default function ResultsPage() {
   }, []);
 
   // Flash the tab title for 30 seconds when results come in or update.
-  // Only for results that arrived while the page was open (the same ones that get the celebration).
-  const resultsKey = results && celebrateUntil ? `${results.at}|${results.asOf}` : null;
+  // Only for results that arrived while the page was open (the same ones that get the fanfare).
+  const resultsKey = results && arrivedLiveAt ? `${results.at}|${results.asOf}` : null;
   useEffect(() => {
     if (!resultsKey) return;
     const title = 'Albany County, WY Results Watch';
@@ -672,17 +690,11 @@ export default function ResultsPage() {
     };
   }, []);
 
-  // Play the fanfare when the celebration starts.
+  // Play the fanfare when results arrive while the page is open.
   useEffect(() => {
     const ctx = audioRef.current;
-    if (celebrateUntil && ctx?.state === 'running') playTune(ctx, RESULT_TUNE);
-  }, [celebrateUntil]);
-
-  // Demo only: let people hear the fanfare.
-  const sampleSound = () => {
-    const ctx = unlockAudio();
-    ctx?.resume().then(() => playTune(ctx, RESULT_TUNE), () => {});
-  };
+    if (arrivedLiveAt && ctx?.state === 'running') playTune(ctx, RESULT_TUNE);
+  }, [arrivedLiveAt]);
 
   const toggleFullscreen = () => {
     if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
@@ -699,14 +711,7 @@ export default function ResultsPage() {
         <span className={styles.liveDot} />
         Election Night 2026
       </span>
-      {demo && (
-        <span className={styles.demoTools}>
-          <span className={styles.demoBadge}>Demo mode</span>
-          <button type="button" className={styles.sampleButton} onClick={sampleSound}>
-            ♪ Play sound
-          </button>
-        </span>
-      )}
+      <About clerkUrl={CLERK_URL} />
       <span className={styles.topRight}>
         <span className={styles.clock}>{mtTime(now)} MT</span>
         {canFullscreen && (
@@ -735,7 +740,6 @@ export default function ResultsPage() {
   if (results) {
     const groups = groupRaces(results.races);
     const asOf = reportTime(results.asOf);
-    const revealIn = Math.max(1, Math.ceil((celebrateUntil - now) / 1000));
     const pdfLinks = results.links.map((l) => (
       <a key={l.href} href={l.href} target="_blank" rel="noopener noreferrer" className={styles.resultButton}>
         <Icon name="document" />
@@ -746,7 +750,15 @@ export default function ResultsPage() {
       </a>
     ));
 
-    if (now < celebrateUntil || !groups.length) {
+    const viewResults = () => {
+      setViewed(true);
+      if (demo) return;
+      try {
+        localStorage.setItem(VIEWED_KEY, '1');
+      } catch {}
+    };
+
+    if (!viewed || !groups.length) {
       return (
         <main className={`${styles.page} ${styles.found}`}>
           <div className={styles.confetti} aria-hidden="true">
@@ -772,13 +784,12 @@ export default function ResultsPage() {
               <p className={styles.ballots}>{results.ballots.toLocaleString('en-US')} ballots counted</p>
             )}
             {groups.length > 0 ? (
-              <div className={styles.reveal} role="timer">
-                <span>Revealing the races in</span>
-                {/* Keyed so the pop animation replays every second. */}
-                <span key={revealIn} className={styles.revealNum}>
-                  {revealIn}
+              <button type="button" className={`${styles.resultButton} ${styles.viewButton}`} onClick={viewResults}>
+                View the results
+                <span aria-hidden="true" className={styles.buttonArrow}>
+                  →
                 </span>
-              </div>
+              </button>
             ) : (
               <div className={styles.foundLinks}>{pdfLinks}</div>
             )}
@@ -806,12 +817,22 @@ export default function ResultsPage() {
     heading = null;
     const nextIn = Math.max(0, Math.ceil(((nextPingAt ?? now) - now) / 1000));
     // We only get here while there are no results, so every finished check is a sad one.
+    // `now` updates every 250ms, so right after a check it can be a little behind
+    // checkEndedAt; clamp so a negative gap doesn't count as "inside the fake-out".
+    const sinceCheck = checkEndedAt === null ? Infinity : Math.max(0, now - checkEndedAt);
+    const fakeoutMs = FAKEOUT_CHECKS[checkCount] ? BEAVER_FAKEOUT_MS : 0;
+    const idle = BEAVER_IDLE[checkCount % BEAVER_IDLE.length];
+    const wakeAt = nextPingAt === null ? Infinity : nextPingAt - BEAVER_WAKE_EARLY_MS;
     const beaverMood =
-      checking || (nextPingAt !== null && now >= nextPingAt - BEAVER_WAKE_EARLY_MS)
-        ? 'checking'
-        : checkEndedAt !== null && now - checkEndedAt < BEAVER_SAD_MS
-          ? 'sad'
-          : 'asleep';
+      !checking && BEAVER_STOW[idle] && now >= wakeAt && now < wakeAt + BEAVER_STOW_MS
+        ? BEAVER_STOW[idle]
+        : checking || now >= wakeAt
+          ? 'checking'
+          : sinceCheck < fakeoutMs
+            ? 'fakeout'
+            : sinceCheck < fakeoutMs + BEAVER_SAD_MS
+              ? 'sad'
+              : idle;
     let statusMain = 'Starting first check…';
     let statusSub = null;
     if (lastCheck?.ok) {
@@ -827,8 +848,12 @@ export default function ResultsPage() {
     }
     beaver = {
       mood: beaverMood,
+      // A different book each time it reads (it reads after every third check).
+      book: Math.floor(checkCount / BEAVER_IDLE.length),
+      // What it does after this check's reaction, so it can mention it.
+      next: idle,
       checks: checkCount,
-      screenOn: checkEndedAt !== null && now - checkEndedAt < BEAVER_SAD_MS + BEAVER_SCREEN_MS,
+      screenOn: sinceCheck < fakeoutMs + BEAVER_SAD_MS + BEAVER_SCREEN_MS,
     };
     body = (
       <>
@@ -892,15 +917,6 @@ export default function ResultsPage() {
         {/* Trivia starts once the polls close (or in demo mode, which skips ahead to checking). */}
         {(polling || now >= POLLS_CLOSE) && <Trivia now={now} />}
       </section>
-      {/* Sits at the very bottom; the content above takes up any extra room. */}
-      <footer className={styles.footer}>
-        <p className={styles.footerNote}>
-          This page will display election results for local races as soon as they&apos;re uploaded to the{' '}
-          <a href={CLERK_URL} target="_blank" rel="noopener noreferrer">
-            Albany County Clerk website ↗
-          </a>
-        </p>
-      </footer>
     </main>
   );
 }

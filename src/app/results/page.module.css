@@ -60,9 +60,10 @@
 .topBar {
   position: relative;
   z-index: 1;
-  display: flex;
+  /* Left, center (About) and right, with About always in the middle. */
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
   gap: 1rem;
   padding: clamp(0.75rem, 2.2vh, 1.25rem) clamp(1rem, 4vw, 2.5rem);
   font-weight: 600;
@@ -95,39 +96,10 @@
   }
 }
 
-.demoBadge {
-  padding: 0.25rem 0.75rem;
-  border-radius: 999px;
-  background: var(--accent);
-  color: var(--bg);
-}
-
-.demoTools {
-  display: inline-flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.sampleButton {
-  padding: 0.25rem 0.75rem;
-  border-radius: 999px;
-  border: 1px solid var(--accent);
-  background: transparent;
-  color: var(--accent);
-  font: inherit;
-  letter-spacing: inherit;
-  text-transform: inherit;
-  cursor: pointer;
-}
-
-.sampleButton:hover {
-  background: rgba(244, 185, 66, 0.15);
-}
-
 .topRight {
   display: inline-flex;
   align-items: center;
+  justify-self: end;
   gap: 1rem;
 }
 
@@ -457,26 +429,184 @@
   }
 }
 
-/* Pinned to the bottom of the screen, explaining where results come from. */
-.footer {
-  position: relative;
-  padding: 0.25rem 1rem clamp(0.5rem, 1.5vh, 1rem);
+/* About button (top center) and its dialog */
+.aboutButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45em;
+  padding: 0.35em 0.9em 0.35em 0.7em;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.aboutButton:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.aboutButton:focus-visible,
+.aboutClose:focus-visible {
+  outline: none;
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.aboutButton svg,
+.aboutClose svg {
+  width: 1.2em;
+  height: 1.2em;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+/* On narrow phones, just the icon. */
+@media (max-width: 420px) {
+  .aboutButton {
+    padding: 0.35em;
+  }
+
+  .aboutLabel {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+  }
+}
+
+.aboutDialog {
+  /* Centered; the page's margin reset would otherwise pin it top-left. */
+  margin: auto;
+  overflow: hidden;
+  width: min(100% - 2rem, 38rem);
+  max-height: min(100dvh - 2rem, 48rem);
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 1rem;
+  background: #12201c;
+  color: var(--text);
+  box-shadow: 0 1.5rem 4rem rgba(0, 0, 0, 0.6);
+  /* The top bar is uppercase and spaced out; the dialog reads as normal text. */
+  font-size: 1rem;
+  font-weight: 400;
+  letter-spacing: normal;
+  text-transform: none;
+  text-align: left;
+}
+
+/* Header on top, body scrolling below it, hint over the bottom edge. */
+.aboutDialog[open] {
+  display: flex;
+  flex-direction: column;
+}
+
+.aboutHead {
+  flex: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem clamp(1.25rem, 4vw, 2rem) 0.9rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.aboutMore {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 2.5rem 0 0.75rem;
   text-align: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  /* Fades the text above out, so it's clear the content continues. */
+  background: linear-gradient(transparent, #12201c 70%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.25s;
 }
 
-.footerNote {
-  max-width: 60rem;
-  margin: 0 auto;
+.aboutMoreOn {
+  opacity: 1;
+}
+
+.aboutDialog::backdrop {
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+}
+
+.aboutPanel {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 1.1rem clamp(1.25rem, 4vw, 2rem) 1.75rem;
+  line-height: 1.55;
+}
+
+.aboutPanel p {
+  color: rgba(246, 241, 228, 0.88);
+}
+
+.aboutPanel p + p,
+.aboutPanel h3 + p {
+  margin-top: 0.4rem;
+}
+
+.aboutPanel .aboutNote {
+  margin-top: 1.4rem;
+  font-size: 0.9rem;
   color: var(--muted);
-  font-size: clamp(0.72rem, 0.9vw, 0.82rem);
-  line-height: 1.5;
-  text-wrap: balance;
 }
 
-.footerNote a {
+.aboutPanel h3 {
+  margin-top: 1.4rem;
+  color: var(--accent);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.aboutPanel a {
   color: var(--text);
   text-decoration: underline;
   text-underline-offset: 0.2em;
+}
+
+.aboutTitle {
+  font-family: var(--font-display), Impact, sans-serif;
+  font-weight: 400;
+  font-size: clamp(1.75rem, 5vw, 2.25rem);
+  line-height: 1.05;
+  text-transform: uppercase;
+}
+
+.aboutClose {
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.6rem;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.aboutClose:hover {
+  background: rgba(255, 255, 255, 0.15);
 }
 
 /* Results found */
@@ -614,48 +744,26 @@
   color: var(--text);
 }
 
-.reveal {
-  display: flex;
+.viewButton {
+  display: inline-flex;
   align-items: center;
-  gap: 1rem;
-  padding: 0.6rem 0.6rem 0.6rem 1.5rem;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  font-weight: 800;
-  font-size: clamp(1rem, 2.5vw, 1.5rem);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
+  /* A gentle pulse so it's clear what to do next. */
+  animation: nudge 1.6s ease-in-out infinite;
 }
 
-.revealNum {
-  display: grid;
-  place-items: center;
-  width: 2.2em;
-  height: 2.2em;
-  border-radius: 50%;
-  background: var(--accent);
-  color: var(--bg);
-  font-family: var(--font-display), Impact, sans-serif;
-  font-weight: 400;
-  font-size: 1.6em;
-  animation: pop 1s ease-out;
+.viewButton:hover {
+  animation: none;
 }
 
-@keyframes pop {
-  0% {
-    transform: scale(1.8) rotate(-12deg);
-    opacity: 0;
-  }
-  25% {
-    transform: scale(0.9) rotate(4deg);
-    opacity: 1;
-  }
-  40% {
-    transform: scale(1.05) rotate(0);
-  }
-  100% {
-    transform: scale(1);
+.viewButton:focus-visible {
+  outline: 3px solid var(--text);
+  outline-offset: 4px;
+}
+
+@keyframes nudge {
+  50% {
+    transform: scale(1.05);
+    box-shadow: 0 0.5rem 2.5rem rgba(244, 185, 66, 0.55);
   }
 }
 
@@ -770,8 +878,7 @@
 }
 
 .sizeToggle:focus-visible {
-  outline: 3px solid var(--accent);
-  outline-offset: 3px;
+  outline: none;
 }
 
 /* The board's buttons share one large size (see .sizeToggle). */
@@ -950,7 +1057,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .revealNum,
+  .viewButton,
   .bar span {
     animation: none;
     transition: none;
